@@ -8,7 +8,7 @@ if [[ "$1" == "--travis" ]]; then
 fi
 
 function build() {
-	cd "$DIR/../spiceJ"
+	cd "$DIR/../prefetch-simulation"
 	# -P ci to activate release-like things like javadoc generation (and warnings)
 	mvn -P ci clean verify
 }
