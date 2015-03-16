@@ -5,13 +5,15 @@
   <artifactId>prefetch-simulation</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
-  <name>prefetch-simulation</name>
+  <name>Prefetch Simulation</name>
   <url>https://github.com/michael-borkowski/prefetch-simulation</url>
   <description>A simulation environment for testing prefetch scheduling algorithms</description>
 
   <packaging>pom</packaging>
 
   <modules>
+    <module>prefetch</module>
+    <module>generator</module>
     <module>runner</module>
   </modules>
 

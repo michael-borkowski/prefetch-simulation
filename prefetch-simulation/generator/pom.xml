@@ -1,14 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>at.borkowski.prefetch-simulation</groupId>
     <artifactId>prefetch-simulation</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>runner</artifactId>
 
-  <name>Simulation Runner</name>
-  <description>The runner for configured prefetch simulations</description>
+  <artifactId>generator</artifactId>
+  <name>Configuration Generator for Prefetch Simulations</name>
+  <description>A generator for prefetch simulation configurations</description>
 
   <build>
     <plugins>
@@ -28,7 +29,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>at.borkowski.prefetch.runnner.Main</mainClass>
+              <mainClass>at.borkowski.scovillej.generator.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -49,6 +50,13 @@
       <groupId>at.borkowski.prefetch-simulation</groupId>
       <artifactId>prefetch</artifactId>
       <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+
+    <!-- Command line parsing -->
+    <dependency>
+      <groupId>com.beust</groupId>
+      <artifactId>jcommander</artifactId>
+      <version>1.47</version>
     </dependency>
   </dependencies>
 
