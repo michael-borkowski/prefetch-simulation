@@ -12,7 +12,7 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>prefetch</module>
+    <module>core</module>
     <module>generator</module>
     <module>runner</module>
   </modules>
