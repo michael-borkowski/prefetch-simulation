@@ -7,20 +7,15 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>prefetch</artifactId>
+  <artifactId>core</artifactId>
   <name>Prefetch Simulation Components for scovilleJ</name>
   <description>Environment and services for prefetch simulation in scovilleJ</description>
 
   <dependencies>
     <dependency>
       <groupId>at.borkowski.scovillej</groupId>
-      <artifactId>core</artifactId>
-      <version>0.0.4-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>at.borkowski.scovillej</groupId>
       <artifactId>services</artifactId>
-      <version>0.0.4-SNAPSHOT</version>
+      <version>0.0.5</version>
     </dependency>
   </dependencies>
 </project>
