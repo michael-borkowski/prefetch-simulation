@@ -8,7 +8,7 @@
   </parent>
 
   <artifactId>core</artifactId>
-  <name>Prefetch Simulation Components for scovilleJ</name>
+  <name>Prefetch Simulation Components</name>
   <description>Environment and services for prefetch simulation in scovilleJ</description>
 
   <dependencies>

@@ -29,7 +29,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>at.borkowski.scovillej.generator.Main</mainClass>
+              <mainClass>at.borkowski.prefetchsimulation.generator.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
