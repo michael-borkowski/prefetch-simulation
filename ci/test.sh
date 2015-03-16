@@ -22,5 +22,5 @@ while [ $try -lt $RETRIES ]; do
 	((try++))
 done
 
-[ $try -eq 3 ] && exit 1
+[ $try -eq $RETRIES ] && exit 1
 exit 0
