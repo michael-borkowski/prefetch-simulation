@@ -48,7 +48,7 @@
   <dependencies>
     <dependency>
       <groupId>at.borkowski.prefetch-simulation</groupId>
-      <artifactId>prefetch</artifactId>
+      <artifactId>core</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
 
