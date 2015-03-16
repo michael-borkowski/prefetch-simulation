@@ -6,7 +6,7 @@ import java.util.Map;
 
 import at.borkowski.scovillej.SimulationBuilder;
 import at.borkowski.scovillej.prefetch.algorithms.PrefetchAlgorithm;
-import at.borkowski.scovillej.prefetch.configuration.model.Configuration;
+import at.borkowski.scovillej.prefetch.genesis.Genesis;
 import at.borkowski.scovillej.prefetch.impl.VirtualPayloadSerializer;
 import at.borkowski.scovillej.prefetch.members.aux.RatePredictionServiceProvider;
 import at.borkowski.scovillej.prefetch.members.aux.RateSetter;
@@ -57,13 +57,13 @@ public class PrefetchSimulationBuilder {
       builder.member(fetchClient = new FetchClient(SOCKET_NAME));
    }
 
-   public static PrefetchSimulationBuilder fromConfiguration(Configuration configuration) {
+   public static PrefetchSimulationBuilder fromGenesis(Genesis genesis) {
       PrefetchSimulationBuilder builder = new PrefetchSimulationBuilder();
-      builder.totalTicks(configuration.getTicks());
-      builder.requests(configuration.getRequests());
-      builder.limitsReal(configuration.getRateReal());
-      builder.limitsPredicted(configuration.getRatePredicted());
-      builder.algorithm(configuration.getAlgorithm());
+      builder.totalTicks(genesis.getTicks());
+      builder.requests(genesis.getRequests());
+      builder.limitsReal(genesis.getRateReal());
+      builder.limitsPredicted(genesis.getRatePredicted());
+      builder.algorithm(genesis.getAlgorithm());
 
       return builder;
    }

@@ -8,8 +8,8 @@
   </parent>
 
   <artifactId>generator</artifactId>
-  <name>Configuration Generator for Prefetch Simulations</name>
-  <description>A generator for prefetch simulation configurations</description>
+  <name>Genesis Generator for Prefetch Simulations</name>
+  <description>Library for generating prefetch simulation genesis instances</description>
 
   <build>
     <plugins>

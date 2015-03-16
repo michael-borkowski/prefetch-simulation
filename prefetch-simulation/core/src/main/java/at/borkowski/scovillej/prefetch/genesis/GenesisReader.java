@@ -1,4 +1,4 @@
-package at.borkowski.scovillej.prefetch.configuration;
+package at.borkowski.scovillej.prefetch.genesis;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,9 +13,8 @@ import java.util.Map;
 import at.borkowski.scovillej.prefetch.Request;
 import at.borkowski.scovillej.prefetch.algorithms.NullAlgorithm;
 import at.borkowski.scovillej.prefetch.algorithms.PrefetchAlgorithm;
-import at.borkowski.scovillej.prefetch.configuration.model.Configuration;
 
-public class ConfigurationReader {
+public class GenesisReader {
    private final BufferedReader input;
 
    public static final String CMD_END = "end";
@@ -24,7 +23,7 @@ public class ConfigurationReader {
    public static final String CMD_RATE_PREDICTION = "rate-prediction";
    public static final String CMD_ALGORITHM = "algorithm";
 
-   public ConfigurationReader(InputStream input) {
+   public GenesisReader(InputStream input) {
       try {
          this.input = new BufferedReader(new InputStreamReader(input, "UTF8"));
       } catch (UnsupportedEncodingException ueEx) {
@@ -32,7 +31,7 @@ public class ConfigurationReader {
       }
    }
 
-   public Configuration read() throws IOException, ConfigurationException {
+   public Genesis read() throws IOException, GenesisException {
       List<Request> requests = new LinkedList<>();
       Map<Long, Integer> real = new HashMap<>();
       Map<Long, Integer> predicted = new HashMap<>();
@@ -51,18 +50,18 @@ public class ConfigurationReader {
          try {
             tick = Long.parseLong(split[0]);
          } catch (NumberFormatException nfEx) {
-            throw new ConfigurationException("could not parse tick number on line " + lineCounter + ": " + split[0], nfEx);
+            throw new GenesisException("could not parse tick number on line " + lineCounter + ": " + split[0], nfEx);
          }
          if (tick < 0)
-            throw new ConfigurationException("negative tick on line " + lineCounter + ": " + tick);
+            throw new GenesisException("negative tick on line " + lineCounter + ": " + tick);
          if (tick < lastTick)
-            throw new ConfigurationException("ticks out of order on line " + lineCounter + ": " + tick + " < " + lastTick);
+            throw new GenesisException("ticks out of order on line " + lineCounter + ": " + tick + " < " + lastTick);
          if (end != -1)
-            throw new ConfigurationException("line " + lineCounter + ": no events after \"" + CMD_END + "\" are allowed");
+            throw new GenesisException("line " + lineCounter + ": no events after \"" + CMD_END + "\" are allowed");
 
          if (split[1].equals(CMD_END))
             if (split.length != 2)
-               throw new ConfigurationException("no parameters allowed for \"" + CMD_END + "\"");
+               throw new GenesisException("no parameters allowed for \"" + CMD_END + "\"");
             else
                end = tick;
          else if (split[1].equals(CMD_REQUEST))
@@ -74,7 +73,7 @@ public class ConfigurationReader {
          else if (split[1].equals(CMD_ALGORITHM))
             algorithm = parseAlgorithm(tick, lineCounter, split);
          else
-            throw new ConfigurationException("unknown command: " + split[1]);
+            throw new GenesisException("unknown command: " + split[1]);
 
          lastTick = tick;
       }
@@ -82,42 +81,42 @@ public class ConfigurationReader {
       if (end == -1)
          end = tick;
 
-      return new Configuration(end + 1, requests, real, predicted, algorithm);
+      return new Genesis(end + 1, requests, real, predicted, algorithm);
    }
 
-   private PrefetchAlgorithm parseAlgorithm(long tick, int lineCounter, String[] split) throws ConfigurationException {
+   private PrefetchAlgorithm parseAlgorithm(long tick, int lineCounter, String[] split) throws GenesisException {
       if (tick != 0)
-         throw new ConfigurationException("line " + lineCounter + ": algorithm must be set at tick 0");
+         throw new GenesisException("line " + lineCounter + ": algorithm must be set at tick 0");
       if (split.length != 3)
-         throw new ConfigurationException("line " + lineCounter + ": usage is \"0 " + CMD_ALGORITHM + " <algorithm-class>");
+         throw new GenesisException("line " + lineCounter + ": usage is \"0 " + CMD_ALGORITHM + " <algorithm-class>");
 
       try {
          Class<?> clazz = Class.forName(split[2]);
          return (PrefetchAlgorithm) clazz.newInstance();
       } catch (ClassNotFoundException e) {
-         throw new ConfigurationException("line " + lineCounter + ": class not found: " + split[2], e);
+         throw new GenesisException("line " + lineCounter + ": class not found: " + split[2], e);
       } catch (InstantiationException | IllegalAccessException e) {
-         throw new ConfigurationException("line " + lineCounter + ": could not instanciate class: " + split[2] + " (is there a constructor without parameters?)", e);
+         throw new GenesisException("line " + lineCounter + ": could not instanciate class: " + split[2] + " (is there a constructor without parameters?)", e);
       }
    }
 
-   private void parseRate(long tick, int lineCounter, String cmd, Map<Long, Integer> map, String[] split) throws ConfigurationException {
+   private void parseRate(long tick, int lineCounter, String cmd, Map<Long, Integer> map, String[] split) throws GenesisException {
       if (split.length != 3)
-         throw new ConfigurationException("line " + lineCounter + ": usage is \"<tick> " + cmd + " <rate>");
+         throw new GenesisException("line " + lineCounter + ": usage is \"<tick> " + cmd + " <rate>");
 
       int rate;
       try {
          rate = Integer.parseInt(split[2]);
       } catch (NumberFormatException nfEx) {
-         throw new ConfigurationException("could not parse rate on line " + lineCounter + ": " + split[2], nfEx);
+         throw new GenesisException("could not parse rate on line " + lineCounter + ": " + split[2], nfEx);
       }
 
       map.put(tick, rate);
    }
 
-   private Request parseRequest(long tick, int lineCounter, String[] split) throws ConfigurationException {
+   private Request parseRequest(long tick, int lineCounter, String[] split) throws GenesisException {
       if (split.length != 4)
-         throw new ConfigurationException("line " + lineCounter + ": usage is \"<tick> " + CMD_REQUEST + " <data> <byterate>");
+         throw new GenesisException("line " + lineCounter + ": usage is \"<tick> " + CMD_REQUEST + " <data> <byterate>");
 
       int data;
       int byterate;
@@ -125,12 +124,12 @@ public class ConfigurationReader {
       try {
          data = Integer.parseInt(split[2]);
       } catch (NumberFormatException nfEx) {
-         throw new ConfigurationException("could not parse request data length on line " + lineCounter + ": " + split[2], nfEx);
+         throw new GenesisException("could not parse request data length on line " + lineCounter + ": " + split[2], nfEx);
       }
       try {
          byterate = Integer.parseInt(split[3]);
       } catch (NumberFormatException nfEx) {
-         throw new ConfigurationException("could not parse request byte rate on line " + lineCounter + ": " + split[3], nfEx);
+         throw new GenesisException("could not parse request byte rate on line " + lineCounter + ": " + split[3], nfEx);
       }
 
       return new Request(tick, data, byterate);

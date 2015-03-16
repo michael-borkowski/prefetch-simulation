@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import at.borkowski.scovillej.prefetch.algorithms.PrefetchAlgorithm;
-import at.borkowski.scovillej.prefetch.configuration.model.Configuration;
+import at.borkowski.scovillej.prefetch.genesis.Genesis;
 import at.borkowski.scovillej.prefetch.members.aux.RatePredictionService;
 import at.borkowski.scovillej.simulation.Simulation;
 import at.borkowski.scovillej.simulation.SimulationEvent;
@@ -93,9 +93,9 @@ public class PrefetchSimulationBuilderTest {
    }
    
    @Test
-   public void testFromConfiguration() {
-      Configuration configuration = new Configuration(10000, allRequests, limitsReal, limitsPredicted, algorithm);
-      PrefetchSimulationBuilder sut = PrefetchSimulationBuilder.fromConfiguration(configuration);
+   public void testFromGenesis() {
+      Genesis genesis = new Genesis(10000, allRequests, limitsReal, limitsPredicted, algorithm);
+      PrefetchSimulationBuilder sut = PrefetchSimulationBuilder.fromGenesis(genesis);
       sut.limitReal(13);
       Simulation simulation = sut.create();
 

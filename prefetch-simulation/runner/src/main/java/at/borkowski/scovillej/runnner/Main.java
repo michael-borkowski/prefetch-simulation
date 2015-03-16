@@ -6,24 +6,24 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import at.borkowski.scovillej.prefetch.PrefetchSimulationBuilder;
-import at.borkowski.scovillej.prefetch.configuration.ConfigurationException;
-import at.borkowski.scovillej.prefetch.configuration.ConfigurationReader;
-import at.borkowski.scovillej.prefetch.configuration.model.Configuration;
+import at.borkowski.scovillej.prefetch.genesis.Genesis;
+import at.borkowski.scovillej.prefetch.genesis.GenesisException;
+import at.borkowski.scovillej.prefetch.genesis.GenesisReader;
 import at.borkowski.scovillej.prefetch.profiling.PrefetchProfilingResults;
 import at.borkowski.scovillej.simulation.Simulation;
 
 public class Main {
 
    public static void main(String[] args) {
-      InputStream configurationSource;
+      InputStream genesisSource;
       if (args.length > 1) {
          usage();
          return;
       } else if (args.length == 0 || "-".equals(args[0])) {
-         configurationSource = System.in;
+         genesisSource = System.in;
       } else {
          try {
-            configurationSource = new FileInputStream(args[0]);
+            genesisSource = new FileInputStream(args[0]);
          } catch (FileNotFoundException e) {
             e.printStackTrace();
             usage();
@@ -31,17 +31,17 @@ public class Main {
          }
       }
 
-      Configuration configuration = null;
+      Genesis genesis = null;
 
       try {
-         configuration = new ConfigurationReader(configurationSource).read();
-      } catch (IOException | ConfigurationException cEx) {
+         genesis = new GenesisReader(genesisSource).read();
+      } catch (IOException | GenesisException cEx) {
          cEx.printStackTrace();
          return;
       } finally {
-         if (configurationSource != System.in) {
+         if (genesisSource != System.in) {
             try {
-               configurationSource.close();
+               genesisSource.close();
             } catch (IOException e) {
                e.printStackTrace();
                return;
@@ -49,7 +49,7 @@ public class Main {
          }
       }
 
-      PrefetchSimulationBuilder builder = PrefetchSimulationBuilder.fromConfiguration(configuration);
+      PrefetchSimulationBuilder builder = PrefetchSimulationBuilder.fromGenesis(genesis);
       Simulation sim = builder.create();
       PrefetchProfilingResults profiling = builder.getProfiling();
 
@@ -66,9 +66,9 @@ public class Main {
    }
 
    private static void usage() {
-      System.err.println("Usage: runner            reads configuration from standard input");
-      System.err.println("       runner -          reads configuration from standard input");
-      System.err.println("       runner <filename> reads configuration from filename");
+      System.err.println("Usage: runner            reads genesis from standard input");
+      System.err.println("       runner -          reads genesis from standard input");
+      System.err.println("       runner <filename> reads genesis from filename");
    }
 
 }

@@ -1,4 +1,4 @@
-package at.borkowski.scovillej.prefetch.configuration.model;
+package at.borkowski.scovillej.prefetch.genesis;
 
 import java.util.List;
 import java.util.Map;
@@ -6,14 +6,14 @@ import java.util.Map;
 import at.borkowski.scovillej.prefetch.Request;
 import at.borkowski.scovillej.prefetch.algorithms.PrefetchAlgorithm;
 
-public class Configuration {
+public class Genesis {
    private final long ticks;
    private final List<Request> requests;
    private final Map<Long, Integer> rateReal;
    private final Map<Long, Integer> ratePredicted;
    private final PrefetchAlgorithm algorithm;
 
-   public Configuration(long ticks, List<Request> requests, Map<Long, Integer> rateReal, Map<Long, Integer> ratePredicted, PrefetchAlgorithm algorithm) {
+   public Genesis(long ticks, List<Request> requests, Map<Long, Integer> rateReal, Map<Long, Integer> ratePredicted, PrefetchAlgorithm algorithm) {
       this.ticks = ticks;
       this.requests = requests;
       this.rateReal = rateReal;

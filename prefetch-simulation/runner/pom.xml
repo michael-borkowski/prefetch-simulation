@@ -8,7 +8,7 @@
   <artifactId>runner</artifactId>
 
   <name>Simulation Runner</name>
-  <description>The runner for configured prefetch simulations</description>
+  <description>A tool for running prefetch simulations from a given genesis</description>
 
   <build>
     <plugins>
@@ -47,7 +47,7 @@
   <dependencies>
     <dependency>
       <groupId>at.borkowski.prefetch-simulation</groupId>
-      <artifactId>prefetch</artifactId>
+      <artifactId>core</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
