@@ -63,4 +63,8 @@ public final class ReconstructibleRandom {
    public double nextDouble() {
       return (((long) (next(26)) << 27) + next(27)) * DOUBLE_UNIT;
    }
+
+   public ReconstructibleRandom fork() {
+      return new ReconstructibleRandom(nextLong());
+   }
 }
