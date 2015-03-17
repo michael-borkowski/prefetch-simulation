@@ -13,21 +13,23 @@ import at.borkowski.prefetchsimulation.genesis.Genesis;
 
 public class GenesisGenerator {
 
-   private final Random random;
+   private static Random seedSource = new Random();
+   private final ReconstructibleRandom random;
 
    private final long totalTicks, networkQualityPhaseLength;
-   private final int maximumByterate;
+   private final int maximumByterate, networkByterateVariability;
    private final double networkUptime, networkByterateStability, predictionAccuracy;
    private final Collection<RequestSeries> recurringSeries;
    private final Collection<IntermittentRequest> intermittentRequests;
 
-   public GenesisGenerator(long totalTicks, int maximumByterate, long networkQualityPhaseLength, double networkUptime, double networkByterateStability, double predictionAccuracy, Collection<RequestSeries> recurringSeries, Collection<IntermittentRequest> intermittentRequests) {
-      random = new Random();
+   public GenesisGenerator(long totalTicks, int maximumByterate, long networkQualityPhaseLength, double networkUptime, double networkByterateStability, int networkByterateVariability, double predictionAccuracy, Collection<RequestSeries> recurringSeries, Collection<IntermittentRequest> intermittentRequests) {
+      random = new ReconstructibleRandom(seedSource.nextLong());
 
       this.totalTicks = totalTicks;
       this.maximumByterate = maximumByterate;
       this.networkQualityPhaseLength = networkQualityPhaseLength;
       this.networkUptime = networkUptime;
+      this.networkByterateVariability = networkByterateVariability;
       this.networkByterateStability = networkByterateStability;
       this.predictionAccuracy = predictionAccuracy;
       this.recurringSeries = recurringSeries;
@@ -52,16 +54,21 @@ public class GenesisGenerator {
    private Map<Long, Integer> generateNetworkQuality() {
       Map<Long, Integer> ret = new HashMap<>();
       long tick = 0;
+      int previousRate = -1;
 
       while (tick < totalTicks) {
-         int byterate;
+         int byterate = random.nextInt(maximumByterate);
          if (random.nextDouble() > networkUptime)
             byterate = 0;
-         else
-            byterate = random.nextInt(maximumByterate);
+
+         if (previousRate != -1 && byterate != 0)
+            byterate = (1 * byterate + 2 * previousRate) / 3;
 
          ret.put(tick, byterate);
-         tick += (nextDouble(0.5, 1.5)) * networkQualityPhaseLength;
+         tick += (nextDouble(0.1, 3)) * networkQualityPhaseLength;
+
+         if (byterate != 0)
+            previousRate = byterate;
       }
 
       return ret;
@@ -71,19 +78,25 @@ public class GenesisGenerator {
       Map<Long, Integer> ret = new HashMap<>();
       int lastRate = -1;
 
-      long tickStep = Math.max(1, networkQualityPhaseLength / 20);
+      long tickStep = Math.max(1, networkQualityPhaseLength / 10);
 
-      for (long tick = 0; tick < totalTicks; tick += tickStep) {
+      for (long tick = 0; tick < totalTicks; tick++) {
          if (networkQuality.containsKey(tick))
             lastRate = networkQuality.get(tick);
-         ret.put(tick, (int) (nextDouble(networkByterateStability, 2D - networkByterateStability) * lastRate));
+
+         if (tick % tickStep == 0)
+            ret.put(tick, (int) Math.max(0, nextDouble(networkByterateStability, 2D - networkByterateStability) * lastRate + nextInt(-networkByterateVariability, +networkByterateVariability)));
       }
 
       return ret;
    }
 
    private double nextDouble(double min, double max) {
-      return min + (random.nextDouble() * (max - min));
+      return min + random.nextDouble() * (max - min);
+   }
+
+   private int nextInt(int min, int max) {
+      return min + random.nextInt(max - min);
    }
 
    private Map<Long, Integer> generateNetworkQualityPrediction(Map<Long, Integer> networkQuality) {
