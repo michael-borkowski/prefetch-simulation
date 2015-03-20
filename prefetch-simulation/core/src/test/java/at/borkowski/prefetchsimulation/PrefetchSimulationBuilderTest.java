@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,8 +13,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import at.borkowski.prefetchsimulation.PrefetchSimulationBuilder;
-import at.borkowski.prefetchsimulation.Request;
+import at.borkowski.prefetchsimulation.algorithms.NullAlgorithm;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
 import at.borkowski.prefetchsimulation.members.aux.RatePredictionService;
@@ -26,7 +24,7 @@ public class PrefetchSimulationBuilderTest {
 
    PrefetchSimulationBuilder sut;
 
-   PrefetchAlgorithm algorithm;
+   Class<? extends PrefetchAlgorithm> algorithm;
 
    HashMap<Long, Integer> limitsReal = new HashMap<>();
    HashMap<Long, Integer> limitsPredicted = new HashMap<>();
@@ -36,7 +34,7 @@ public class PrefetchSimulationBuilderTest {
 
    @Before
    public void setUp() throws Exception {
-      algorithm = mock(PrefetchAlgorithm.class);
+      algorithm = NullAlgorithm.class;
 
       sut = new PrefetchSimulationBuilder();
 
@@ -52,8 +50,8 @@ public class PrefetchSimulationBuilderTest {
    }
 
    @Test
-   public void test() {
-      sut.algorithm(algorithm);
+   public void test() throws InstantiationException, IllegalAccessException {
+      sut.algorithm(algorithm.newInstance());
       sut.limitReal(13);
       sut.limitsReal(limitsReal);
       sut.limitsPredicted(limitsPredicted);
@@ -65,7 +63,7 @@ public class PrefetchSimulationBuilderTest {
 
       assertNotNull(sut.getProfiling());
 
-      assertSame(algorithm, sut.test__getFetchClient().getFetchProcessor().getAlgorithm());
+      assertSame(algorithm, sut.test__getFetchClient().getFetchProcessor().getAlgorithm().getClass());
       assertEquals(13, sut.test__getCommunicationService().getService().getUplinkRate(sut.test__getSocketName()).intValue());
       assertEquals(13, sut.test__getCommunicationService().getService().getDownlinkRate(sut.test__getSocketName()).intValue());
 
@@ -103,7 +101,7 @@ public class PrefetchSimulationBuilderTest {
 
       assertNotNull(sut.getProfiling());
 
-      assertSame(algorithm, sut.test__getFetchClient().getFetchProcessor().getAlgorithm());
+      assertSame(algorithm, sut.test__getFetchClient().getFetchProcessor().getAlgorithm().getClass());
       assertEquals(13, sut.test__getCommunicationService().getService().getUplinkRate(sut.test__getSocketName()).intValue());
       assertEquals(13, sut.test__getCommunicationService().getService().getDownlinkRate(sut.test__getSocketName()).intValue());
 

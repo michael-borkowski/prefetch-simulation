@@ -45,7 +45,7 @@ public class GenesisWriterTest {
       List<Request> requests = new LinkedList<>();
       Map<Long, Integer> rateReal = new HashMap<>();
       Map<Long, Integer> ratePredicted = new HashMap<>();
-      PrefetchAlgorithm algorithm = new IgnoreRatePredictionAlgorithm();
+      Class<? extends PrefetchAlgorithm> algorithm = IgnoreRatePredictionAlgorithm.class;
 
       rateReal.put(0L, 10);
       rateReal.put(1L, 11);

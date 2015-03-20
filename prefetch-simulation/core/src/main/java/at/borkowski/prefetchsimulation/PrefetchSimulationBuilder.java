@@ -63,7 +63,11 @@ public class PrefetchSimulationBuilder {
       builder.requests(genesis.getRequests());
       builder.limitsReal(genesis.getRateReal());
       builder.limitsPredicted(genesis.getRatePredicted());
-      builder.algorithm(genesis.getAlgorithm());
+      try {
+         builder.algorithm(genesis.getAlgorithm().newInstance());
+      } catch (InstantiationException | IllegalAccessException e) {
+         throw new RuntimeException(e);
+      }
 
       return builder;
    }
@@ -201,7 +205,7 @@ public class PrefetchSimulationBuilder {
    RateSetter test__getRateSetter() {
       return rateSetter;
    }
-   
+
    RatePredictionServiceProvider test__getRatePredictionServiceProvider() {
       return ratePredictionServiceProvider;
    }

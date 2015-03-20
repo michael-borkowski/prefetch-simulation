@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import at.borkowski.prefetchsimulation.Request;
-import at.borkowski.prefetchsimulation.algorithms.RespectRatePredictionAlgorithm;
+import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
 
 public class GenesisGenerator {
@@ -17,23 +17,25 @@ public class GenesisGenerator {
    private final ReconstructibleRandom random;
 
    private final long totalTicks, networkQualityPhaseLength;
-   private final int maximumByterate, networkByterateVariability;
-   private final double networkUptime, networkByterateStability, predictionAccuracy;
+   private final int maximumByterate, absoluteJitter;
+   private final double networkUptime, relativeJitter, predictionAccuracy;
    private final Collection<RequestSeries> recurringSeries;
    private final Collection<IntermittentRequest> intermittentRequests;
+   private final Class<? extends PrefetchAlgorithm> algorithm;
 
-   public GenesisGenerator(long totalTicks, int maximumByterate, long networkQualityPhaseLength, double networkUptime, double networkByterateStability, int networkByterateVariability, double predictionAccuracy, Collection<RequestSeries> recurringSeries, Collection<IntermittentRequest> intermittentRequests) {
+   public GenesisGenerator(long totalTicks, int maximumByterate, long networkQualityPhaseLength, double networkUptime, double relativeJitter, int absoluteJitter, double predictionAccuracy, Collection<RequestSeries> recurringSeries, Collection<IntermittentRequest> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm) {
       random = new ReconstructibleRandom(seedSource.nextLong());
 
       this.totalTicks = totalTicks;
       this.maximumByterate = maximumByterate;
       this.networkQualityPhaseLength = networkQualityPhaseLength;
       this.networkUptime = networkUptime;
-      this.networkByterateVariability = networkByterateVariability;
-      this.networkByterateStability = networkByterateStability;
+      this.absoluteJitter = absoluteJitter;
+      this.relativeJitter = relativeJitter;
       this.predictionAccuracy = predictionAccuracy;
       this.recurringSeries = recurringSeries;
       this.intermittentRequests = intermittentRequests;
+      this.algorithm = algorithm;
    }
 
    public void seed(long seed) {
@@ -44,14 +46,14 @@ public class GenesisGenerator {
       ReconstructibleRandom randomNetworkQuality = random.fork();
       ReconstructibleRandom randomNetworkPrediction = random.fork();
       ReconstructibleRandom randomNetworkGrain = random.fork();
-      
+
       Map<Long, Integer> networkQuality = generateNetworkQuality(randomNetworkQuality);
       Map<Long, Integer> prediction = generateNetworkQualityPrediction(randomNetworkPrediction, networkQuality);
 
       networkQuality = grainNetworkQuality(randomNetworkGrain, networkQuality);
 
       List<Request> requests = new LinkedList<>();
-      Genesis genesis = new Genesis(totalTicks, requests, networkQuality, prediction, new RespectRatePredictionAlgorithm());
+      Genesis genesis = new Genesis(totalTicks, requests, networkQuality, prediction, algorithm);
       return genesis;
    }
 
@@ -59,7 +61,7 @@ public class GenesisGenerator {
       ReconstructibleRandom randomByterate = random.fork();
       ReconstructibleRandom randomUptime = random.fork();
       ReconstructibleRandom randomLength = random.fork();
-      
+
       Map<Long, Integer> ret = new HashMap<>();
       long tick = 0;
       int previousRate = -1;
@@ -83,9 +85,9 @@ public class GenesisGenerator {
    }
 
    private Map<Long, Integer> grainNetworkQuality(ReconstructibleRandom random, Map<Long, Integer> networkQuality) {
-      ReconstructibleRandom randomStability = random.fork();
-      ReconstructibleRandom randomVariability = random.fork();
-      
+      ReconstructibleRandom randomRelative = random.fork();
+      ReconstructibleRandom randomAbsolute = random.fork();
+
       Map<Long, Integer> ret = new HashMap<>();
       int lastRate = -1;
 
@@ -95,14 +97,14 @@ public class GenesisGenerator {
          if (networkQuality.containsKey(tick))
             lastRate = networkQuality.get(tick);
 
-         double stability = nextDouble(randomStability, networkByterateStability, 2D - networkByterateStability);
-         int variability = nextInt(randomVariability, -networkByterateVariability, +networkByterateVariability);
+         double relativeJitter = nextDouble(randomRelative, this.relativeJitter, 2D - this.relativeJitter);
+         int absoluteJitter = nextInt(randomAbsolute, -this.absoluteJitter, +this.absoluteJitter);
 
          if (tick % tickStep == 0) {
             int byterate = lastRate;
 
             if (byterate != 0)
-               byterate = (int) (stability * byterate + variability);
+               byterate = (int) (relativeJitter * byterate + absoluteJitter);
 
             ret.put(tick, (int) Math.min(maximumByterate, Math.max(0, byterate)));
          }
@@ -114,7 +116,7 @@ public class GenesisGenerator {
    private Map<Long, Integer> generateNetworkQualityPrediction(ReconstructibleRandom random, Map<Long, Integer> networkQuality) {
       ReconstructibleRandom randomTick = random.fork();
       ReconstructibleRandom randomAccuracy = random.fork();
-      
+
       Map<Long, Integer> ret = new HashMap<>();
 
       for (long tick : networkQuality.keySet()) {

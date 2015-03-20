@@ -11,9 +11,9 @@ public class Genesis {
    private final List<Request> requests;
    private final Map<Long, Integer> rateReal;
    private final Map<Long, Integer> ratePredicted;
-   private final PrefetchAlgorithm algorithm;
+   private final Class<? extends PrefetchAlgorithm> algorithm;
 
-   public Genesis(long ticks, List<Request> requests, Map<Long, Integer> rateReal, Map<Long, Integer> ratePredicted, PrefetchAlgorithm algorithm) {
+   public Genesis(long ticks, List<Request> requests, Map<Long, Integer> rateReal, Map<Long, Integer> ratePredicted, Class<? extends PrefetchAlgorithm> algorithm) {
       this.ticks = ticks;
       this.requests = requests;
       this.rateReal = rateReal;
@@ -37,7 +37,7 @@ public class Genesis {
       return requests;
    }
    
-   public PrefetchAlgorithm getAlgorithm() {
+   public Class<? extends PrefetchAlgorithm> getAlgorithm() {
       return algorithm;
    }
 

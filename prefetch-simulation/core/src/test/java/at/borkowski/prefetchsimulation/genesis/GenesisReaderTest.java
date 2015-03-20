@@ -130,7 +130,7 @@ public class GenesisReaderTest {
       assertEquals(0, genesis.getRateReal().size());
       assertEquals(2, genesis.getRequests().size());
 
-      assertEquals(GenesisReaderTest_Algorithm.class, genesis.getAlgorithm().getClass());
+      assertEquals(GenesisReaderTest_Algorithm.class, genesis.getAlgorithm());
    }
 
    @Test(expected = GenesisException.class)
@@ -286,18 +286,6 @@ public class GenesisReaderTest {
    public void testAlgorithmParameters() throws Exception {
       line("# comment");
       line("0 algorithm a b");
-      line("100 request 40 5");
-      line("110 request 40 50");
-      line("300 end");
-      buildSut();
-
-      sut.read();
-   }
-
-   @Test(expected = GenesisException.class)
-   public void testAlgorithmException() throws Exception {
-      line("# comment");
-      line("0 algorithm " + GenesisReaderTest_BadAlgorithm1.class.getName());
       line("100 request 40 5");
       line("110 request 40 50");
       line("300 end");

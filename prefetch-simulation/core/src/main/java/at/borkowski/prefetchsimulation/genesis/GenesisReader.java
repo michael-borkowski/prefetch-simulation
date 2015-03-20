@@ -35,7 +35,7 @@ public class GenesisReader {
       List<Request> requests = new LinkedList<>();
       Map<Long, Integer> real = new HashMap<>();
       Map<Long, Integer> predicted = new HashMap<>();
-      PrefetchAlgorithm algorithm = new NullAlgorithm();
+      Class<? extends PrefetchAlgorithm> algorithm = NullAlgorithm.class;
 
       String line;
       long tick = 0, lastTick = -1, end = -1;
@@ -84,19 +84,18 @@ public class GenesisReader {
       return new Genesis(end + 1, requests, real, predicted, algorithm);
    }
 
-   private PrefetchAlgorithm parseAlgorithm(long tick, int lineCounter, String[] split) throws GenesisException {
+   private Class<? extends PrefetchAlgorithm> parseAlgorithm(long tick, int lineCounter, String[] split) throws GenesisException {
       if (tick != 0)
          throw new GenesisException("line " + lineCounter + ": algorithm must be set at tick 0");
       if (split.length != 3)
          throw new GenesisException("line " + lineCounter + ": usage is \"0 " + CMD_ALGORITHM + " <algorithm-class>");
 
       try {
-         Class<?> clazz = Class.forName(split[2]);
-         return (PrefetchAlgorithm) clazz.newInstance();
+         @SuppressWarnings("unchecked")
+         Class<? extends PrefetchAlgorithm> clazz = (Class<? extends PrefetchAlgorithm>) Class.forName(split[2]);
+         return clazz;
       } catch (ClassNotFoundException e) {
          throw new GenesisException("line " + lineCounter + ": class not found: " + split[2], e);
-      } catch (InstantiationException | IllegalAccessException e) {
-         throw new GenesisException("line " + lineCounter + ": could not instanciate class: " + split[2] + " (is there a constructor without parameters?)", e);
       }
    }
 
