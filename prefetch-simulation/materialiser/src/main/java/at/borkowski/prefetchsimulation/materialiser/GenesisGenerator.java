@@ -156,6 +156,8 @@ public class GenesisGenerator {
          long predictionTick = 0;
          if (tick != 0)
             predictionTick = (long) (tick + nextDouble(randomTick, -0.5, +0.5) * slotLength);
+         
+         predictionTick = Math.max(0, Math.min(totalTicks, predictionTick));
 
          int predictionByterate = (int) (nextDouble(randomAccuracy, predictionAccuracy, 2D - predictionAccuracy) * networkQuality.get(tick));
          ret.put(predictionTick, predictionByterate);
