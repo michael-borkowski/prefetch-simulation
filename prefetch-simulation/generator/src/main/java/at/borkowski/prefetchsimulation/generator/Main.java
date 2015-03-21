@@ -3,9 +3,7 @@ package at.borkowski.prefetchsimulation.generator;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.List;
 
 import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
@@ -14,10 +12,9 @@ import at.borkowski.prefetchsimulation.configuration.Configuration;
 import at.borkowski.prefetchsimulation.configuration.RequestSeries;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
 import at.borkowski.prefetchsimulation.genesis.GenesisWriter;
-
-import com.xeiam.xchart.BitmapEncoder;
-import com.xeiam.xchart.BitmapEncoder.BitmapFormat;
-import com.xeiam.xchart.Chart;
+import at.borkowski.prefetchsimulation.painter.GenesisPainter;
+import at.borkowski.prefetchsimulation.painter.PaintResult;
+import at.borkowski.prefetchsimulation.painter.Saver;
 
 public class Main {
    public static void main(String[] args) throws Exception {
@@ -45,44 +42,9 @@ public class Main {
          new GenesisWriter(os).write(genesis);
       }
 
-      List<Long> ticks = new LinkedList<>(genesis.getRateReal().keySet());
-      Collections.sort(ticks);
-
-      double[] xData = new double[ticks.size()];
-      double[] yData = new double[xData.length];
-      int i = 0;
-      for (long tick : ticks) {
-         xData[i] = tick;
-         yData[i] = genesis.getRateReal().get(tick);
-         i++;
-      }
-
-      Chart chart = new Chart(1920, 1080);
-      chart.addSeries("real", xData, yData);
-
-      ticks = new LinkedList<>(genesis.getRatePredicted().keySet());
-      Collections.sort(ticks);
-
-      xData = new double[ticks.size() * 2 + 1];
-      yData = new double[xData.length];
-      i = 1;
-      xData[0] = 0;
-      yData[0] = genesis.getRatePredicted().get(0L);
-      for (long tick : ticks) {
-         if (i > 1)
-            xData[i - 1] = tick;
-         xData[i] = tick;
-         yData[i + 1] = yData[i] = genesis.getRatePredicted().get(tick);
-         i += 2;
-      }
-      xData[xData.length - 1] = genesis.getTicks() - 1;
-
-      chart.addSeries("pred", xData, yData);
-
-      chart.getStyleManager().setYAxisMax(maximumByterate);
-      chart.getStyleManager().setYAxisMin(0);
-      chart.getStyleManager().setYAxisDecimalPattern("#0");
-
-      BitmapEncoder.saveBitmap(chart, outputFile, BitmapFormat.PNG);
+      PaintResult paint = GenesisPainter.paint(genesis);
+      
+      Saver.savePDF(paint, outputFile);
+      Saver.savePNG(paint, outputFile);
    }
 }

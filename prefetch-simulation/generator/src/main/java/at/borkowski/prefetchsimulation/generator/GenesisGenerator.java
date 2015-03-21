@@ -102,7 +102,7 @@ public class GenesisGenerator {
             byterate = 0;
 
          if (previousRate != -1 && byterate != 0)
-            byterate = (1 * byterate + 2 * previousRate) / 3;
+            byterate = (2 * byterate + 1 * previousRate) / 3;
 
          ret.put(tick, byterate);
          tick += (nextDouble(randomLength, 0.1, 3)) * slotLength;

@@ -15,6 +15,7 @@
     <module>core</module>
     <module>generator</module>
     <module>runner</module>
+    <module>painter</module>
   </modules>
 
   <properties>
