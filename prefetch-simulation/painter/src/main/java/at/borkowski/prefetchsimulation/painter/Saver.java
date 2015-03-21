@@ -1,6 +1,7 @@
 package at.borkowski.prefetchsimulation.painter;
 
 import java.io.IOException;
+import java.io.OutputStream;
 
 import com.xeiam.xchart.BitmapEncoder;
 import com.xeiam.xchart.BitmapEncoder.BitmapFormat;
@@ -18,5 +19,9 @@ public class Saver {
    
    public static void saveEPS(PaintResult result, String fileName) throws IOException {
       VectorGraphicsEncoder.saveVectorGraphic(result.getChart(), fileName, VectorGraphicsFormat.EPS);
+   }
+
+   public static void savePNG(PaintResult result, OutputStream out) throws IOException {
+      out.write(BitmapEncoder.getBitmapBytes(result.getChart(), BitmapFormat.PNG));
    }
 }
