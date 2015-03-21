@@ -10,6 +10,7 @@ import java.util.LinkedList;
 
 import org.junit.Test;
 
+import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.IgnoreRatePredictionAlgorithm;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 
@@ -25,7 +26,7 @@ public class ConfigurationTest {
       int absoluteJitter = 1337;
       double predictionAccuracy = 733.1;
       Collection<RequestSeries> recurringRequestSeries = new LinkedList<>();
-      Collection<IntermittentRequest> intermittentRequests = new LinkedList<>();
+      Collection<Request> intermittentRequests = new LinkedList<>();
       Class<? extends PrefetchAlgorithm> algorithm = IgnoreRatePredictionAlgorithm.class;
       long lookAheadTime = 271;
 

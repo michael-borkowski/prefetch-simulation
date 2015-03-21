@@ -2,6 +2,7 @@ package at.borkowski.prefetchsimulation.configuration;
 
 import java.util.Collection;
 
+import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 
 public class Configuration {
@@ -9,12 +10,12 @@ public class Configuration {
    private final int maximumByterate, absoluteJitter;
    private final double networkUptime, relativeJitter, predictionAccuracy;
    private final Collection<RequestSeries> recurringRequestSeries;
-   private final Collection<IntermittentRequest> intermittentRequests;
+   private final Collection<Request> intermittentRequests;
    private final Class<? extends PrefetchAlgorithm> algorithm;
    
    private Long seed;
 
-   public Configuration(long totalTicks, int maximumByterate, long slotLength, double networkUptime, double relativeJitter, int absoluteJitter, double predictionAccuracy, Collection<RequestSeries> recurringRequestSeries, Collection<IntermittentRequest> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm, long lookAheadTime) {
+   public Configuration(long totalTicks, int maximumByterate, long slotLength, double networkUptime, double relativeJitter, int absoluteJitter, double predictionAccuracy, Collection<RequestSeries> recurringRequestSeries, Collection<Request> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm, long lookAheadTime) {
       this.totalTicks = totalTicks;
       this.maximumByterate = maximumByterate;
       this.slotLength = slotLength;
@@ -52,7 +53,7 @@ public class Configuration {
       return algorithm;
    }
 
-   public Collection<IntermittentRequest> getIntermittentRequests() {
+   public Collection<Request> getIntermittentRequests() {
       return intermittentRequests;
    }
 
