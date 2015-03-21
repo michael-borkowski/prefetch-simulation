@@ -94,7 +94,7 @@ public class PrefetchSimulationBuilderTest {
    
    @Test
    public void testFromGenesis() {
-      Genesis genesis = new Genesis(10000, allRequests, limitsReal, limitsPredicted, algorithm);
+      Genesis genesis = new Genesis(10000, allRequests, limitsReal, limitsPredicted, algorithm, 5000);
       PrefetchSimulationBuilder sut = PrefetchSimulationBuilder.fromGenesis(genesis);
       sut.limitReal(13);
       Simulation simulation = sut.create();
@@ -102,6 +102,7 @@ public class PrefetchSimulationBuilderTest {
       assertNotNull(sut.getProfiling());
 
       assertSame(algorithm, sut.test__getFetchClient().getFetchProcessor().getAlgorithm().getClass());
+      assertEquals(5000, sut.test__getFetchClient().getFetchProcessor().getLookAheadTime());
       assertEquals(13, sut.test__getCommunicationService().getService().getUplinkRate(sut.test__getSocketName()).intValue());
       assertEquals(13, sut.test__getCommunicationService().getService().getDownlinkRate(sut.test__getSocketName()).intValue());
 

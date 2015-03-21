@@ -42,6 +42,7 @@ public class GenesisWriterTest {
    @Test
    public void test() throws IOException {
       long ticks = 10000;
+      long lookAhead = 8000;
       List<Request> requests = new LinkedList<>();
       Map<Long, Integer> rateReal = new HashMap<>();
       Map<Long, Integer> ratePredicted = new HashMap<>();
@@ -53,10 +54,11 @@ public class GenesisWriterTest {
       ratePredicted.put(2L, 20);
       ratePredicted.put(3L, 23);
 
-      sut.write(new Genesis(ticks, requests, rateReal, ratePredicted, algorithm));
+      sut.write(new Genesis(ticks, requests, rateReal, ratePredicted, algorithm, lookAhead));
 
       List<String> expected = new LinkedList<>();
       expected.add("0 algorithm " + IgnoreRatePredictionAlgorithm.class.getName());
+      expected.add("0 look-ahead 8000");
       expected.add("0 rate-real 10");
       expected.add("1 rate-real 11");
       expected.add("1 rate-prediction 10");

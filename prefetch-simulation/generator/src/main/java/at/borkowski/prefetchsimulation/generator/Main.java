@@ -7,7 +7,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.algorithms.RespectRatePredictionAlgorithm;
+import at.borkowski.prefetchsimulation.configuration.Configuration;
+import at.borkowski.prefetchsimulation.configuration.IntermittentRequest;
+import at.borkowski.prefetchsimulation.configuration.RequestSeries;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
 import at.borkowski.prefetchsimulation.genesis.GenesisWriter;
 
@@ -26,9 +30,14 @@ public class Main {
       double predictionAccuracy = 0.8;
       Collection<RequestSeries> recurringSeries = new LinkedList<>();
       Collection<IntermittentRequest> intermittentRequests = new LinkedList<>();
+      long lookAheadTime = totalTicks;
+      Class<? extends PrefetchAlgorithm> algorithm = RespectRatePredictionAlgorithm.class;
 
-      GenesisGenerator generator = new GenesisGenerator(totalTicks, maximumByterate, networkQualityPhaseLength, networkUptime, networkByterateStability, networkByterateVariability, predictionAccuracy, recurringSeries, intermittentRequests, RespectRatePredictionAlgorithm.class);
-      generator.seed(314159);
+      Configuration configuration = new Configuration(totalTicks, maximumByterate, networkQualityPhaseLength, networkUptime, networkByterateStability, networkByterateVariability, predictionAccuracy, recurringSeries, intermittentRequests, algorithm, lookAheadTime);
+
+      GenesisGenerator generator = new GenesisGenerator(configuration);
+      if (!configuration.hasSeed())
+         generator.seed(314159);
       Genesis genesis = generator.generate();
 
       String outputFile = "/home/michael/tmp-genesis";

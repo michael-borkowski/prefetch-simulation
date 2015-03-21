@@ -161,6 +161,11 @@ public class PrefetchSimulationBuilder {
       return this;
    }
 
+   public PrefetchSimulationBuilder lookAheadTime(long lookAheadTime) {
+      fetchClient.getFetchProcessor().setLookAheadTime(lookAheadTime);
+      return this;
+   }
+   
    /**
     * Returns the profiling result object.
     * 

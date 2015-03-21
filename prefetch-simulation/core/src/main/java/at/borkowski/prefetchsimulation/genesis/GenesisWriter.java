@@ -28,10 +28,11 @@ public class GenesisWriter {
       Map<Long, Collection<String>> lines = new HashMap<>();
 
       add(lines, 0, GenesisReader.CMD_ALGORITHM, genesis.getAlgorithm().getName());
+      add(lines, 0, GenesisReader.CMD_LOOK_AHEAD, String.valueOf(genesis.getLookAheadTime()));
 
       addRates(lines, genesis.getRateReal(), GenesisReader.CMD_RATE_REAL);
       addRates(lines, genesis.getRatePredicted(), GenesisReader.CMD_RATE_PREDICTION);
-      
+
       add(lines, genesis.getTicks() - 1, GenesisReader.CMD_END);
 
       List<Long> ticks = new LinkedList<>();

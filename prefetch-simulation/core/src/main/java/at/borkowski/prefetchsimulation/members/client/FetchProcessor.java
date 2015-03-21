@@ -31,6 +31,7 @@ public class FetchProcessor {
    private Map<Request, Long> scheduled = new HashMap<>();
 
    private PrefetchAlgorithm algorithm = new NullAlgorithm();
+   private long lookAheadTime = Long.MAX_VALUE;
 
    private long currentStart;
    private Request current = null;
@@ -57,7 +58,7 @@ public class FetchProcessor {
          for (Request request : scheduled.keySet())
             if (scheduled.get(request) <= tick && (current == null || scheduled.get(request) < scheduled.get(current)))
                current = request;
-         
+
          scheduled.remove(current);
 
          if (current != null) {
@@ -67,16 +68,29 @@ public class FetchProcessor {
             currentStart = tick;
          }
       }
+
+      reschedule(tick, false);
    }
 
-   private void reschedule() {
-      scheduled = algorithm.schedule(toFetch, ratePredictionService);
+   private void reschedule(long tick, boolean force) {
+      HashSet<Request> current = new HashSet<>();
+      for (Request req : toFetch)
+         if (req.getDeadline() - tick < lookAheadTime)
+            current.add(req);
+
+      boolean newRequest = force;
+      if (!force)
+         for (Request req : current)
+            newRequest |= !scheduled.containsKey(req);
+
+      if (newRequest)
+         scheduled = algorithm.schedule(toFetch, ratePredictionService);
    }
 
    public void initialize(Simulation simulation, SimulationInitializationContext context) {
       rateControlService = context.getService(RateControlService.class);
       ratePredictionService = context.getService(RatePredictionService.class);
-      reschedule();
+      reschedule(0, true);
    }
 
    public void addRequests(Collection<Request> requests) {
@@ -97,5 +111,13 @@ public class FetchProcessor {
 
    public Set<Request> getPendingRequests() {
       return toFetch;
+   }
+
+   public long getLookAheadTime() {
+      return lookAheadTime;
+   }
+
+   public void setLookAheadTime(long lookAheadTime) {
+      this.lookAheadTime = lookAheadTime;
    }
 }

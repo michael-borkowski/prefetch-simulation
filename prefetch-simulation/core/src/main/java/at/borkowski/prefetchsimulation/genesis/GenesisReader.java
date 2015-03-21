@@ -22,6 +22,7 @@ public class GenesisReader {
    public static final String CMD_RATE_REAL = "rate-real";
    public static final String CMD_RATE_PREDICTION = "rate-prediction";
    public static final String CMD_ALGORITHM = "algorithm";
+   public static final String CMD_LOOK_AHEAD = "look-ahead";
 
    public GenesisReader(InputStream input) {
       try {
@@ -36,6 +37,8 @@ public class GenesisReader {
       Map<Long, Integer> real = new HashMap<>();
       Map<Long, Integer> predicted = new HashMap<>();
       Class<? extends PrefetchAlgorithm> algorithm = NullAlgorithm.class;
+
+      Long lookAhead = null;
 
       String line;
       long tick = 0, lastTick = -1, end = -1;
@@ -72,6 +75,8 @@ public class GenesisReader {
             parseRate(tick, lineCounter, CMD_RATE_PREDICTION, predicted, split);
          else if (split[1].equals(CMD_ALGORITHM))
             algorithm = parseAlgorithm(tick, lineCounter, split);
+         else if (split[1].equals(CMD_LOOK_AHEAD))
+            lookAhead = parseLookAhead(tick, lineCounter, split);
          else
             throw new GenesisException("unknown command: " + split[1]);
 
@@ -81,7 +86,23 @@ public class GenesisReader {
       if (end == -1)
          end = tick;
 
-      return new Genesis(end + 1, requests, real, predicted, algorithm);
+      if (lookAhead == null)
+         lookAhead = end + 1;
+
+      return new Genesis(end + 1, requests, real, predicted, algorithm, lookAhead);
+   }
+
+   private Long parseLookAhead(long tick, int lineCounter, String[] split) throws GenesisException {
+      if (tick != 0)
+         throw new GenesisException("line " + lineCounter + ": look-ahead time must be set at tick 0");
+      if (split.length != 3)
+         throw new GenesisException("line " + lineCounter + ": usage is \"0 " + CMD_LOOK_AHEAD + " <look-ahead-time>");
+
+      try {
+         return Long.parseLong(split[2]);
+      } catch (NumberFormatException nfEx) {
+         throw new GenesisException("could not parse look-ahead-time on line " + lineCounter + ": " + split[2], nfEx);
+      }
    }
 
    private Class<? extends PrefetchAlgorithm> parseAlgorithm(long tick, int lineCounter, String[] split) throws GenesisException {

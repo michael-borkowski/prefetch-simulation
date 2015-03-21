@@ -9,6 +9,9 @@ import java.util.Random;
 
 import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
+import at.borkowski.prefetchsimulation.configuration.Configuration;
+import at.borkowski.prefetchsimulation.configuration.IntermittentRequest;
+import at.borkowski.prefetchsimulation.configuration.RequestSeries;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
 
 public class GenesisGenerator {
@@ -16,26 +19,30 @@ public class GenesisGenerator {
    private static Random seedSource = new Random();
    private final ReconstructibleRandom random;
 
-   private final long totalTicks, slotLength;
+   private final long totalTicks, slotLength, lookAheadTime;
    private final int maximumByterate, absoluteJitter;
    private final double networkUptime, relativeJitter, predictionAccuracy;
    private final Collection<RequestSeries> recurringSeries;
    private final Collection<IntermittentRequest> intermittentRequests;
    private final Class<? extends PrefetchAlgorithm> algorithm;
 
-   public GenesisGenerator(long totalTicks, int maximumByterate, long slotLength, double networkUptime, double relativeJitter, int absoluteJitter, double predictionAccuracy, Collection<RequestSeries> recurringSeries, Collection<IntermittentRequest> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm) {
+   public GenesisGenerator(Configuration configuration) {
       random = new ReconstructibleRandom(seedSource.nextLong());
 
-      this.totalTicks = totalTicks;
-      this.maximumByterate = maximumByterate;
-      this.slotLength = slotLength;
-      this.networkUptime = networkUptime;
-      this.absoluteJitter = absoluteJitter;
-      this.relativeJitter = relativeJitter;
-      this.predictionAccuracy = predictionAccuracy;
-      this.recurringSeries = recurringSeries;
-      this.intermittentRequests = intermittentRequests;
-      this.algorithm = algorithm;
+      this.totalTicks = configuration.getTotalTicks();
+      this.maximumByterate = configuration.getMaximumByterate();
+      this.slotLength = configuration.getSlotLength();
+      this.networkUptime = configuration.getNetworkUptime();
+      this.absoluteJitter = configuration.getAbsoluteJitter();
+      this.relativeJitter = configuration.getRelativeJitter();
+      this.predictionAccuracy = configuration.getPredictionAccuracy();
+      this.recurringSeries = configuration.getRecurringRequestSeries();
+      this.intermittentRequests = configuration.getIntermittentRequests();
+      this.algorithm = configuration.getAlgorithm();
+      this.lookAheadTime = configuration.getLookAheadTime();
+
+      if (configuration.hasSeed())
+         random.setSeed(configuration.getSeed());
    }
 
    public void seed(long seed) {
@@ -53,7 +60,7 @@ public class GenesisGenerator {
       networkQuality = grainNetworkQuality(randomNetworkGrain, networkQuality);
 
       List<Request> requests = new LinkedList<>();
-      Genesis genesis = new Genesis(totalTicks, requests, networkQuality, prediction, algorithm);
+      Genesis genesis = new Genesis(totalTicks, requests, networkQuality, prediction, algorithm, lookAheadTime);
       return genesis;
    }
 

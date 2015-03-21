@@ -115,6 +115,24 @@ public class GenesisReaderTest {
    }
 
    @Test
+   public void testLookAhead() throws Exception {
+      line("# comment");
+      line("0 look-ahead 32");
+      line("100 request 40 5");
+      line("110 request 40 50");
+      line("300 end");
+      buildSut();
+
+      Genesis genesis = sut.read();
+
+      assertEquals(32, genesis.getLookAheadTime());
+      assertEquals(301, genesis.getTicks());
+      assertEquals(0, genesis.getRatePredicted().size());
+      assertEquals(0, genesis.getRateReal().size());
+      assertEquals(2, genesis.getRequests().size());
+   }
+
+   @Test
    public void testAlgorithm() throws Exception {
       line("# comment");
       line("0 algorithm " + GenesisReaderTest_Algorithm.class.getName());
