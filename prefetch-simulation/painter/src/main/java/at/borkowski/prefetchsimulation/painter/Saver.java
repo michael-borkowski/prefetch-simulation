@@ -12,7 +12,11 @@ public class Saver {
       BitmapEncoder.saveBitmap(result.getChart(), fileName, BitmapFormat.PNG);
    }
    
-   public static void savePDF(PaintResult result, String fileName) throws IOException {
-      VectorGraphicsEncoder.saveVectorGraphic(result.getChart(), fileName, VectorGraphicsFormat.PDF);
+   public static void saveSVG(PaintResult result, String fileName) throws IOException {
+      VectorGraphicsEncoder.saveVectorGraphic(result.getChart(), fileName, VectorGraphicsFormat.SVG);
+   }
+   
+   public static void saveEPS(PaintResult result, String fileName) throws IOException {
+      VectorGraphicsEncoder.saveVectorGraphic(result.getChart(), fileName, VectorGraphicsFormat.EPS);
    }
 }
