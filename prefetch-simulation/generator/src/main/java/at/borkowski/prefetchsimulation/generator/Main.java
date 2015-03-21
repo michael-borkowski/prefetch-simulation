@@ -10,6 +10,7 @@ import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.algorithms.RespectRatePredictionAlgorithm;
 import at.borkowski.prefetchsimulation.configuration.Configuration;
 import at.borkowski.prefetchsimulation.configuration.RequestSeries;
+import at.borkowski.prefetchsimulation.configuration.distributions.Distributions;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
 import at.borkowski.prefetchsimulation.genesis.GenesisWriter;
 import at.borkowski.prefetchsimulation.painter.GenesisPainter;
@@ -30,6 +31,9 @@ public class Main {
       long lookAheadTime = totalTicks;
       Class<? extends PrefetchAlgorithm> algorithm = RespectRatePredictionAlgorithm.class;
 
+      intermittentRequests.add(new Request(1000 * 60 * 30, 1, 500));
+      recurringSeries.add(new RequestSeries(Distributions.uniformLong(1000 * 60 * 10, 1000 * 60 * 15), Distributions.uniformInteger(1 * 1000, 3 * 1000), Distributions.uniformInteger(500, 1000), Distributions.exactly(0L), Distributions.exactly(totalTicks)));
+
       Configuration configuration = new Configuration(totalTicks, maximumByterate, networkQualityPhaseLength, networkUptime, networkByterateStability, networkByterateVariability, predictionAccuracy, recurringSeries, intermittentRequests, algorithm, lookAheadTime);
 
       GenesisGenerator generator = new GenesisGenerator(configuration);
@@ -43,8 +47,9 @@ public class Main {
       }
 
       PaintResult paint = GenesisPainter.paint(genesis);
-      
-      Saver.savePDF(paint, outputFile);
+
+      Saver.saveEPS(paint, outputFile);
+      Saver.saveSVG(paint, outputFile);
       Saver.savePNG(paint, outputFile);
    }
 }
