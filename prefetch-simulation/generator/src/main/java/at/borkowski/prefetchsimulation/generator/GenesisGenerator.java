@@ -16,19 +16,19 @@ public class GenesisGenerator {
    private static Random seedSource = new Random();
    private final ReconstructibleRandom random;
 
-   private final long totalTicks, networkQualityPhaseLength;
+   private final long totalTicks, slotLength;
    private final int maximumByterate, absoluteJitter;
    private final double networkUptime, relativeJitter, predictionAccuracy;
    private final Collection<RequestSeries> recurringSeries;
    private final Collection<IntermittentRequest> intermittentRequests;
    private final Class<? extends PrefetchAlgorithm> algorithm;
 
-   public GenesisGenerator(long totalTicks, int maximumByterate, long networkQualityPhaseLength, double networkUptime, double relativeJitter, int absoluteJitter, double predictionAccuracy, Collection<RequestSeries> recurringSeries, Collection<IntermittentRequest> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm) {
+   public GenesisGenerator(long totalTicks, int maximumByterate, long slotLength, double networkUptime, double relativeJitter, int absoluteJitter, double predictionAccuracy, Collection<RequestSeries> recurringSeries, Collection<IntermittentRequest> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm) {
       random = new ReconstructibleRandom(seedSource.nextLong());
 
       this.totalTicks = totalTicks;
       this.maximumByterate = maximumByterate;
-      this.networkQualityPhaseLength = networkQualityPhaseLength;
+      this.slotLength = slotLength;
       this.networkUptime = networkUptime;
       this.absoluteJitter = absoluteJitter;
       this.relativeJitter = relativeJitter;
@@ -75,7 +75,7 @@ public class GenesisGenerator {
             byterate = (1 * byterate + 2 * previousRate) / 3;
 
          ret.put(tick, byterate);
-         tick += (nextDouble(randomLength, 0.1, 3)) * networkQualityPhaseLength;
+         tick += (nextDouble(randomLength, 0.1, 3)) * slotLength;
 
          if (byterate != 0)
             previousRate = byterate;
@@ -91,7 +91,7 @@ public class GenesisGenerator {
       Map<Long, Integer> ret = new HashMap<>();
       int lastRate = -1;
 
-      long tickStep = Math.max(1, networkQualityPhaseLength / 10);
+      long tickStep = Math.max(1, slotLength / 10);
 
       for (long tick = 0; tick < totalTicks; tick++) {
          if (networkQuality.containsKey(tick))
@@ -122,7 +122,7 @@ public class GenesisGenerator {
       for (long tick : networkQuality.keySet()) {
          long predictionTick = 0;
          if (tick != 0)
-            predictionTick = (long) (tick + nextDouble(randomTick, -0.5, +0.5) * networkQualityPhaseLength);
+            predictionTick = (long) (tick + nextDouble(randomTick, -0.5, +0.5) * slotLength);
 
          int predictionByterate = (int) (nextDouble(randomAccuracy, predictionAccuracy, 2D - predictionAccuracy) * networkQuality.get(tick));
          ret.put(predictionTick, predictionByterate);
