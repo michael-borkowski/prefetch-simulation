@@ -10,9 +10,9 @@ import java.util.Random;
 import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.configuration.Configuration;
-import at.borkowski.prefetchsimulation.configuration.IntermittentRequest;
 import at.borkowski.prefetchsimulation.configuration.RequestSeries;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
+import at.borkowski.prefetchsimulation.util.ReconstructibleRandom;
 
 public class GenesisGenerator {
 
@@ -23,7 +23,7 @@ public class GenesisGenerator {
    private final int maximumByterate, absoluteJitter;
    private final double networkUptime, relativeJitter, predictionAccuracy;
    private final Collection<RequestSeries> recurringSeries;
-   private final Collection<IntermittentRequest> intermittentRequests;
+   private final Collection<Request> intermittentRequests;
    private final Class<? extends PrefetchAlgorithm> algorithm;
 
    public GenesisGenerator(Configuration configuration) {
@@ -53,6 +53,7 @@ public class GenesisGenerator {
       ReconstructibleRandom randomNetworkQuality = random.fork();
       ReconstructibleRandom randomNetworkPrediction = random.fork();
       ReconstructibleRandom randomNetworkGrain = random.fork();
+      ReconstructibleRandom randomSeries = random.fork();
 
       Map<Long, Integer> networkQuality = generateNetworkQuality(randomNetworkQuality);
       Map<Long, Integer> prediction = generateNetworkQualityPrediction(randomNetworkPrediction, networkQuality);
@@ -60,8 +61,30 @@ public class GenesisGenerator {
       networkQuality = grainNetworkQuality(randomNetworkGrain, networkQuality);
 
       List<Request> requests = new LinkedList<>();
+
+      requests.addAll(intermittentRequests);
+
+      for (RequestSeries series : recurringSeries)
+         generateSeries(randomSeries, requests, series);
+
       Genesis genesis = new Genesis(totalTicks, requests, networkQuality, prediction, algorithm, lookAheadTime);
       return genesis;
+   }
+
+   private void generateSeries(ReconstructibleRandom randomSeries, List<Request> requests, RequestSeries series) {
+      ReconstructibleRandom randomSize = random.fork();
+      ReconstructibleRandom randomByterate = random.fork();
+
+      long start = series.getStartTick().getValue(randomSeries.fork());
+      long end = series.getEndTick().getValue(randomSeries.fork());
+
+      long current = start;
+
+      while (current <= end) {
+         int data = series.getSize().getValue(randomSize);
+         int byterate = series.getByterate().getValue(randomByterate);
+         requests.add(new Request(current, data, byterate));
+      }
    }
 
    private Map<Long, Integer> generateNetworkQuality(ReconstructibleRandom random) {

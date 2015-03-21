@@ -7,10 +7,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.algorithms.RespectRatePredictionAlgorithm;
 import at.borkowski.prefetchsimulation.configuration.Configuration;
-import at.borkowski.prefetchsimulation.configuration.IntermittentRequest;
 import at.borkowski.prefetchsimulation.configuration.RequestSeries;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
 import at.borkowski.prefetchsimulation.genesis.GenesisWriter;
@@ -29,7 +29,7 @@ public class Main {
       int networkByterateVariability = 20;
       double predictionAccuracy = 0.8;
       Collection<RequestSeries> recurringSeries = new LinkedList<>();
-      Collection<IntermittentRequest> intermittentRequests = new LinkedList<>();
+      Collection<Request> intermittentRequests = new LinkedList<>();
       long lookAheadTime = totalTicks;
       Class<? extends PrefetchAlgorithm> algorithm = RespectRatePredictionAlgorithm.class;
 

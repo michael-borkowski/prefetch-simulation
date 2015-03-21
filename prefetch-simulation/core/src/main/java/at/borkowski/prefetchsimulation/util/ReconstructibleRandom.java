@@ -6,9 +6,10 @@
  * license terms.
  */
 
-package at.borkowski.prefetchsimulation.generator;
+package at.borkowski.prefetchsimulation.util;
 
-public final class ReconstructibleRandom {
+
+public final class ReconstructibleRandom implements RandomSource {
 
    private long seed;
 
@@ -55,6 +56,7 @@ public final class ReconstructibleRandom {
       return r;
    }
 
+   @Override
    public long nextLong() {
       // it's okay that the bottom word remains signed.
       return ((long) (next(32)) << 32) + next(32);
