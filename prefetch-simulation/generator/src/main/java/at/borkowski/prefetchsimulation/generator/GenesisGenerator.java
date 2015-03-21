@@ -74,6 +74,7 @@ public class GenesisGenerator {
    private void generateSeries(RepeatableRandom randomSeries, List<Request> requests, RequestSeries series) {
       RepeatableRandom randomSize = random.fork();
       RepeatableRandom randomByterate = random.fork();
+      RepeatableRandom randomInterval = random.fork();
 
       long start = series.getStartTick().getValue(randomSeries.fork());
       long end = series.getEndTick().getValue(randomSeries.fork());
@@ -84,6 +85,8 @@ public class GenesisGenerator {
          int data = series.getSize().getValue(randomSize);
          int byterate = series.getByterate().getValue(randomByterate);
          requests.add(new Request(current, data, byterate));
+         
+         current += series.getInterval().getValue(randomInterval);
       }
    }
 
