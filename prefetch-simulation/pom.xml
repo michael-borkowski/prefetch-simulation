@@ -13,7 +13,7 @@
 
   <modules>
     <module>core</module>
-    <module>generator</module>
+    <module>materialiser</module>
     <module>runner</module>
     <module>painter</module>
   </modules>

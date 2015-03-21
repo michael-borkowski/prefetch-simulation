@@ -7,9 +7,9 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>generator</artifactId>
-  <name>Genesis Generator for Prefetch Simulations</name>
-  <description>Library for generating prefetch simulation genesis instances</description>
+  <artifactId>materialiser</artifactId>
+  <name>Configuration Materialiser for Prefetch Simulations</name>
+  <description>Library for generating prefetch simulation genesis instances from configurations</description>
 
   <build>
     <plugins>
