@@ -44,6 +44,28 @@ public class GenesisReaderTest {
    }
 
    @Test
+   public void testWhitespace() throws Exception {
+      line("# comment");
+      line("100      \trate-real 4");
+      line("      120\t rate-prediction  \t 8");
+      line("  \t    \t 210\trate-prediction\t5");
+      line("  250 \trate-real       3");
+      buildSut();
+
+      Genesis genesis = sut.read();
+
+      assertEquals(251, genesis.getTicks());
+      assertEquals(2, genesis.getRatePredicted().size());
+      assertEquals(2, genesis.getRateReal().size());
+      assertEquals(0, genesis.getRequests().size());
+
+      assertEquals(4, genesis.getRateReal().get(100L).intValue());
+      assertEquals(8, genesis.getRatePredicted().get(120L).intValue());
+      assertEquals(5, genesis.getRatePredicted().get(210L).intValue());
+      assertEquals(3, genesis.getRateReal().get(250L).intValue());
+   }
+
+   @Test
    public void testRequests() throws Exception {
       line("# comment");
       line("100 request 40         50");

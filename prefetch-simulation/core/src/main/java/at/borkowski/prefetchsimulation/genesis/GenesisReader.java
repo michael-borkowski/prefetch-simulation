@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,9 +48,13 @@ public class GenesisReader {
          lineCounter++;
          line = line.replaceAll("#.*$", "");
          String[] split = line.split("\\s+");
-         if (split.length == 0 || split[0].length() == 0)
-            continue;
 
+         while (split.length > 0 && split[0].length() == 0)
+            split = Arrays.copyOfRange(split, 1, split.length);
+         
+         if (split.length == 0)
+            continue;
+         
          try {
             tick = Long.parseLong(split[0]);
          } catch (NumberFormatException nfEx) {
