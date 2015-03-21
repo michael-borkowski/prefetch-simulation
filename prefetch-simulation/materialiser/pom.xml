@@ -8,7 +8,7 @@
   </parent>
 
   <artifactId>materialiser</artifactId>
-  <name>Configuration Materialiser for Prefetch Simulations</name>
+  <name>Configuration Materialiser</name>
   <description>Library for generating prefetch simulation genesis instances from configurations</description>
 
   <build>
