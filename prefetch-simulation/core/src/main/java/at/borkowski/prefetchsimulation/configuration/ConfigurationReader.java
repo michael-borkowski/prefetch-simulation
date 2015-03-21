@@ -17,6 +17,7 @@ import at.borkowski.prefetchsimulation.configuration.distributions.Distributions
 public class ConfigurationReader {
    private final BufferedReader input;
 
+   public static final String CMD_SEED = "seed";
    public static final String CMD_TOTAL_TICKS = "ticks";
    public static final String CMD_MAX_BYTERATE = "max-byterate";
    public static final String CMD_SLOT_LENGTH = "slot-length";
@@ -38,6 +39,7 @@ public class ConfigurationReader {
    }
 
    public Configuration read() throws IOException, ConfigurationException {
+      Long seed = null;
       Long totalTicks = null;
       Integer maximumByterate = null;
       Long slotLength = null;
@@ -68,6 +70,8 @@ public class ConfigurationReader {
 
          if (command == null)
             continue;
+         else if (command.equals(CMD_SEED))
+            seed = parseLong(lineCounter, CMD_SEED, reader);
          else if (command.equals(CMD_TOTAL_TICKS))
             totalTicks = parseLong(lineCounter, CMD_TOTAL_TICKS, reader);
          else if (command.equals(CMD_MAX_BYTERATE))
@@ -103,7 +107,10 @@ public class ConfigurationReader {
       require(predictionAccuracy, "prediction accuracy");
       require(lookAheadTime, "look ahead time");
 
-      return new Configuration(totalTicks, maximumByterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionAccuracy, recurringRequestSeries, intermittentRequests, algorithm, lookAheadTime);
+      Configuration configuration = new Configuration(totalTicks, maximumByterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionAccuracy, recurringRequestSeries, intermittentRequests, algorithm, lookAheadTime);
+      if (seed != null)
+         configuration.setSeed(seed);
+      return configuration;
    }
 
    private Request parseRequest(int lineCounter, ArrayReader reader) throws ConfigurationException {

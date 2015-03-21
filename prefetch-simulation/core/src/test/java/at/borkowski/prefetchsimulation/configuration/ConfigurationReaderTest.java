@@ -1,6 +1,8 @@
 package at.borkowski.prefetchsimulation.configuration;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.util.Comparator;
@@ -135,6 +137,44 @@ public class ConfigurationReaderTest {
       assertEquals(30, requests.get(2).getDeadline());
       assertEquals(31, requests.get(2).getAvailableByterate());
       assertEquals(32, requests.get(2).getData());
+   }
+
+   @Test
+   public void testSeedPresent() throws Exception {
+      line("ticks 10");
+      line("max-byterate 11");
+      line("slot-length 12");
+      line("network-uptime 0.95");
+      line("relative-jitter 0.1");
+      line("absolute-jitter 13");
+      line("prediction-accuracy 0.8");
+      line("look-ahead 1");
+
+      line("seed 31337");
+      buildSut();
+
+      Configuration configuration = sut.read();
+
+      assertTrue(configuration.hasSeed());
+      assertEquals(31337, configuration.getSeed());
+   }
+
+   @Test
+   public void testSeedAbsent() throws Exception {
+      line("ticks 10");
+      line("max-byterate 11");
+      line("slot-length 12");
+      line("network-uptime 0.95");
+      line("relative-jitter 0.1");
+      line("absolute-jitter 13");
+      line("prediction-accuracy 0.8");
+      line("look-ahead 1");
+
+      buildSut();
+
+      Configuration configuration = sut.read();
+
+      assertFalse(configuration.hasSeed());
    }
 
    @Test
