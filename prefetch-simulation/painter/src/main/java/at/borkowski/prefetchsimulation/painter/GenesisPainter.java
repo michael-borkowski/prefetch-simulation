@@ -48,35 +48,37 @@ public class GenesisPainter {
          i += 2;
       }
       xDataPredicted[xDataPredicted.length - 1] = genesis.getTicks() - 1;
-      
+
       List<Request> requests = genesis.getRequests();
       double[] xDataRequests = new double[requests.size()];
       double[] yDataRequests = new double[xDataRequests.length];
       i = 0;
-      for(Request request : requests) {
+      for (Request request : requests) {
          xDataRequests[i] = request.getDeadline();
          yDataRequests[i] = 0; //request.getAvailableByterate();
          i++;
       }
 
-      Chart chart = new ChartBuilder().width(800).height(600).theme(ChartTheme.Matlab).build();
+      Chart chart = new ChartBuilder().width(1200).height(800).theme(ChartTheme.Matlab).build();
       chart.setXAxisTitle("ticks");
       chart.setYAxisTitle("bandwidth");
 
       Series seriesReal = chart.addSeries("B real", xDataReal, yDataReal);
       Series seriesPred = chart.addSeries("B predicted", xDataPredicted, yDataPredicted);
-      Series seriesRequests = chart.addSeries("Requests", xDataRequests, yDataRequests);
 
       seriesReal.setLineColor(Color.BLUE);
       seriesPred.setMarker(SeriesMarker.NONE);
-      
+
       seriesPred.setLineColor(Color.ORANGE);
       seriesReal.setMarker(SeriesMarker.NONE);
-      
-      seriesRequests.setLineStyle(SeriesLineStyle.NONE);
-      seriesRequests.setMarkerColor(Color.GREEN);
-      seriesRequests.setMarker(SeriesMarker.CIRCLE);
-      
+
+      if (xDataRequests.length > 0) {
+         Series seriesRequests = chart.addSeries("Requests", xDataRequests, yDataRequests);
+         seriesRequests.setLineStyle(SeriesLineStyle.NONE);
+         seriesRequests.setMarkerColor(Color.GREEN);
+         seriesRequests.setMarker(SeriesMarker.CIRCLE);
+      }
+
       StyleManager style = chart.getStyleManager();
       style.setChartBackgroundColor(Color.WHITE);
 
