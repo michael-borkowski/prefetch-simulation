@@ -13,6 +13,8 @@ public class UniformLongDistribution implements Distribution<Long> {
 
    @Override
    public Long getValue(RandomSource randomSource) {
+      if (min == max)
+         return min;
       long r = randomSource.nextLong() % (max - min);
       return min + r;
    }

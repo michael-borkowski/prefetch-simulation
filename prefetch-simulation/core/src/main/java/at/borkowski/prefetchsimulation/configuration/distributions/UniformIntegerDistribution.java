@@ -13,6 +13,8 @@ public class UniformIntegerDistribution implements Distribution<Integer> {
 
    @Override
    public Integer getValue(RandomSource randomSource) {
+      if (min == max)
+         return min;
       long r = randomSource.nextLong() % (max - min);
       return (int) (min + r);
    }
