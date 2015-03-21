@@ -68,6 +68,7 @@ public class PrefetchSimulationBuilder {
       } catch (InstantiationException | IllegalAccessException e) {
          throw new RuntimeException(e);
       }
+      builder.lookAheadTime(genesis.getLookAheadTime());
 
       return builder;
    }

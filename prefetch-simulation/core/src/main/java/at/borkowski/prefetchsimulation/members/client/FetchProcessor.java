@@ -50,6 +50,8 @@ public class FetchProcessor {
             long duration = tick - currentStart;
             owner.getProfilingService().fetched(current, payload.getSize(), tick, duration);
             owner.getCacheProcessor().save(current, tick);
+            toFetch.remove(current);
+            scheduled.remove(current);
 
             current = null;
          }
