@@ -12,12 +12,12 @@ import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.configuration.Configuration;
 import at.borkowski.prefetchsimulation.configuration.RequestSeries;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
-import at.borkowski.prefetchsimulation.util.ReconstructibleRandom;
+import at.borkowski.prefetchsimulation.util.RepeatableRandom;
 
 public class GenesisGenerator {
 
    private static Random seedSource = new Random();
-   private final ReconstructibleRandom random;
+   private final RepeatableRandom random;
 
    private final long totalTicks, slotLength, lookAheadTime;
    private final int maximumByterate, absoluteJitter;
@@ -27,7 +27,7 @@ public class GenesisGenerator {
    private final Class<? extends PrefetchAlgorithm> algorithm;
 
    public GenesisGenerator(Configuration configuration) {
-      random = new ReconstructibleRandom(seedSource.nextLong());
+      random = new RepeatableRandom(seedSource.nextLong());
 
       this.totalTicks = configuration.getTotalTicks();
       this.maximumByterate = configuration.getMaximumByterate();
@@ -50,10 +50,10 @@ public class GenesisGenerator {
    }
 
    public Genesis generate() {
-      ReconstructibleRandom randomNetworkQuality = random.fork();
-      ReconstructibleRandom randomNetworkPrediction = random.fork();
-      ReconstructibleRandom randomNetworkGrain = random.fork();
-      ReconstructibleRandom randomSeries = random.fork();
+      RepeatableRandom randomNetworkQuality = random.fork();
+      RepeatableRandom randomNetworkPrediction = random.fork();
+      RepeatableRandom randomNetworkGrain = random.fork();
+      RepeatableRandom randomSeries = random.fork();
 
       Map<Long, Integer> networkQuality = generateNetworkQuality(randomNetworkQuality);
       Map<Long, Integer> prediction = generateNetworkQualityPrediction(randomNetworkPrediction, networkQuality);
@@ -71,9 +71,9 @@ public class GenesisGenerator {
       return genesis;
    }
 
-   private void generateSeries(ReconstructibleRandom randomSeries, List<Request> requests, RequestSeries series) {
-      ReconstructibleRandom randomSize = random.fork();
-      ReconstructibleRandom randomByterate = random.fork();
+   private void generateSeries(RepeatableRandom randomSeries, List<Request> requests, RequestSeries series) {
+      RepeatableRandom randomSize = random.fork();
+      RepeatableRandom randomByterate = random.fork();
 
       long start = series.getStartTick().getValue(randomSeries.fork());
       long end = series.getEndTick().getValue(randomSeries.fork());
@@ -87,10 +87,10 @@ public class GenesisGenerator {
       }
    }
 
-   private Map<Long, Integer> generateNetworkQuality(ReconstructibleRandom random) {
-      ReconstructibleRandom randomByterate = random.fork();
-      ReconstructibleRandom randomUptime = random.fork();
-      ReconstructibleRandom randomLength = random.fork();
+   private Map<Long, Integer> generateNetworkQuality(RepeatableRandom random) {
+      RepeatableRandom randomByterate = random.fork();
+      RepeatableRandom randomUptime = random.fork();
+      RepeatableRandom randomLength = random.fork();
 
       Map<Long, Integer> ret = new HashMap<>();
       long tick = 0;
@@ -114,9 +114,9 @@ public class GenesisGenerator {
       return ret;
    }
 
-   private Map<Long, Integer> grainNetworkQuality(ReconstructibleRandom random, Map<Long, Integer> networkQuality) {
-      ReconstructibleRandom randomRelative = random.fork();
-      ReconstructibleRandom randomAbsolute = random.fork();
+   private Map<Long, Integer> grainNetworkQuality(RepeatableRandom random, Map<Long, Integer> networkQuality) {
+      RepeatableRandom randomRelative = random.fork();
+      RepeatableRandom randomAbsolute = random.fork();
 
       Map<Long, Integer> ret = new HashMap<>();
       int lastRate = -1;
@@ -143,9 +143,9 @@ public class GenesisGenerator {
       return ret;
    }
 
-   private Map<Long, Integer> generateNetworkQualityPrediction(ReconstructibleRandom random, Map<Long, Integer> networkQuality) {
-      ReconstructibleRandom randomTick = random.fork();
-      ReconstructibleRandom randomAccuracy = random.fork();
+   private Map<Long, Integer> generateNetworkQualityPrediction(RepeatableRandom random, Map<Long, Integer> networkQuality) {
+      RepeatableRandom randomTick = random.fork();
+      RepeatableRandom randomAccuracy = random.fork();
 
       Map<Long, Integer> ret = new HashMap<>();
 
@@ -161,11 +161,11 @@ public class GenesisGenerator {
       return ret;
    }
 
-   private double nextDouble(ReconstructibleRandom random, double min, double max) {
+   private double nextDouble(RepeatableRandom random, double min, double max) {
       return min + random.nextDouble() * (max - min);
    }
 
-   private int nextInt(ReconstructibleRandom random, int min, int max) {
+   private int nextInt(RepeatableRandom random, int min, int max) {
       return min + random.nextInt(max - min);
    }
 }

@@ -9,7 +9,7 @@
 package at.borkowski.prefetchsimulation.util;
 
 
-public final class ReconstructibleRandom implements RandomSource {
+public final class RepeatableRandom implements RandomSource {
 
    private long seed;
 
@@ -24,7 +24,7 @@ public final class ReconstructibleRandom implements RandomSource {
    static final String BadRange = "bound must be greater than origin";
    static final String BadSize = "size must be non-negative";
 
-   public ReconstructibleRandom(long seed) {
+   public RepeatableRandom(long seed) {
       this.seed = initialScramble(seed);
    }
 
@@ -66,7 +66,7 @@ public final class ReconstructibleRandom implements RandomSource {
       return (((long) (next(26)) << 27) + next(27)) * DOUBLE_UNIT;
    }
 
-   public ReconstructibleRandom fork() {
-      return new ReconstructibleRandom(nextLong());
+   public RepeatableRandom fork() {
+      return new RepeatableRandom(nextLong());
    }
 }
