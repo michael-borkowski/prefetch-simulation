@@ -75,7 +75,7 @@ public class FetchProcessor {
    private void reschedule(long tick, boolean force) {
       HashSet<Request> current = new HashSet<>();
       for (Request req : toFetch)
-         if (req.getDeadline() - tick < lookAheadTime)
+         if (req.getDeadline() - tick <= lookAheadTime)
             current.add(req);
 
       boolean newRequest = force;
@@ -84,7 +84,7 @@ public class FetchProcessor {
             newRequest |= !scheduled.containsKey(req);
 
       if (newRequest)
-         scheduled = algorithm.schedule(toFetch, ratePredictionService);
+         scheduled = algorithm.schedule(current, ratePredictionService);
    }
 
    public void initialize(Simulation simulation, SimulationInitializationContext context) {
