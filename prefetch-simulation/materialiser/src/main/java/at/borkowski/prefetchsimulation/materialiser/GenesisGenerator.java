@@ -1,4 +1,4 @@
-package at.borkowski.prefetchsimulation.generator;
+package at.borkowski.prefetchsimulation.materialiser;
 
 import java.util.Collection;
 import java.util.HashMap;

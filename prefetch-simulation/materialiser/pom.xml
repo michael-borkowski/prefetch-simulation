@@ -29,7 +29,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>at.borkowski.prefetchsimulation.generator.Main</mainClass>
+              <mainClass>at.borkowski.prefetchsimulation.materialiser.Main</mainClass>
             </manifest>
           </archive>
         </configuration>

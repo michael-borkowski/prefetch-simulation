@@ -1,4 +1,4 @@
-package at.borkowski.prefetchsimulation.generator;
+package at.borkowski.prefetchsimulation.materialiser;
 
 import java.io.IOException;
 import java.io.InputStream;
