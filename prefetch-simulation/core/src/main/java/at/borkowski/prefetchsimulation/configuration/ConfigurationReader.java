@@ -126,16 +126,16 @@ public class ConfigurationReader {
    }
 
    private RequestSeries parseSeries(int lineCounter, ArrayReader reader) throws ConfigurationException {
-      Distribution<Long> interval = parseDistributionLongParam(lineCounter, "interval", reader);
-      Distribution<Integer> size = parseDistributionIntParam(lineCounter, "size", reader);
-      Distribution<Integer> byterate = parseDistributionIntParam(lineCounter, "byterate", reader);
-      Distribution<Long> startTick = parseDistributionLongParam(lineCounter, "start", reader);
-      Distribution<Long> endTick = parseDistributionLongParam(lineCounter, "end", reader);
+      Distribution<Long> interval = parseDistribution(lineCounter, "interval", reader, Long.class);
+      Distribution<Integer> size = parseDistribution(lineCounter, "size", reader, Integer.class);
+      Distribution<Integer> byterate = parseDistribution(lineCounter, "byterate", reader, Integer.class);
+      Distribution<Long> startTick = parseDistribution(lineCounter, "start", reader, Long.class);
+      Distribution<Long> endTick = parseDistribution(lineCounter, "end", reader, Long.class);
 
       return new RequestSeries(interval, size, byterate, startTick, endTick);
    }
 
-   private Distribution<Long> parseDistributionLongParam(int lineCounter, String param, ArrayReader reader) throws ConfigurationException {
+   private <T extends Number> Distribution<T> parseDistribution(int lineCounter, String param, ArrayReader reader, Class<T> clazz) throws ConfigurationException {
       String value = null;
       value = getParam(lineCounter, param, reader);
       if (value == null || value.length() == 0)
@@ -146,29 +146,47 @@ public class ConfigurationReader {
       ArrayReader sub = new ArrayReader(split);
       String type = sub.next();
       if (type.equals("exact") && assertLeft(sub, 1, "exact"))
-         return Distributions.exactly(parseLong(lineCounter, "exact", sub.next()));
+         return exact(parse(lineCounter, "exact", sub.next(), clazz));
       else if (type.equals("uniform") && assertLeft(sub, 2, "uniform"))
-         return Distributions.uniformLong(parseLong(lineCounter, "uniform min", sub.next()), parseLong(lineCounter, "uniform max", sub.next()));
+         return uniform(parse(lineCounter, "uniform min", sub.next(), clazz), parse(lineCounter, "uniform max", sub.next(), clazz), clazz);
+      else if (type.equals("norm") && assertLeft(sub, 2, "norm"))
+         return normal(parse(lineCounter, "normal mean", sub.next(), clazz), parse(lineCounter, "normal sd", sub.next(), clazz), clazz);
       else
-         return Distributions.exactly(parseLong(lineCounter, "implicit exact", type));
+         return exact(parse(lineCounter, "implicit exact", type, clazz));
    }
 
-   private Distribution<Integer> parseDistributionIntParam(int lineCounter, String param, ArrayReader reader) throws ConfigurationException {
-      String value = null;
-      value = getParam(lineCounter, param, reader);
-      if (value == null || value.length() == 0)
-         throw new ConfigurationException("empty paramter for " + param + " on line " + lineCounter);
-      String[] split = value.split("\\/");
-      if (split.length == 0)
-         throw new ConfigurationException("empty paramter for " + param + " on line " + lineCounter);
-      ArrayReader sub = new ArrayReader(split);
-      String type = sub.next();
-      if (type.equals("exact") && assertLeft(sub, 1, "exact"))
-         return Distributions.exactly(parseInt(lineCounter, "exact", sub.next()));
-      else if (type.equals("uniform") && assertLeft(sub, 2, "uniform"))
-         return Distributions.uniformInteger(parseInt(lineCounter, "uniform min", sub.next()), parseInt(lineCounter, "uniform max", sub.next()));
+   @SuppressWarnings("unchecked")
+   private <T extends Number> T parse(int lineCounter, String command, String param, Class<T> clazz) throws ConfigurationException {
+      if (clazz.equals(Long.class))
+         return (T) new Long(parseLong(lineCounter, command, param));
+      else if (clazz.equals(Integer.class))
+         return (T) new Integer(parseInt(lineCounter, command, param));
       else
-         return Distributions.exactly(parseInt(lineCounter, "implicit exact", type));
+         throw new RuntimeException("unknown parse class " + clazz);
+   }
+
+   private <T extends Number> Distribution<T> exact(T value) {
+      return Distributions.exactly(value);
+   }
+
+   @SuppressWarnings("unchecked")
+   private <T extends Number> Distribution<T> uniform(T min, T max, Class<T> clazz) {
+      if (clazz.equals(Long.class))
+         return (Distribution<T>) Distributions.uniform((Long) min, (Long) max);
+      else if (clazz.equals(Integer.class))
+         return (Distribution<T>) Distributions.uniform((Integer) min, (Integer) max);
+      else
+         throw new RuntimeException("unknown uniform class " + clazz);
+   }
+
+   @SuppressWarnings("unchecked")
+   private <T extends Number> Distribution<T> normal(T mean, T sd, Class<T> clazz) {
+      if (clazz.equals(Long.class))
+         return (Distribution<T>) Distributions.normal((Long) mean, (Long) sd);
+      else if (clazz.equals(Integer.class))
+         return (Distribution<T>) Distributions.normal((Integer) mean, (Integer) sd);
+      else
+         throw new RuntimeException("unknown uniform class " + clazz);
    }
 
    private long parseLong(int lineCounter, String command, String param) throws ConfigurationException {

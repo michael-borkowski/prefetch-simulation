@@ -23,6 +23,9 @@ public final class RepeatableRandom implements RandomSource {
    static final String BadBound = "bound must be positive";
    static final String BadRange = "bound must be greater than origin";
    static final String BadSize = "size must be non-negative";
+   
+   private double nextNextGaussian;
+   private boolean haveNextNextGaussian = false;
 
    public RepeatableRandom(long seed) {
       this.seed = initialScramble(seed);
@@ -61,6 +64,26 @@ public final class RepeatableRandom implements RandomSource {
       // it's okay that the bottom word remains signed.
       return ((long) (next(32)) << 32) + next(32);
    }
+   
+   @Override
+   public double nextGaussian() {
+      // See Knuth, ACP, Section 3.4.1 Algorithm C.
+      if (haveNextNextGaussian) {
+          haveNextNextGaussian = false;
+          return nextNextGaussian;
+      } else {
+          double v1, v2, s;
+          do {
+              v1 = 2 * nextDouble() - 1; // between -1 and 1
+              v2 = 2 * nextDouble() - 1; // between -1 and 1
+              s = v1 * v1 + v2 * v2;
+          } while (s >= 1 || s == 0);
+          double multiplier = StrictMath.sqrt(-2 * StrictMath.log(s)/s);
+          nextNextGaussian = v2 * multiplier;
+          haveNextNextGaussian = true;
+          return v1 * multiplier;
+      }
+  }
 
    public double nextDouble() {
       return (((long) (next(26)) << 27) + next(27)) * DOUBLE_UNIT;

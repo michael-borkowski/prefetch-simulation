@@ -21,14 +21,19 @@ public class ConfigurationReaderTest {
    StringBuilder sb = new StringBuilder();
    ConfigurationReader sut;
    RandomSource fixedRandom;
-   
+
    @Before
    public void setUp() {
       fixedRandom = new RandomSource() {
-         
+
          @Override
          public long nextLong() {
             return 314159;
+         }
+
+         @Override
+         public double nextGaussian() {
+            return 0.31415;
          }
       };
    }
@@ -128,15 +133,15 @@ public class ConfigurationReaderTest {
             return Long.compare(o1.getDeadline(), o2.getDeadline());
          }
       });
-      
+
       assertEquals(10, requests.get(0).getDeadline());
       assertEquals(11, requests.get(0).getAvailableByterate());
       assertEquals(12, requests.get(0).getData());
-      
+
       assertEquals(20, requests.get(1).getDeadline());
       assertEquals(21, requests.get(1).getAvailableByterate());
       assertEquals(22, requests.get(1).getData());
-      
+
       assertEquals(30, requests.get(2).getDeadline());
       assertEquals(31, requests.get(2).getAvailableByterate());
       assertEquals(32, requests.get(2).getData());
@@ -201,7 +206,7 @@ public class ConfigurationReaderTest {
 
       assertEquals(1, configuration.getRecurringRequestSeries().size());
       RequestSeries series = configuration.getRecurringRequestSeries().iterator().next();
-      
+
       assertEquals(10, series.getInterval().getValue(fixedRandom).longValue());
       assertEquals(11, series.getSize().getValue(fixedRandom).longValue());
       assertEquals(12, series.getByterate().getValue(fixedRandom).longValue());
@@ -228,7 +233,7 @@ public class ConfigurationReaderTest {
 
       assertEquals(1, configuration.getRecurringRequestSeries().size());
       RequestSeries series = configuration.getRecurringRequestSeries().iterator().next();
-      
+
       assertEquals(10, series.getInterval().getValue(fixedRandom).longValue());
       assertEquals(11, series.getSize().getValue(fixedRandom).longValue());
       assertEquals(12, series.getByterate().getValue(fixedRandom).longValue());
@@ -255,12 +260,39 @@ public class ConfigurationReaderTest {
 
       assertEquals(1, configuration.getRecurringRequestSeries().size());
       RequestSeries series = configuration.getRecurringRequestSeries().iterator().next();
-      
+
       assertEquals(14, series.getInterval().getValue(fixedRandom).longValue());
       assertEquals(19, series.getSize().getValue(fixedRandom).longValue());
       assertEquals(24, series.getByterate().getValue(fixedRandom).longValue());
       assertEquals(29, series.getStartTick().getValue(fixedRandom).longValue());
       assertEquals(34, series.getEndTick().getValue(fixedRandom).longValue());
+   }
+
+   @Test
+   public void testSeriesNormal() throws Exception {
+      line("ticks 10");
+      line("max-byterate 11");
+      line("slot-length 12");
+      line("network-uptime 0.95");
+      line("relative-jitter 0.1");
+      line("absolute-jitter 13");
+      line("prediction-time-accuracy 0.5");
+      line("prediction-amplitude-accuracy 0.8");
+      line("look-ahead 1");
+
+      line("request-series interval norm/10/2 size norm/15/10 byterate norm/20/18 start norm/25/10 end norm/30/5");
+      buildSut();
+
+      Configuration configuration = sut.read();
+
+      assertEquals(1, configuration.getRecurringRequestSeries().size());
+      RequestSeries series = configuration.getRecurringRequestSeries().iterator().next();
+
+      assertEquals(10, series.getInterval().getValue(fixedRandom).longValue());
+      assertEquals(18, series.getSize().getValue(fixedRandom).longValue());
+      assertEquals(25, series.getByterate().getValue(fixedRandom).longValue());
+      assertEquals(28, series.getStartTick().getValue(fixedRandom).longValue());
+      assertEquals(31, series.getEndTick().getValue(fixedRandom).longValue());
    }
 
    @Test
@@ -282,7 +314,7 @@ public class ConfigurationReaderTest {
 
       assertEquals(1, configuration.getIntermittentRequests().size());
       Request request = configuration.getIntermittentRequests().iterator().next();
-      
+
       assertEquals(1500001, request.getDeadline());
       assertEquals(1000, request.getData());
       assertEquals(400, request.getAvailableByterate());
@@ -308,84 +340,84 @@ public class ConfigurationReaderTest {
       buildSut();
       sut.read();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testMissingLongArgument() throws Exception {
       line("ticks");
       buildSut();
       sut.read();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testMissingIntArgument() throws Exception {
       line("max-byterate");
       buildSut();
       sut.read();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testMissingDoubleArgument() throws Exception {
       line("relative-jitter");
       buildSut();
       sut.read();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testBadDoubleArgument() throws Exception {
       line("relative-jitter BAD");
       buildSut();
       sut.read();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testMissingClass() throws Exception {
       line("algorithm");
       buildSut();
       sut.read();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testBadClass() throws Exception {
       line("algorithm BAD");
       buildSut();
       sut.read();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testMissingLongDistributionArgument() throws Exception {
       line("request-series interval uniform/10/15 size uniform/15/20 byterate uniform/20/25 start uniform/25/30 end uniform/30");
       buildSut();
       sut.read();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testMissingIntDistributionArgument() throws Exception {
       line("request-series interval uniform/10/15 size uniform/15 byterate uniform/20/25 start uniform/25/30 end uniform/30/35");
       buildSut();
       sut.read();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testBadLongDistributionArgument() throws Exception {
       line("request-series interval uniform/10/15 size uniform/15/20 byterate uniform/20/25 start uniform/25/30 end uniform/30/BAD");
       buildSut();
       sut.read();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testBadIntDistributionArgument() throws Exception {
       line("request-series interval uniform/10/15 size uniform/15/BAD byterate uniform/20/25 start uniform/25/30 end uniform/30/35");
       buildSut();
       sut.read();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testBadDistribution() throws Exception {
       line("request-series interval BAD/10/15 size uniform/15/20 byterate uniform/20/25 start uniform/25/30 end uniform/30/35");
       buildSut();
       sut.read();
    }
-   
+
    @Test(expected = ConfigurationException.class)
    public void testMissingDistributionArgument() throws Exception {
       line("request-series interval exact size uniform/15/20 byterate uniform/20/25 start uniform/25/30 end uniform/30/35");

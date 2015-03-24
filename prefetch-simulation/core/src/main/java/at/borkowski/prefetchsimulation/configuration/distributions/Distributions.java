@@ -20,4 +20,12 @@ public class Distributions {
    public static Distribution<Integer> uniformInteger(int min, int max) {
       return uniform(min, max);
    }
+
+   public static Distribution<Long> normal(long mean, long sd) {
+      return new NormalLongDistribution(mean, sd);
+   }
+
+   public static Distribution<Integer> normal(int mean, int sd) {
+      return new NormalIntegerDistribution(mean, sd);
+   }
 }
