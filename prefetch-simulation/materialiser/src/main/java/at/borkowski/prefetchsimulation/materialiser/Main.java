@@ -36,10 +36,14 @@ public class Main {
 
          GenesisWriter genesisWriter = new GenesisWriter(System.out);
          genesisWriter.write(genesis);
-      } else if (operation.equals("draw-png")) {
+      } else if (operation.equals("png")) {
          Genesis genesis = new GenesisReader(System.in).read();
          PaintResult result = GenesisPainter.paint(genesis);
          Saver.savePNG(result, System.out);
+      } else if (operation.equals("eps")) {
+         Genesis genesis = new GenesisReader(System.in).read();
+         PaintResult result = GenesisPainter.paint(genesis);
+         Saver.saveEPS(result, System.out);
       } else {
          System.err.println("Unknown operation: " + operation);
          usage();
@@ -49,6 +53,6 @@ public class Main {
    private static void usage() {
       System.err.println("Usage: materisaliser <operation>");
       System.err.println();
-      System.err.println("      <operation>: generate-genesis | draw-png");
+      System.err.println("      <operation>: generate-genesis | png | eps");
    }
 }
