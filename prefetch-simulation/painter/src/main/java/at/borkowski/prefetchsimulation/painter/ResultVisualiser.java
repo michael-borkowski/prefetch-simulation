@@ -1,5 +1,8 @@
 package at.borkowski.prefetchsimulation.painter;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,7 +15,7 @@ import java.util.Set;
 
 import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
-import at.borkowski.prefetchsimulation.painter.result.VisualisationResult;
+import at.borkowski.prefetchsimulation.painter.result.LaTeXVisualisationResult;
 import at.borkowski.prefetchsimulation.profiling.PrefetchProfilingResults;
 
 public class ResultVisualiser {
@@ -44,11 +47,11 @@ public class ResultVisualiser {
    private final Map<Request, Integer> requestLevels = new HashMap<>();
    private final Map<Integer, Set<Span>> spans = new HashMap<>();
 
-   public static VisualisationResult visualise(Genesis genesis, PrefetchProfilingResults results) {
+   public static LaTeXVisualisationResult visualise(Genesis genesis, PrefetchProfilingResults results) {
       return new ResultVisualiser(genesis, results).visualise();
    }
 
-   public ResultVisualiser(Genesis genesis, PrefetchProfilingResults results) {
+   ResultVisualiser(Genesis genesis, PrefetchProfilingResults results) {
       this.genesis = genesis;
       this.results = results;
 
@@ -75,7 +78,7 @@ public class ResultVisualiser {
       createSystem(xTickInterval, yTickInterval);
    }
 
-   VisualisationResult visualise() {
+   LaTeXVisualisationResult visualise() {
       createGenesisRequests(genesis.getRequests());
 
       createRates(genesis.getRateReal(), "blue,thick");
@@ -85,10 +88,14 @@ public class ResultVisualiser {
 
       createFooter();
 
-      for (String line : lines)
-         System.out.println(line);
-
-      return null;
+      try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); PrintWriter pw = new PrintWriter(baos)) {
+         for (String line : lines)
+            pw.println(line);
+         pw.flush();
+         return new LaTeXVisualisationResult(baos.toByteArray());
+      } catch (IOException e) {
+         throw new RuntimeException(e);
+      }
    }
 
    private void createSpanLevels(List<Request> requests) {
