@@ -263,6 +263,31 @@ public class ConfigurationReaderTest {
       assertEquals(34, series.getEndTick().getValue(fixedRandom).longValue());
    }
 
+   @Test
+   public void testRequest() throws Exception {
+      line("ticks 10");
+      line("max-byterate 11");
+      line("slot-length 12");
+      line("network-uptime 0.95");
+      line("relative-jitter 0.1");
+      line("absolute-jitter 13");
+      line("prediction-time-accuracy 0.5");
+      line("prediction-amplitude-accuracy 0.8");
+      line("look-ahead 1");
+
+      line("request tick 1500001 data 1000 byterate 400");
+      buildSut();
+
+      Configuration configuration = sut.read();
+
+      assertEquals(1, configuration.getIntermittentRequests().size());
+      Request request = configuration.getIntermittentRequests().iterator().next();
+      
+      assertEquals(1500001, request.getDeadline());
+      assertEquals(1000, request.getData());
+      assertEquals(400, request.getAvailableByterate());
+   }
+
    @Test(expected = ConfigurationException.class)
    public void testUnknownCommand() throws Exception {
       line("exotic 10");
