@@ -1,6 +1,8 @@
 package at.borkowski.prefetchsimulation.members.client;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
+import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -82,48 +84,42 @@ public class ClientCodeProcessorTest {
 
       advance(9);
 
-      verify(profiling, never()).cacheHit(any(Request.class), any(Long.class));
-      verify(profiling, never()).cacheMiss(any(Request.class));
-      verify(profiling, never()).lateArrival(any(Request.class));
+      verify(profiling, never()).arrival(any(Request.class), anyLong(), anyLong(), anyInt());
+      verify(profiling, never()).cacheHit(any(Request.class));
 
       advance();
 
-      verify(profiling, never()).cacheHit(any(Request.class), any(Long.class));
-      verify(profiling, times(1)).cacheMiss(requests[0]);
-      verify(profiling, never()).lateArrival(any(Request.class));
+      verify(profiling, never()).arrival(any(Request.class), anyLong(), anyLong(), anyInt());
+      verify(profiling, never()).cacheHit(any(Request.class));
 
       // request 1
 
       when(cacheProcessor.hasFile(requests[1])).thenReturn(true);
       when(cacheProcessor.getTimestamp(requests[1])).thenReturn(19L);
-      verify(profiling, never()).lateArrival(any(Request.class));
+      verify(profiling, never()).arrival(any(Request.class), anyLong(), anyLong(), anyInt());
+      verify(profiling, never()).cacheHit(any(Request.class));
 
       advance(9);
 
-      verify(profiling, never()).cacheHit(any(Request.class), any(Long.class));
-      verify(profiling, times(1)).cacheMiss(requests[0]);
-      verify(profiling, never()).lateArrival(any(Request.class));
+      verify(profiling, never()).arrival(any(Request.class), anyLong(), anyLong(), anyInt());
+      verify(profiling, never()).cacheHit(any(Request.class));
 
       advance();
 
-      verify(profiling, times(1)).cacheHit(requests[1], 1L);
-      verify(profiling, times(1)).cacheMiss(requests[0]);
-      verify(profiling, never()).lateArrival(any(Request.class));
+      verify(profiling, times(1)).cacheHit(requests[1]);
+      verify(profiling, times(1)).arrival(requests[1], 0L, 1L, 20);
 
       // request 2
 
       advance(9);
-
-      verify(profiling, times(1)).cacheHit(requests[1], 1L);
-      verify(profiling, times(1)).cacheMiss(requests[0]);
-      verify(profiling, never()).lateArrival(any(Request.class));
+      
+      verify(profiling, times(1)).cacheHit(requests[1]);
+      verify(profiling, times(1)).arrival(requests[1], 0L, 1L, 20);
 
       advance();
-
-      verify(profiling, times(1)).cacheHit(requests[1], 1L);
-      verify(profiling, times(1)).cacheMiss(requests[0]);
-      verify(profiling, times(1)).cacheMiss(requests[2]);
-      verify(profiling, never()).lateArrival(any(Request.class));
+      
+      verify(profiling, times(1)).cacheHit(requests[1]);
+      verify(profiling, times(1)).arrival(requests[1], 0L, 1L, 20);
       
       advance();
 
@@ -131,11 +127,10 @@ public class ClientCodeProcessorTest {
       when(cacheProcessor.getTimestamp(requests[2])).thenReturn(31L);
       
       advance();
-
-      verify(profiling, times(1)).cacheHit(requests[1], 1L);
-      verify(profiling, times(1)).cacheMiss(requests[0]);
-      verify(profiling, times(1)).cacheMiss(requests[2]);
-      verify(profiling, times(1)).lateArrival(requests[2]);
+      
+      verify(profiling, times(1)).cacheHit(requests[1]);
+      verify(profiling, times(1)).arrival(requests[1], 0L, 1L, 20);
+      verify(profiling, times(1)).arrival(requests[2], 2L, 1L, 20);
    }
 
    private void advance(int count) throws IOException {

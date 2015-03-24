@@ -20,28 +20,25 @@ import at.borkowski.scovillej.simulation.SimulationInitializationContext;
  */
 public class PrefetchProfilingServiceImpl implements PrefetchProfilingService, PrefetchProfilingResults, ServiceProvider<PrefetchProfilingService> {
 
-   private static String URT = "prefetch-profiling-urt";
-   private static String OVERDUE = "prefetch-profiling-overdue";
-   private static String AGE = "prefetch-profiling-age";
-   private static String MISS = "prefetch-profiling-miss";
-   private static String STRETCH = "prefetch-profiling-stretch";
+   private static String RESPONSE_TIME = "prefetch-profiling-response-time";
+   private static String DATA_AGE = "prefetch-profiling-data-age";
+   private static String DATA_VOLUME = "prefetch-profiling-data-volume";
+   private static String HIT = "prefetch-profiling-cache-hit";
 
    private Simulation simulation;
 
-   private Series<Long> seriesURT;
-   private Series<Long> seriesOverdue;
-   private Series<Long> seriesAge;
-   private Series<Void> seriesMisses;
-   private Series<Double> seriesStretch;
+   private Series<Long> seriesResponseTime;
+   private Series<Long> seriesDataAge;
+   private Series<Long> seriesDataVolume;
+   private Series<Void> seriesHits;
 
    @Override
    public void initialize(Simulation simulation, SimulationInitializationContext context) {
       this.simulation = simulation;
-      seriesURT = context.getSeries(URT, Long.class);
-      seriesOverdue = context.getSeries(OVERDUE, Long.class);
-      seriesAge = context.getSeries(AGE, Long.class);
-      seriesMisses = context.getSeries(MISS, Void.class);
-      seriesStretch = context.getSeries(STRETCH, Double.class);
+      seriesResponseTime = context.getSeries(RESPONSE_TIME, Long.class);
+      seriesDataAge = context.getSeries(DATA_AGE, Long.class);
+      seriesDataVolume = context.getSeries(DATA_VOLUME, Long.class);
+      seriesHits = context.getSeries(HIT, Void.class);
    }
 
    @Override
@@ -65,55 +62,33 @@ public class PrefetchProfilingServiceImpl implements PrefetchProfilingService, P
    }
 
    @Override
-   public void fetched(Request request, int actualSize, long tick, long duration) {
-      long overdue = simulation.getCurrentTick() - request.getDeadline();
-      System.out.printf("%d - fetched %d (overdue %d) (%d B in %d t, %.2f B/t\n", tick, request.getData(), overdue, actualSize, duration, (double) actualSize / duration);
-      overdue = Math.max(0, overdue);
-      seriesURT.measure(overdue);
-      seriesStretch.measure(1000.0 * overdue / request.getData());
+   public void cacheHit(Request request) {
+      seriesHits.measure(null);
+   }
+
+   public void arrival(Request request, long responseTime, long dataAge, int dataVolume) {
+      seriesResponseTime.measure(responseTime);
+      seriesDataAge.measure(dataAge);
+      seriesDataVolume.measure((long) dataVolume);
    }
 
    @Override
-   public void cacheHit(Request request, long age) {
-      System.out.printf("%d - cache hit for %d (age %d)\n", simulation.getCurrentTick(), request.getData(), age);
-      seriesAge.measure(age);
+   public SeriesResult<Long> getResponseTime() {
+      return simulation.getSeries(RESPONSE_TIME, Long.class);
    }
 
    @Override
-   public void cacheMiss(Request request) {
-      System.out.printf("%d - cache miss for %d\n", simulation.getCurrentTick(), request.getData());
-      seriesMisses.measure(null);
+   public SeriesResult<Long> getDataAge() {
+      return simulation.getSeries(DATA_AGE, Long.class);
    }
 
    @Override
-   public void lateArrival(Request request) {
-      long overdue = simulation.getCurrentTick() - request.getDeadline();
-      System.out.printf("%d - late arrival for %d (overdue %d)\n", simulation.getCurrentTick(), request.getData(), overdue);
-      seriesOverdue.measure(overdue);
+   public SeriesResult<Long> getDataVolume() {
+      return simulation.getSeries(DATA_VOLUME, Long.class);
    }
 
    @Override
-   public SeriesResult<Long> getCacheHitAges() {
-      return simulation.getSeries(AGE, Long.class);
-   }
-
-   @Override
-   public SeriesResult<Void> getCacheMisses() {
-      return simulation.getSeries(MISS, Void.class);
-   }
-
-   @Override
-   public SeriesResult<Long> getOverdue() {
-      return simulation.getSeries(OVERDUE, Long.class);
-   }
-
-   @Override
-   public SeriesResult<Long> getURT() {
-      return simulation.getSeries(URT, Long.class);
-   }
-
-   @Override
-   public SeriesResult<Double> getStretch() {
-      return simulation.getSeries(STRETCH, Double.class);
+   public SeriesResult<Void> getCacheHits() {
+      return simulation.getSeries(HIT, Void.class);
    }
 }

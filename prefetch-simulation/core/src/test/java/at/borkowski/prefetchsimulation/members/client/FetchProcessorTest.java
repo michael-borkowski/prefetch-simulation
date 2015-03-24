@@ -1,7 +1,6 @@
 package at.borkowski.prefetchsimulation.members.client;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -25,10 +24,6 @@ import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.impl.VirtualPayload;
 import at.borkowski.prefetchsimulation.members.aux.RateControlService;
 import at.borkowski.prefetchsimulation.members.aux.RatePredictionService;
-import at.borkowski.prefetchsimulation.members.client.CacheProcessor;
-import at.borkowski.prefetchsimulation.members.client.FetchClient;
-import at.borkowski.prefetchsimulation.members.client.FetchProcessor;
-import at.borkowski.prefetchsimulation.members.client.SocketProcessor;
 import at.borkowski.prefetchsimulation.profiling.PrefetchProfilingService;
 import at.borkowski.scovillej.profile.Series;
 import at.borkowski.scovillej.simulation.SimulationContext;
@@ -137,14 +132,12 @@ public class FetchProcessorTest {
       advance();
       advance();
 
-      verify(profilingService, never()).fetched(any(Request.class), anyInt(), anyLong(), anyLong());
       verify(cacheProcessor, never()).save(any(Request.class), anyLong());
 
       data = new VirtualPayload(11);
 
       advance();
 
-      verify(profilingService).fetched(requests[0], 11, 114, 4);
       verify(cacheProcessor).save(requests[0], 114);
 
       data = null;
@@ -167,14 +160,12 @@ public class FetchProcessorTest {
       advance();
       advance();
 
-      verify(profilingService, never()).fetched(same(requests[1]), anyInt(), anyLong(), anyLong());
       verify(cacheProcessor, never()).save(same(requests[1]), anyLong());
 
       data = new VirtualPayload(37);
 
       advance();
 
-      verify(profilingService).fetched(requests[1], 37, 219, 6);
       verify(cacheProcessor).save(requests[1], 219);
    }
 
@@ -202,14 +193,12 @@ public class FetchProcessorTest {
       advance();
       advance();
 
-      verify(profilingService, never()).fetched(same(requests[1]), anyInt(), anyLong(), anyLong());
       verify(cacheProcessor, never()).save(same(requests[1]), anyLong());
 
       data = new VirtualPayload(37);
 
       advance();
 
-      verify(profilingService).fetched(requests[1], 37, 121, 6);
       verify(cacheProcessor).save(requests[1], 121);
    }
 

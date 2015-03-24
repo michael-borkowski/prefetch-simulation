@@ -33,7 +33,6 @@ public class FetchProcessor {
    private PrefetchAlgorithm algorithm = new NullAlgorithm();
    private long lookAheadTime = Long.MAX_VALUE;
 
-   private long currentStart;
    private Request current = null;
 
    public FetchProcessor(FetchClient owner) {
@@ -47,8 +46,6 @@ public class FetchProcessor {
          VirtualPayload payload = owner.getSocketProcessor().readIfPossible();
          if (payload != null) {
             rateControlService.setRequestSpecificRate(null);
-            long duration = tick - currentStart;
-            owner.getProfilingService().fetched(current, payload.getSize(), tick, duration);
             owner.getCacheProcessor().save(current, tick);
             toFetch.remove(current);
             scheduled.remove(current);
@@ -67,7 +64,6 @@ public class FetchProcessor {
             System.out.printf("%d -              requesting %d (%d, %d)\n", tick, current.getData(), scheduled.get(current), current.getDeadline());
             owner.getSocketProcessor().request(current);
             rateControlService.setRequestSpecificRate(current.getAvailableByterate());
-            currentStart = tick;
          }
       }
 

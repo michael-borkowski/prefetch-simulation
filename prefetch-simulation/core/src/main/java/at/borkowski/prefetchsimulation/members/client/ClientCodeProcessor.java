@@ -42,12 +42,10 @@ public class ClientCodeProcessor {
          if (request.getDeadline() <= tick) {
             if (owner.getCacheProcessor().hasFile(request)) {
                if (request.getDeadline() == tick)
-                  owner.getProfilingService().cacheHit(request, tick - owner.getCacheProcessor().getTimestamp(request));
-               else
-                  owner.getProfilingService().lateArrival(request);
+                  owner.getProfilingService().cacheHit(request);
+               owner.getProfilingService().arrival(request, tick - request.getDeadline(), tick - owner.getCacheProcessor().getTimestamp(request), request.getData());
                done.add(request);
             } else if (!missed.contains(request)) {
-               owner.getProfilingService().cacheMiss(request);
                owner.getFetchProcessor().urge(tick, request);
                missed.add(request);
             }

@@ -7,40 +7,20 @@ import at.borkowski.scovillej.profile.SeriesResult;
  */
 public interface PrefetchProfilingResults {
    /**
-    * Returns the URT (user response time) series.
+    * Returns the RT (response time) series.
     * 
-    * @return the URT series
+    * @return the RT series
     */
-   SeriesResult<Long> getURT();
+   SeriesResult<Long> getResponseTime();
+
+   SeriesResult<Long> getDataAge();
+
+   SeriesResult<Long> getDataVolume();
 
    /**
-    * Returns the series of overdue times of cache misses (how many ticks a
-    * request has been overdue).
+    * Returns the cache hit series.
     * 
-    * @return the overdue series
+    * @return the cache hit series
     */
-   SeriesResult<Long> getOverdue();
-
-   /**
-    * Returns the data age series (how old data was upon client code supply).
-    * 
-    * @return the data age series
-    */
-   // TODO make it so
-   SeriesResult<Long> getCacheHitAges();
-
-   /**
-    * Returns the cache miss series.
-    * 
-    * @return the cace miss series
-    */
-   SeriesResult<Void> getCacheMisses();
-
-   /**
-    * Returns the series of stretch results (user response time per KB).
-    * 
-    * @return the stretch series
-    */
-   SeriesResult<Double> getStretch();
-
+   SeriesResult<Void> getCacheHits();
 }
