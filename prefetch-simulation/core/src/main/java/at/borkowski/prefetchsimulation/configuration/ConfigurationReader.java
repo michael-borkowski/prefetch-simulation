@@ -145,14 +145,26 @@ public class ConfigurationReader {
          throw new ConfigurationException("empty paramter for " + param + " on line " + lineCounter);
       ArrayReader sub = new ArrayReader(split);
       String type = sub.next();
-      if (type.equals("exact") && assertLeft(sub, 1, "exact"))
-         return exact(parse(lineCounter, "exact", sub.next(), clazz));
-      else if (type.equals("uniform") && assertLeft(sub, 2, "uniform"))
-         return uniform(parse(lineCounter, "uniform min", sub.next(), clazz), parse(lineCounter, "uniform max", sub.next(), clazz), clazz);
-      else if (type.equals("norm") && assertLeft(sub, 2, "norm"))
-         return normal(parse(lineCounter, "normal mean", sub.next(), clazz), parse(lineCounter, "normal sd", sub.next(), clazz), clazz);
+      if (isExact(type) && assertLeft(sub, 1, "exact"))
+         return Distributions.exact(parse(lineCounter, "exact", sub.next(), clazz));
+      else if (isUniform(type) && assertLeft(sub, 2, "uniform"))
+         return Distributions.uniform(parse(lineCounter, "uniform min", sub.next(), clazz), parse(lineCounter, "uniform max", sub.next(), clazz), clazz);
+      else if (isNormal(type) && assertLeft(sub, 2, "normal"))
+         return Distributions.normal(parse(lineCounter, "normal mean", sub.next(), clazz), parse(lineCounter, "normal sd", sub.next(), clazz), clazz);
       else
-         return exact(parse(lineCounter, "implicit exact", type, clazz));
+         return Distributions.exact(parse(lineCounter, "implicit exact", type, clazz));
+   }
+
+   private boolean isExact(String type) {
+      return "exact".equals(type) || "exactly".equals(type) || "ex".equals(type) || "=".equals(type);
+   }
+
+   private boolean isUniform(String type) {
+      return "uniform".equals(type) || "unif".equals(type) || "u".equals(type);
+   }
+
+   private boolean isNormal(String type) {
+      return "normal".equals(type) || "norm".equals(type) || "n".equals(type) || "gaussian".equals(type) || "gauss".equals(type) || "g".equals(type) || "~".equals(type);
    }
 
    @SuppressWarnings("unchecked")
@@ -163,30 +175,6 @@ public class ConfigurationReader {
          return (T) new Integer(parseInt(lineCounter, command, param));
       else
          throw new RuntimeException("unknown parse class " + clazz);
-   }
-
-   private <T extends Number> Distribution<T> exact(T value) {
-      return Distributions.exactly(value);
-   }
-
-   @SuppressWarnings("unchecked")
-   private <T extends Number> Distribution<T> uniform(T min, T max, Class<T> clazz) {
-      if (clazz.equals(Long.class))
-         return (Distribution<T>) Distributions.uniform((Long) min, (Long) max);
-      else if (clazz.equals(Integer.class))
-         return (Distribution<T>) Distributions.uniform((Integer) min, (Integer) max);
-      else
-         throw new RuntimeException("unknown uniform class " + clazz);
-   }
-
-   @SuppressWarnings("unchecked")
-   private <T extends Number> Distribution<T> normal(T mean, T sd, Class<T> clazz) {
-      if (clazz.equals(Long.class))
-         return (Distribution<T>) Distributions.normal((Long) mean, (Long) sd);
-      else if (clazz.equals(Integer.class))
-         return (Distribution<T>) Distributions.normal((Integer) mean, (Integer) sd);
-      else
-         throw new RuntimeException("unknown uniform class " + clazz);
    }
 
    private long parseLong(int lineCounter, String command, String param) throws ConfigurationException {
