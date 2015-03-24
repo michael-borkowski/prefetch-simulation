@@ -55,7 +55,7 @@ public class GenesisPainter {
       i = 0;
       for (Request request : requests) {
          xDataRequests[i] = request.getDeadline();
-         yDataRequests[i] = 0; //request.getAvailableByterate();
+         yDataRequests[i] = request.getAvailableByterate();
          i++;
       }
 
