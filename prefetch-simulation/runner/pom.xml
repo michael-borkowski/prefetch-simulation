@@ -28,7 +28,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>at.borkowski.prefetch.runnner.Main</mainClass>
+              <mainClass>at.borkowski.prefetchsimulation.runnner.Main</mainClass>
             </manifest>
           </archive>
         </configuration>
