@@ -49,6 +49,22 @@ public class GenesisGenerator {
       random.setSeed(seed);
    }
 
+   private long clamp(long min, long value, long max) {
+      if (value < min)
+         value = min;
+      if (value > max)
+         value = max;
+      return value;
+   }
+
+   private int clamp(int min, int value, int max) {
+      if (value < min)
+         value = min;
+      if (value > max)
+         value = max;
+      return value;
+   }
+
    public Genesis generate() {
       RepeatableRandom randomNetworkQuality = random.fork();
       RepeatableRandom randomNetworkPrediction = random.fork();
@@ -71,22 +87,29 @@ public class GenesisGenerator {
       return genesis;
    }
 
-   private void generateSeries(RepeatableRandom randomSeries, List<Request> requests, RequestSeries series) {
+   private void generateSeries(RepeatableRandom random, List<Request> requests, RequestSeries series) {
       RepeatableRandom randomSize = random.fork();
       RepeatableRandom randomByterate = random.fork();
       RepeatableRandom randomInterval = random.fork();
 
-      long start = series.getStartTick().getValue(randomSeries.fork());
-      long end = series.getEndTick().getValue(randomSeries.fork());
+      long start = series.getStartTick().getValue(random.fork());
+      long end = series.getEndTick().getValue(random.fork());
+
+      start = clamp(0, start, totalTicks - 1);
+      end = clamp(start, start, totalTicks - 1);
 
       long current = start;
 
       while (current <= end) {
          int data = series.getSize().getValue(randomSize);
          int byterate = series.getByterate().getValue(randomByterate);
+
+         data = clamp(1, data, Integer.MAX_VALUE);
+         byterate = clamp(1, byterate, Integer.MAX_VALUE);
+
          requests.add(new Request(current, data, byterate));
 
-         current += series.getInterval().getValue(randomInterval);
+         current += clamp(1, series.getInterval().getValue(randomInterval), Long.MAX_VALUE);
       }
    }
 
