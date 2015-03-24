@@ -130,8 +130,8 @@ public class GenesisGenerator {
          if (networkQuality.containsKey(tick))
             lastRate = networkQuality.get(tick);
 
-         double relativeJitter = nextDouble(randomRelative, this.relativeJitter, 2D - this.relativeJitter);
-         int absoluteJitter = nextInt(randomAbsolute, -this.absoluteJitter, +this.absoluteJitter);
+         double relativeJitter = nextDouble(randomRelative, 1D - this.relativeJitter, 1D + this.relativeJitter);
+         int absoluteJitter = nextInt(randomAbsolute, -this.absoluteJitter, +this.absoluteJitter + 1);
 
          if (tick % tickStep == 0) {
             int byterate = lastRate;
