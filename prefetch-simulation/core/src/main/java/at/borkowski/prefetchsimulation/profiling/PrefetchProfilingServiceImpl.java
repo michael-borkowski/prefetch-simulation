@@ -1,6 +1,10 @@
 package at.borkowski.prefetchsimulation.profiling;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.scovillej.profile.Series;
@@ -31,6 +35,11 @@ public class PrefetchProfilingServiceImpl implements PrefetchProfilingService, P
    private Series<Long> seriesDataAge;
    private Series<Long> seriesDataVolume;
    private Series<Void> seriesHits;
+
+   private Set<Request> cacheHitRequests = new HashSet<>();
+   private Map<Request, Long> scheduleStart = new HashMap<>();
+   private Map<Request, Long> fetchStart = new HashMap<>();
+   private Map<Request, Long> fetchFinish = new HashMap<>();
 
    @Override
    public void initialize(Simulation simulation, SimulationInitializationContext context) {
@@ -63,11 +72,27 @@ public class PrefetchProfilingServiceImpl implements PrefetchProfilingService, P
 
    @Override
    public void cacheHit(Request request) {
+      cacheHitRequests.add(request);
       seriesHits.measure(null);
    }
+   
+   @Override
+   public void scheduled(Request request, Long scheduledTime) {
+      scheduleStart.put(request, scheduledTime);
+   }
+   
+   @Override
+   public void request(Request request) {
+      fetchStart.put(request, simulation.getCurrentTick());
+   }
 
+   @Override
+   public void response(Request request) {
+      fetchFinish.put(request, simulation.getCurrentTick());
+   }
+   
+   @Override
    public void arrival(Request request, long responseTime, long dataAge, int dataVolume) {
-      System.out.printf("%d - arrival rt %d da %d dv %d\n", simulation.getCurrentTick(), responseTime, dataAge, dataVolume);
       seriesResponseTime.measure(responseTime);
       seriesDataAge.measure(dataAge);
       seriesDataVolume.measure((long) dataVolume);
@@ -91,5 +116,25 @@ public class PrefetchProfilingServiceImpl implements PrefetchProfilingService, P
    @Override
    public SeriesResult<Void> getCacheHits() {
       return simulation.getSeries(HIT, Void.class);
+   }
+
+   @Override
+   public Set<Request> getCacheHitRequests() {
+      return cacheHitRequests;
+   }
+
+   @Override
+   public Long getFetchFinish(Request request) {
+      return fetchFinish.get(request);
+   }
+
+   @Override
+   public Long getFetchStart(Request request) {
+      return fetchStart.get(request);
+   }
+
+   @Override
+   public Long getScheduledStart(Request request) {
+      return scheduleStart.get(request);
    }
 }

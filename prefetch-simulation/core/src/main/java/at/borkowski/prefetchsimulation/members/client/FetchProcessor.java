@@ -45,6 +45,7 @@ public class FetchProcessor {
       if (current != null) {
          VirtualPayload payload = owner.getSocketProcessor().readIfPossible();
          if (payload != null) {
+            owner.getProfilingService().response(current);
             rateControlService.setRequestSpecificRate(null);
             owner.getCacheProcessor().save(current, tick);
             toFetch.remove(current);
@@ -58,10 +59,10 @@ public class FetchProcessor {
             if (scheduled.get(request) <= tick && (current == null || scheduled.get(request) < scheduled.get(current)))
                current = request;
 
-         Long scheduledTick = scheduled.remove(current);
+         scheduled.remove(current);
 
          if (current != null) {
-            System.out.printf("%d -              requesting %d (%d, %d)\n", tick, current.getData(), scheduledTick, current.getDeadline());
+            owner.getProfilingService().request(current);
             owner.getSocketProcessor().request(current);
             rateControlService.setRequestSpecificRate(current.getAvailableByterate());
          }
@@ -81,8 +82,14 @@ public class FetchProcessor {
          for (Request req : current)
             newRequest |= !scheduled.containsKey(req);
 
-      if (newRequest)
+      if (newRequest) {
          scheduled = algorithm.schedule(current, ratePredictionService);
+
+         // prevent null pointer exception if simulation is not yet initialized
+         if (owner.getProfilingService() != null)
+            for (Request req : scheduled.keySet())
+               owner.getProfilingService().scheduled(req, scheduled.get(req));
+      }
    }
 
    public void initialize(Simulation simulation, SimulationInitializationContext context) {

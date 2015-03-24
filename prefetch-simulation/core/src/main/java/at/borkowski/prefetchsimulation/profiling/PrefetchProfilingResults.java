@@ -1,5 +1,8 @@
 package at.borkowski.prefetchsimulation.profiling;
 
+import java.util.Set;
+
+import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.scovillej.profile.SeriesResult;
 
 /**
@@ -23,4 +26,12 @@ public interface PrefetchProfilingResults {
     * @return the cache hit series
     */
    SeriesResult<Void> getCacheHits();
+
+   Set<Request> getCacheHitRequests();
+
+   Long getFetchStart(Request request);
+
+   Long getFetchFinish(Request request);
+   
+   Long getScheduledStart(Request request);
 }
