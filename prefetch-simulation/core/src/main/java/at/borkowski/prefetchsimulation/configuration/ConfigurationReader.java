@@ -24,7 +24,8 @@ public class ConfigurationReader {
    public static final String CMD_NETWORK_UPTIME = "network-uptime";
    public static final String CMD_RELATIVE_JITTER = "relative-jitter";
    public static final String CMD_ABSOLUTE_JITTER = "absolute-jitter";
-   public static final String CMD_PREDICTION_ACCURACY = "prediction-accuracy";
+   public static final String CMD_PREDICTION_TIME_ACCURACY = "prediction-time-accuracy";
+   public static final String CMD_PREDICTION_AMPLITUDE_ACCURACY = "prediction-amplitude-accuracy";
    public static final String CMD_REQUEST_SERIES = "request-series";
    public static final String CMD_REQUEST = "request";
    public static final String CMD_LOOK_AHEAD = "look-ahead";
@@ -46,7 +47,8 @@ public class ConfigurationReader {
       Double networkUptime = null;
       Double relativeJitter = null;
       Integer absoluteJitter = null;
-      Double predictionAccuracy = null;
+      Double predictionTimeAccuracy = null;
+      Double predictionAmplitudeAccuracy = null;
       Collection<RequestSeries> recurringRequestSeries = new LinkedList<>();
       Collection<Request> intermittentRequests = new LinkedList<>();
       Long lookAheadTime = null;
@@ -84,8 +86,10 @@ public class ConfigurationReader {
             relativeJitter = parseDouble(lineCounter, CMD_RELATIVE_JITTER, reader);
          else if (command.equals(CMD_ABSOLUTE_JITTER))
             absoluteJitter = parseInt(lineCounter, CMD_ABSOLUTE_JITTER, reader);
-         else if (command.equals(CMD_PREDICTION_ACCURACY))
-            predictionAccuracy = parseDouble(lineCounter, CMD_PREDICTION_ACCURACY, reader);
+         else if (command.equals(CMD_PREDICTION_TIME_ACCURACY))
+            predictionTimeAccuracy = parseDouble(lineCounter, CMD_PREDICTION_TIME_ACCURACY, reader);
+         else if (command.equals(CMD_PREDICTION_AMPLITUDE_ACCURACY))
+            predictionAmplitudeAccuracy = parseDouble(lineCounter, CMD_PREDICTION_AMPLITUDE_ACCURACY, reader);
          else if (command.equals(CMD_REQUEST_SERIES))
             recurringRequestSeries.add(parseSeries(lineCounter, reader));
          else if (command.equals(CMD_REQUEST))
@@ -104,10 +108,11 @@ public class ConfigurationReader {
       require(networkUptime, "network uptime");
       require(relativeJitter, "relative jitter");
       require(absoluteJitter, "absolute jitter");
-      require(predictionAccuracy, "prediction accuracy");
+      require(predictionTimeAccuracy, "prediction time accuracy");
+      require(predictionAmplitudeAccuracy, "prediction amplitude accuracy");
       require(lookAheadTime, "look ahead time");
 
-      Configuration configuration = new Configuration(totalTicks, maximumByterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionAccuracy, recurringRequestSeries, intermittentRequests, algorithm, lookAheadTime);
+      Configuration configuration = new Configuration(totalTicks, maximumByterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy, recurringRequestSeries, intermittentRequests, algorithm, lookAheadTime);
       if (seed != null)
          configuration.setSeed(seed);
       return configuration;

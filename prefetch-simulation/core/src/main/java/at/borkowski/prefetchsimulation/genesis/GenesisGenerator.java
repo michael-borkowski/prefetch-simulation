@@ -20,7 +20,7 @@ public class GenesisGenerator {
 
    private final long totalTicks, slotLength, lookAheadTime;
    private final int maximumByterate, absoluteJitter;
-   private final double networkUptime, relativeJitter, predictionAccuracy;
+   private final double networkUptime, relativeJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy;
    private final Collection<RequestSeries> recurringSeries;
    private final Collection<Request> intermittentRequests;
    private final Class<? extends PrefetchAlgorithm> algorithm;
@@ -34,7 +34,8 @@ public class GenesisGenerator {
       this.networkUptime = configuration.getNetworkUptime();
       this.absoluteJitter = configuration.getAbsoluteJitter();
       this.relativeJitter = configuration.getRelativeJitter();
-      this.predictionAccuracy = configuration.getPredictionAccuracy();
+      this.predictionTimeAccuracy = configuration.getPredictionTimeAccuracy();
+      this.predictionAmplitudeAccuracy = configuration.getPredictionAmplitudeAccuracy();
       this.recurringSeries = configuration.getRecurringRequestSeries();
       this.intermittentRequests = configuration.getIntermittentRequests();
       this.algorithm = configuration.getAlgorithm();
@@ -84,7 +85,7 @@ public class GenesisGenerator {
          int data = series.getSize().getValue(randomSize);
          int byterate = series.getByterate().getValue(randomByterate);
          requests.add(new Request(current, data, byterate));
-         
+
          current += series.getInterval().getValue(randomInterval);
       }
    }
@@ -154,11 +155,11 @@ public class GenesisGenerator {
       for (long tick : networkQuality.keySet()) {
          long predictionTick = 0;
          if (tick != 0)
-            predictionTick = (long) (tick + nextDouble(randomTick, -0.5, +0.5) * slotLength);
-         
+            predictionTick = (long) (tick + nextDouble(randomTick, -(1D - this.predictionTimeAccuracy), +(1D - this.predictionTimeAccuracy)) * slotLength);
+
          predictionTick = Math.max(0, Math.min(totalTicks, predictionTick));
 
-         int predictionByterate = (int) (nextDouble(randomAccuracy, predictionAccuracy, 2D - predictionAccuracy) * networkQuality.get(tick));
+         int predictionByterate = (int) (nextDouble(randomAccuracy, predictionAmplitudeAccuracy, 2D - predictionAmplitudeAccuracy) * networkQuality.get(tick));
          ret.put(predictionTick, predictionByterate);
       }
 

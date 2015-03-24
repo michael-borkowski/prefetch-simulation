@@ -57,7 +57,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("prediction-accuracy 0.8");
+      line("prediction-time-accuracy 0.5");
+      line("prediction-amplitude-accuracy 0.8");
       line("algorithm " + IgnoreRatePredictionAlgorithm.class.getName());
       line("look-ahead 1");
       buildSut();
@@ -70,7 +71,7 @@ public class ConfigurationReaderTest {
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
       assertEquals(0.1, configuration.getRelativeJitter(), 0.00001);
       assertEquals(13, configuration.getAbsoluteJitter());
-      assertEquals(0.8, configuration.getPredictionAccuracy(), 0.00001);
+      assertEquals(0.8, configuration.getPredictionAmplitudeAccuracy(), 0.00001);
       assertEquals(1, configuration.getLookAheadTime());
       assertEquals(IgnoreRatePredictionAlgorithm.class, configuration.getAlgorithm());
    }
@@ -83,7 +84,8 @@ public class ConfigurationReaderTest {
       line("\t   \tnetwork-uptime     0.95");
       line("relative-jitter\t0.1");
       line("\tabsolute-jitter  \t13");
-      line("\t  \t  prediction-accuracy\t    \t  0.8");
+      line("prediction-time-accuracy 0.5");
+      line("\t  \t  prediction-amplitude-accuracy\t    \t  0.8");
       line("look-ahead 1");
       buildSut();
 
@@ -95,7 +97,7 @@ public class ConfigurationReaderTest {
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
       assertEquals(0.1, configuration.getRelativeJitter(), 0.00001);
       assertEquals(13, configuration.getAbsoluteJitter());
-      assertEquals(0.8, configuration.getPredictionAccuracy(), 0.00001);
+      assertEquals(0.8, configuration.getPredictionAmplitudeAccuracy(), 0.00001);
       assertEquals(1, configuration.getLookAheadTime());
    }
 
@@ -107,7 +109,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("prediction-accuracy 0.8");
+      line("prediction-time-accuracy 0.5");
+      line("prediction-amplitude-accuracy 0.8");
       line("look-ahead 1");
 
       line("request tick 10 byterate 11 data 12");
@@ -147,7 +150,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("prediction-accuracy 0.8");
+      line("prediction-time-accuracy 0.5");
+      line("prediction-amplitude-accuracy 0.8");
       line("look-ahead 1");
 
       line("seed 31337");
@@ -167,7 +171,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("prediction-accuracy 0.8");
+      line("prediction-time-accuracy 0.5");
+      line("prediction-amplitude-accuracy 0.8");
       line("look-ahead 1");
 
       buildSut();
@@ -185,7 +190,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("prediction-accuracy 0.8");
+      line("prediction-time-accuracy 0.5");
+      line("prediction-amplitude-accuracy 0.8");
       line("look-ahead 1");
 
       line("request-series interval 10 size 11 byterate 12 start 13 end 14");
@@ -211,7 +217,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("prediction-accuracy 0.8");
+      line("prediction-time-accuracy 0.5");
+      line("prediction-amplitude-accuracy 0.8");
       line("look-ahead 1");
 
       line("request-series interval exact/10 size exact/11 byterate exact/12 start exact/13 end exact/14");
@@ -237,7 +244,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("prediction-accuracy 0.8");
+      line("prediction-time-accuracy 0.5");
+      line("prediction-amplitude-accuracy 0.8");
       line("look-ahead 1");
 
       line("request-series interval uniform/10/15 size uniform/15/20 byterate uniform/20/25 start uniform/25/30 end uniform/30/35");
