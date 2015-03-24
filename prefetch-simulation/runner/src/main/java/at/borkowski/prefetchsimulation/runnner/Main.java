@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Formatter;
 
 import at.borkowski.prefetchsimulation.PrefetchSimulationBuilder;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
@@ -57,12 +58,18 @@ public class Main {
 
       System.out.println();
       System.out.println();
-      System.out.println("Misses (due): " + profiling.getOverdue());
-      System.out.println("Hits (age):   " + profiling.getCacheHitAges());
-      System.out.println("URT:          " + profiling.getURT());
-      System.out.println("Stretch:      " + profiling.getStretch());
+      System.out.println("RT:          " + profiling.getResponseTime());
+      System.out.println("DA:          " + profiling.getDataAge());
+      System.out.println("DV:          " + profiling.getDataVolume());
+      System.out.println("Hit Rate:    " + profiling.getCacheHits().getCount() + " / " + genesis.getRequests().size() + " (" + formatHitRate(profiling.getCacheHits().getCount(), genesis.getRequests().size()) + ")");
 
       System.out.println("End.");
+   }
+
+   private static String formatHitRate(long count, int size) {
+      try (Formatter f = new Formatter()) {
+         return f.format("%2.1f", (100D * count / size)).toString();
+      }
    }
 
    private static void usage() {
