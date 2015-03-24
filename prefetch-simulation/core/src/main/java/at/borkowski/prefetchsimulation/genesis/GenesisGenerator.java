@@ -1,4 +1,4 @@
-package at.borkowski.prefetchsimulation.materialiser;
+package at.borkowski.prefetchsimulation.genesis;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -11,7 +11,6 @@ import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.configuration.Configuration;
 import at.borkowski.prefetchsimulation.configuration.RequestSeries;
-import at.borkowski.prefetchsimulation.genesis.Genesis;
 import at.borkowski.prefetchsimulation.util.RepeatableRandom;
 
 public class GenesisGenerator {

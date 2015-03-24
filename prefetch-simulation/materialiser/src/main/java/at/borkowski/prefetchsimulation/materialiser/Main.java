@@ -5,6 +5,7 @@ import java.util.Random;
 import at.borkowski.prefetchsimulation.configuration.Configuration;
 import at.borkowski.prefetchsimulation.configuration.ConfigurationReader;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
+import at.borkowski.prefetchsimulation.genesis.GenesisGenerator;
 import at.borkowski.prefetchsimulation.genesis.GenesisReader;
 import at.borkowski.prefetchsimulation.genesis.GenesisWriter;
 import at.borkowski.prefetchsimulation.painter.GenesisPainter;
