@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import at.borkowski.prefetchsimulation.Request;
+
 public class GenesisWriter {
 
    private final BufferedWriter output;
@@ -34,6 +36,9 @@ public class GenesisWriter {
       addRates(lines, genesis.getRatePredicted(), GenesisReader.CMD_RATE_PREDICTION);
 
       add(lines, genesis.getTicks() - 1, GenesisReader.CMD_END);
+
+      for (Request request : genesis.getRequests())
+         add(lines, request.getDeadline(), GenesisReader.CMD_REQUEST, String.valueOf(request.getData()), String.valueOf(request.getAvailableByterate()));
 
       List<Long> ticks = new LinkedList<>();
       for (long tick : lines.keySet())

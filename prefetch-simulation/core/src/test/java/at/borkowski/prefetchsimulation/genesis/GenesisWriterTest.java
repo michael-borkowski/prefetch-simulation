@@ -40,7 +40,7 @@ public class GenesisWriterTest {
    }
 
    @Test
-   public void test() throws IOException {
+   public void testRates() throws IOException {
       long ticks = 10000;
       long lookAhead = 8000;
       List<Request> requests = new LinkedList<>();
@@ -64,6 +64,33 @@ public class GenesisWriterTest {
       expected.add("1 rate-prediction 10");
       expected.add("2 rate-prediction 20");
       expected.add("3 rate-prediction 23");
+      expected.add("9999 end");
+      String[] expectedArray = expected.toArray(new String[0]);
+
+      assertArrayEquals(expectedArray, parse());
+   }
+
+   @Test
+   public void testRequests() throws IOException {
+      long ticks = 10000;
+      long lookAhead = 8000;
+      List<Request> requests = new LinkedList<>();
+      Map<Long, Integer> rateReal = new HashMap<>();
+      Map<Long, Integer> ratePredicted = new HashMap<>();
+      Class<? extends PrefetchAlgorithm> algorithm = IgnoreRatePredictionAlgorithm.class;
+
+      requests.add(new Request(10, 20, 30));
+      requests.add(new Request(11, 21, 31));
+      requests.add(new Request(21, 22, 32));
+
+      sut.write(new Genesis(ticks, requests, rateReal, ratePredicted, algorithm, lookAhead));
+
+      List<String> expected = new LinkedList<>();
+      expected.add("0 algorithm " + IgnoreRatePredictionAlgorithm.class.getName());
+      expected.add("0 look-ahead 8000");
+      expected.add("10 request 20 30");
+      expected.add("11 request 21 31");
+      expected.add("21 request 22 32");
       expected.add("9999 end");
       String[] expectedArray = expected.toArray(new String[0]);
 
