@@ -99,7 +99,7 @@ public class GenesisGenerator {
       long end = series.getEndTick().getValue(random.fork());
 
       start = clamp(0, start, totalTicks - 1);
-      end = clamp(start, start, totalTicks - 1);
+      end = clamp(start, end, totalTicks - 1);
 
       long current = start;
 
