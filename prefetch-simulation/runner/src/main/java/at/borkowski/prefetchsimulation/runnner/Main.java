@@ -1,7 +1,5 @@
 package at.borkowski.prefetchsimulation.runnner;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Formatter;
@@ -10,26 +8,18 @@ import at.borkowski.prefetchsimulation.PrefetchSimulationBuilder;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
 import at.borkowski.prefetchsimulation.genesis.GenesisException;
 import at.borkowski.prefetchsimulation.genesis.GenesisReader;
+import at.borkowski.prefetchsimulation.painter.ResultVisualiser;
+import at.borkowski.prefetchsimulation.painter.Saver;
 import at.borkowski.prefetchsimulation.profiling.PrefetchProfilingResults;
 import at.borkowski.scovillej.simulation.Simulation;
 
 public class Main {
 
-   public static void main(String[] args) {
-      InputStream genesisSource;
+   public static void main(String[] args) throws IOException {
+      InputStream genesisSource = System.in;
       if (args.length > 1) {
          usage();
          return;
-      } else if (args.length == 0 || "-".equals(args[0])) {
-         genesisSource = System.in;
-      } else {
-         try {
-            genesisSource = new FileInputStream(args[0]);
-         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            usage();
-            return;
-         }
       }
 
       Genesis genesis = null;
@@ -56,14 +46,23 @@ public class Main {
 
       sim.executeToEnd();
 
-      System.out.println();
-      System.out.println();
-      System.out.println("RT:          " + profiling.getResponseTime());
-      System.out.println("DA:          " + profiling.getDataAge());
-      System.out.println("DV:          " + profiling.getDataVolume());
-      System.out.println("Hit Rate:    " + profiling.getCacheHits().getCount() + " / " + genesis.getRequests().size() + " (" + formatHitRate(profiling.getCacheHits().getCount(), genesis.getRequests().size()) + ")");
+      System.err.println();
+      System.err.println();
+      System.err.println("RT:          " + profiling.getResponseTime());
+      System.err.println("DA:          " + profiling.getDataAge());
+      System.err.println("DV:          " + profiling.getDataVolume());
+      System.err.println("Hit Rate:    " + profiling.getCacheHits().getCount() + " / " + genesis.getRequests().size() + " (" + formatHitRate(profiling.getCacheHits().getCount(), genesis.getRequests().size()) + ")");
 
-      System.out.println("End.");
+      if (args.length == 1) {
+         String command = args[0];
+
+         if ("latex-timeline".equals(command))
+            Saver.saveLaTeX(ResultVisualiser.visualise(genesis, profiling), System.out);
+         else
+            usage();
+      }
+
+      System.err.println("End.");
    }
 
    private static String formatHitRate(long count, int size) {
@@ -73,9 +72,9 @@ public class Main {
    }
 
    private static void usage() {
-      System.err.println("Usage: runner            reads genesis from standard input");
-      System.err.println("       runner -          reads genesis from standard input");
-      System.err.println("       runner <filename> reads genesis from filename");
+      System.err.println("Usage: runner [<output>]");
+      System.err.println();
+      System.err.println("      [<output>]: latex-timeline");
    }
 
 }
