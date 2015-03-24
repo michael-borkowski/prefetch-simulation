@@ -13,6 +13,8 @@ import org.junit.Test;
 import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.IgnoreRatePredictionAlgorithm;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
+import at.borkowski.prefetchsimulation.configuration.distributions.Distribution;
+import at.borkowski.prefetchsimulation.configuration.distributions.Distributions;
 
 public class ConfigurationTest {
 
@@ -20,7 +22,7 @@ public class ConfigurationTest {
    public void test() {
       long totalTicks = 1234;
       int maximumByterate = 4321;
-      long slotLength = 1010;
+      Distribution<Long> slotLength = Distributions.exact(1010L);
       double networkUptime = 3.1415;
       double relativeJitter = 2.71;
       int absoluteJitter = 1337;
@@ -35,7 +37,7 @@ public class ConfigurationTest {
 
       assertEquals(1234, sut.getTotalTicks());
       assertEquals(4321, sut.getMaximumByterate());
-      assertEquals(1010, sut.getSlotLength());
+      assertEquals(1010, sut.getSlotLength().getMean().longValue());
       assertEquals(3.1415, sut.getNetworkUptime(), 0.0000001);
       assertEquals(2.71, sut.getRelativeJitter(), 0.0000001);
       assertEquals(1337, sut.getAbsoluteJitter());

@@ -17,4 +17,9 @@ public class NormalLongDistribution implements Distribution<Long> {
          return mean;
       return (long) (randomSource.nextGaussian() * sd + mean);
    }
+   
+   @Override
+   public Long getMean() {
+      return mean;
+   }
 }

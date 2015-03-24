@@ -19,4 +19,9 @@ public class UniformIntegerDistribution implements Distribution<Integer> {
       return (int) (min + r);
    }
 
+   @Override
+   public Integer getMean() {
+      return min + (max - min) / 2;
+   }
+
 }

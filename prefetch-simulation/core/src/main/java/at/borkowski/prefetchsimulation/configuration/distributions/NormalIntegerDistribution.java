@@ -17,4 +17,9 @@ public class NormalIntegerDistribution implements Distribution<Integer> {
          return mean;
       return (int) (randomSource.nextGaussian() * sd + mean);
    }
+   
+   @Override
+   public Integer getMean() {
+      return mean;
+   }
 }

@@ -14,5 +14,10 @@ public class ExactDistribution<T extends Number> implements Distribution<T> {
    public T getValue(RandomSource randomSource) {
       return value;
    }
+   
+   @Override
+   public T getMean() {
+      return value;
+   }
 
 }

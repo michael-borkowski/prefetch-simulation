@@ -4,9 +4,11 @@ import java.util.Collection;
 
 import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
+import at.borkowski.prefetchsimulation.configuration.distributions.Distribution;
 
 public class Configuration {
-   private final long totalTicks, slotLength, lookAheadTime;
+   private final long totalTicks, lookAheadTime;
+   Distribution<Long> slotLength;
    private final int maximumByterate, absoluteJitter;
    private final double networkUptime, relativeJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy;
    private final Collection<RequestSeries> recurringRequestSeries;
@@ -15,7 +17,7 @@ public class Configuration {
 
    private Long seed;
 
-   public Configuration(long totalTicks, int maximumByterate, long slotLength, double networkUptime, double relativeJitter, int absoluteJitter, double predictionTimeAccuracy, double predictionAmplitudeAccuracy, Collection<RequestSeries> recurringRequestSeries, Collection<Request> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm, long lookAheadTime) {
+   public Configuration(long totalTicks, int maximumByterate, Distribution<Long> slotLength, double networkUptime, double relativeJitter, int absoluteJitter, double predictionTimeAccuracy, double predictionAmplitudeAccuracy, Collection<RequestSeries> recurringRequestSeries, Collection<Request> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm, long lookAheadTime) {
       this.totalTicks = totalTicks;
       this.maximumByterate = maximumByterate;
       this.slotLength = slotLength;
@@ -86,7 +88,7 @@ public class Configuration {
       return relativeJitter;
    }
 
-   public long getSlotLength() {
+   public Distribution<Long> getSlotLength() {
       return slotLength;
    }
 

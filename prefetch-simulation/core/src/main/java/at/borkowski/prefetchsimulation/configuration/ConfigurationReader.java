@@ -43,7 +43,7 @@ public class ConfigurationReader {
       Long seed = null;
       Long totalTicks = null;
       Integer maximumByterate = null;
-      Long slotLength = null;
+      Distribution<Long> slotLength = null;
       Double networkUptime = null;
       Double relativeJitter = null;
       Integer absoluteJitter = null;
@@ -79,7 +79,7 @@ public class ConfigurationReader {
          else if (command.equals(CMD_MAX_BYTERATE))
             maximumByterate = parseInt(lineCounter, CMD_MAX_BYTERATE, reader);
          else if (command.equals(CMD_SLOT_LENGTH))
-            slotLength = parseLong(lineCounter, CMD_SLOT_LENGTH, reader);
+            slotLength = parseDistribution(lineCounter, null, reader, Long.class);
          else if (command.equals(CMD_NETWORK_UPTIME))
             networkUptime = parseDouble(lineCounter, CMD_NETWORK_UPTIME, reader);
          else if (command.equals(CMD_RELATIVE_JITTER))
@@ -216,6 +216,9 @@ public class ConfigurationReader {
    }
 
    private String getParam(int lineCouter, String param, ArrayReader reader) throws ConfigurationException {
+      if (param == null)
+         return reader.next();
+      
       ArrayReader clone = new ArrayReader(reader);
 
       while (true) {

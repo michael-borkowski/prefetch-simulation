@@ -72,7 +72,34 @@ public class ConfigurationReaderTest {
 
       assertEquals(10, configuration.getTotalTicks());
       assertEquals(11, configuration.getMaximumByterate());
-      assertEquals(12, configuration.getSlotLength());
+      assertEquals(12, configuration.getSlotLength().getMean().longValue());
+      assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
+      assertEquals(0.1, configuration.getRelativeJitter(), 0.00001);
+      assertEquals(13, configuration.getAbsoluteJitter());
+      assertEquals(0.8, configuration.getPredictionAmplitudeAccuracy(), 0.00001);
+      assertEquals(1, configuration.getLookAheadTime());
+      assertEquals(IgnoreRatePredictionAlgorithm.class, configuration.getAlgorithm());
+   }
+
+   @Test
+   public void testNormalDistributedSlotLength() throws Exception {
+      line("ticks 10");
+      line("max-byterate 11");
+      line("slot-length norm/12/18");
+      line("network-uptime 0.95");
+      line("relative-jitter 0.1");
+      line("absolute-jitter 13");
+      line("prediction-time-accuracy 0.5");
+      line("prediction-amplitude-accuracy 0.8");
+      line("algorithm " + IgnoreRatePredictionAlgorithm.class.getName());
+      line("look-ahead 1");
+      buildSut();
+
+      Configuration configuration = sut.read();
+
+      assertEquals(10, configuration.getTotalTicks());
+      assertEquals(11, configuration.getMaximumByterate());
+      assertEquals(12, configuration.getSlotLength().getMean().longValue());
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
       assertEquals(0.1, configuration.getRelativeJitter(), 0.00001);
       assertEquals(13, configuration.getAbsoluteJitter());
@@ -98,7 +125,7 @@ public class ConfigurationReaderTest {
 
       assertEquals(10, configuration.getTotalTicks());
       assertEquals(11, configuration.getMaximumByterate());
-      assertEquals(12, configuration.getSlotLength());
+      assertEquals(12, configuration.getSlotLength().getMean().longValue());
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
       assertEquals(0.1, configuration.getRelativeJitter(), 0.00001);
       assertEquals(13, configuration.getAbsoluteJitter());

@@ -19,4 +19,9 @@ public class UniformLongDistribution implements Distribution<Long> {
       return min + r;
    }
 
+   @Override
+   public Long getMean() {
+      return min + (max - min) / 2;
+   }
+
 }

@@ -11,6 +11,7 @@ import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.configuration.Configuration;
 import at.borkowski.prefetchsimulation.configuration.RequestSeries;
+import at.borkowski.prefetchsimulation.configuration.distributions.Distribution;
 import at.borkowski.prefetchsimulation.util.RepeatableRandom;
 
 public class GenesisGenerator {
@@ -18,9 +19,10 @@ public class GenesisGenerator {
    private static Random seedSource = new Random();
    private final RepeatableRandom random;
 
-   private final long totalTicks, slotLength, lookAheadTime;
+   private final long totalTicks, lookAheadTime;
    private final int maximumByterate, absoluteJitter;
    private final double networkUptime, relativeJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy;
+   private final Distribution<Long> slotLength;
    private final Collection<RequestSeries> recurringSeries;
    private final Collection<Request> intermittentRequests;
    private final Class<? extends PrefetchAlgorithm> algorithm;
@@ -131,7 +133,7 @@ public class GenesisGenerator {
             byterate = (2 * byterate + 1 * previousRate) / 3;
 
          ret.put(tick, byterate);
-         tick += (nextDouble(randomLength, 0.1, 3)) * slotLength;
+         tick += clamp(1, slotLength.getValue(randomLength), Long.MAX_VALUE);
 
          if (byterate != 0)
             previousRate = byterate;
@@ -147,7 +149,7 @@ public class GenesisGenerator {
       Map<Long, Integer> ret = new HashMap<>();
       int lastRate = -1;
 
-      long tickStep = Math.max(1, slotLength / 10);
+      long tickStep = Math.max(1, slotLength.getMean() / 10);
 
       for (long tick = 0; tick < totalTicks; tick++) {
          if (networkQuality.containsKey(tick))
@@ -178,7 +180,7 @@ public class GenesisGenerator {
       for (long tick : networkQuality.keySet()) {
          long predictionTick = 0;
          if (tick != 0)
-            predictionTick = (long) (tick + nextDouble(randomTick, -(1D - this.predictionTimeAccuracy), +(1D - this.predictionTimeAccuracy)) * slotLength);
+            predictionTick = (long) (tick + nextDouble(randomTick, -(1D - this.predictionTimeAccuracy), +(1D - this.predictionTimeAccuracy)) * slotLength.getMean());
 
          predictionTick = Math.max(0, Math.min(totalTicks, predictionTick));
 
