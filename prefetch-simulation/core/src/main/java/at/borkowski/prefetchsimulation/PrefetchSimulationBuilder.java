@@ -40,6 +40,8 @@ public class PrefetchSimulationBuilder {
    private RateSetter rateSetter;
    private RatePredictionServiceProvider ratePredictionServiceProvider;
 
+   private Simulation simulation = null;
+
    /**
     * Creates a new builder with all parameters set to default.
     */
@@ -74,14 +76,17 @@ public class PrefetchSimulationBuilder {
    }
 
    /**
-    * Creates the simulation.
+    * Creates the simulation. Must not be called more than once.
     * 
     * @return the simulation
     */
    public Simulation create() {
+      if (simulation != null)
+         throw new IllegalStateException();
+
       builder.service(rateSetter = new RateSetter(RATE_PHASE, SOCKET_NAME, limitsReal));
       builder.service(ratePredictionServiceProvider = new RatePredictionServiceProvider(limitsPredicted));
-      return builder.create();
+      return simulation = builder.create();
    }
 
    /**
@@ -166,7 +171,7 @@ public class PrefetchSimulationBuilder {
       fetchClient.getFetchProcessor().setLookAheadTime(lookAheadTime);
       return this;
    }
-   
+
    /**
     * Returns the profiling result object.
     * 
