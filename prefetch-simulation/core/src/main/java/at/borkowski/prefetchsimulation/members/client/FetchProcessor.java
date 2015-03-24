@@ -58,10 +58,10 @@ public class FetchProcessor {
             if (scheduled.get(request) <= tick && (current == null || scheduled.get(request) < scheduled.get(current)))
                current = request;
 
-         scheduled.remove(current);
+         Long scheduledTick = scheduled.remove(current);
 
          if (current != null) {
-            System.out.printf("%d -              requesting %d (%d, %d)\n", tick, current.getData(), scheduled.get(current), current.getDeadline());
+            System.out.printf("%d -              requesting %d (%d, %d)\n", tick, current.getData(), scheduledTick, current.getDeadline());
             owner.getSocketProcessor().request(current);
             rateControlService.setRequestSpecificRate(current.getAvailableByterate());
          }

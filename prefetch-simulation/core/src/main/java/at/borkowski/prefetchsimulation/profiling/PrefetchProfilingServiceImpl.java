@@ -67,6 +67,7 @@ public class PrefetchProfilingServiceImpl implements PrefetchProfilingService, P
    }
 
    public void arrival(Request request, long responseTime, long dataAge, int dataVolume) {
+      System.out.printf("%d - arrival rt %d da %d dv %d\n", simulation.getCurrentTick(), responseTime, dataAge, dataVolume);
       seriesResponseTime.measure(responseTime);
       seriesDataAge.measure(dataAge);
       seriesDataVolume.measure((long) dataVolume);
