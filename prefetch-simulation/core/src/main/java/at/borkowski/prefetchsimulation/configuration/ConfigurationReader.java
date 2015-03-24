@@ -19,7 +19,7 @@ public class ConfigurationReader {
 
    public static final String CMD_SEED = "seed";
    public static final String CMD_TOTAL_TICKS = "ticks";
-   public static final String CMD_MAX_BYTERATE = "max-byterate";
+   public static final String CMD_BYTERATE = "byterate";
    public static final String CMD_SLOT_LENGTH = "slot-length";
    public static final String CMD_NETWORK_UPTIME = "network-uptime";
    public static final String CMD_RELATIVE_JITTER = "relative-jitter";
@@ -42,7 +42,7 @@ public class ConfigurationReader {
    public Configuration read() throws IOException, ConfigurationException {
       Long seed = null;
       Long totalTicks = null;
-      Integer maximumByterate = null;
+      Distribution<Integer> byterate = null;
       Distribution<Long> slotLength = null;
       Double networkUptime = null;
       Double relativeJitter = null;
@@ -76,8 +76,8 @@ public class ConfigurationReader {
             seed = parseLong(lineCounter, CMD_SEED, reader);
          else if (command.equals(CMD_TOTAL_TICKS))
             totalTicks = parseLong(lineCounter, CMD_TOTAL_TICKS, reader);
-         else if (command.equals(CMD_MAX_BYTERATE))
-            maximumByterate = parseInt(lineCounter, CMD_MAX_BYTERATE, reader);
+         else if (command.equals(CMD_BYTERATE))
+            byterate = parseDistribution(lineCounter, null, reader, Integer.class);
          else if (command.equals(CMD_SLOT_LENGTH))
             slotLength = parseDistribution(lineCounter, null, reader, Long.class);
          else if (command.equals(CMD_NETWORK_UPTIME))
@@ -103,7 +103,7 @@ public class ConfigurationReader {
       }
 
       require(totalTicks, "total ticks");
-      require(maximumByterate, "maximum byterate");
+      require(byterate, "byterate");
       require(slotLength, "slot length");
       require(networkUptime, "network uptime");
       require(relativeJitter, "relative jitter");
@@ -112,7 +112,7 @@ public class ConfigurationReader {
       require(predictionAmplitudeAccuracy, "prediction amplitude accuracy");
       require(lookAheadTime, "look ahead time");
 
-      Configuration configuration = new Configuration(totalTicks, maximumByterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy, recurringRequestSeries, intermittentRequests, algorithm, lookAheadTime);
+      Configuration configuration = new Configuration(totalTicks, byterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy, recurringRequestSeries, intermittentRequests, algorithm, lookAheadTime);
       if (seed != null)
          configuration.setSeed(seed);
       return configuration;

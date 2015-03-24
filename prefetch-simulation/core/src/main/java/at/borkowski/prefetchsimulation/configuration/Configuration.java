@@ -8,8 +8,9 @@ import at.borkowski.prefetchsimulation.configuration.distributions.Distribution;
 
 public class Configuration {
    private final long totalTicks, lookAheadTime;
-   Distribution<Long> slotLength;
-   private final int maximumByterate, absoluteJitter;
+   private final Distribution<Long> slotLength;
+   private final Distribution<Integer> byterate;
+   private final int absoluteJitter;
    private final double networkUptime, relativeJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy;
    private final Collection<RequestSeries> recurringRequestSeries;
    private final Collection<Request> intermittentRequests;
@@ -17,9 +18,9 @@ public class Configuration {
 
    private Long seed;
 
-   public Configuration(long totalTicks, int maximumByterate, Distribution<Long> slotLength, double networkUptime, double relativeJitter, int absoluteJitter, double predictionTimeAccuracy, double predictionAmplitudeAccuracy, Collection<RequestSeries> recurringRequestSeries, Collection<Request> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm, long lookAheadTime) {
+   public Configuration(long totalTicks, Distribution<Integer> byterate, Distribution<Long> slotLength, double networkUptime, double relativeJitter, int absoluteJitter, double predictionTimeAccuracy, double predictionAmplitudeAccuracy, Collection<RequestSeries> recurringRequestSeries, Collection<Request> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm, long lookAheadTime) {
       this.totalTicks = totalTicks;
-      this.maximumByterate = maximumByterate;
+      this.byterate = byterate;
       this.slotLength = slotLength;
       this.networkUptime = networkUptime;
       this.relativeJitter = relativeJitter;
@@ -64,10 +65,6 @@ public class Configuration {
       return lookAheadTime;
    }
 
-   public int getMaximumByterate() {
-      return maximumByterate;
-   }
-
    public double getNetworkUptime() {
       return networkUptime;
    }
@@ -94,5 +91,9 @@ public class Configuration {
 
    public long getTotalTicks() {
       return totalTicks;
+   }
+   
+   public Distribution<Integer> getByterate() {
+      return byterate;
    }
 }

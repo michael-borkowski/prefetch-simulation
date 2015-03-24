@@ -20,8 +20,9 @@ public class GenesisGenerator {
    private final RepeatableRandom random;
 
    private final long totalTicks, lookAheadTime;
-   private final int maximumByterate, absoluteJitter;
+   private final int absoluteJitter;
    private final double networkUptime, relativeJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy;
+   private final Distribution<Integer> byterate;
    private final Distribution<Long> slotLength;
    private final Collection<RequestSeries> recurringSeries;
    private final Collection<Request> intermittentRequests;
@@ -31,7 +32,7 @@ public class GenesisGenerator {
       random = new RepeatableRandom(seedSource.nextLong());
 
       this.totalTicks = configuration.getTotalTicks();
-      this.maximumByterate = configuration.getMaximumByterate();
+      this.byterate = configuration.getByterate();
       this.slotLength = configuration.getSlotLength();
       this.networkUptime = configuration.getNetworkUptime();
       this.absoluteJitter = configuration.getAbsoluteJitter();
@@ -125,7 +126,7 @@ public class GenesisGenerator {
       int previousRate = -1;
 
       while (tick < totalTicks) {
-         int byterate = randomByterate.nextInt(maximumByterate);
+         int byterate = this.byterate.getValue(randomByterate);
          if (randomUptime.nextDouble() > networkUptime)
             byterate = 0;
 
@@ -164,7 +165,7 @@ public class GenesisGenerator {
             if (byterate != 0)
                byterate = (int) (relativeJitter * byterate + absoluteJitter);
 
-            ret.put(tick, (int) Math.min(maximumByterate, Math.max(0, byterate)));
+            ret.put(tick, clamp(0, byterate, Integer.MAX_VALUE));
          }
       }
 

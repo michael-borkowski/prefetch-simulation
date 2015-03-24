@@ -57,7 +57,7 @@ public class ConfigurationReaderTest {
       line("\t \t #comment after mixed whitespace");
       line("  # comment containing # hash symbol # and another");
       line("ticks 10");
-      line("max-byterate 11");
+      line("byterate 11");
       line("slot-length 12");
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
@@ -71,7 +71,7 @@ public class ConfigurationReaderTest {
       Configuration configuration = sut.read();
 
       assertEquals(10, configuration.getTotalTicks());
-      assertEquals(11, configuration.getMaximumByterate());
+      assertEquals(11, configuration.getByterate().getMean().intValue());
       assertEquals(12, configuration.getSlotLength().getMean().longValue());
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
       assertEquals(0.1, configuration.getRelativeJitter(), 0.00001);
@@ -84,7 +84,7 @@ public class ConfigurationReaderTest {
    @Test
    public void testNormalDistributedSlotLength() throws Exception {
       line("ticks 10");
-      line("max-byterate 11");
+      line("byterate 11");
       line("slot-length norm/12/18");
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
@@ -98,7 +98,7 @@ public class ConfigurationReaderTest {
       Configuration configuration = sut.read();
 
       assertEquals(10, configuration.getTotalTicks());
-      assertEquals(11, configuration.getMaximumByterate());
+      assertEquals(11, configuration.getByterate().getMean().intValue());
       assertEquals(12, configuration.getSlotLength().getMean().longValue());
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
       assertEquals(0.1, configuration.getRelativeJitter(), 0.00001);
@@ -111,7 +111,7 @@ public class ConfigurationReaderTest {
    @Test
    public void testWhitespace() throws Exception {
       line("ticks 10");
-      line("  max-byterate 11");
+      line("  byterate 11");
       line("\t\tslot-length 12");
       line("\t   \tnetwork-uptime     0.95");
       line("relative-jitter\t0.1");
@@ -124,7 +124,7 @@ public class ConfigurationReaderTest {
       Configuration configuration = sut.read();
 
       assertEquals(10, configuration.getTotalTicks());
-      assertEquals(11, configuration.getMaximumByterate());
+      assertEquals(11, configuration.getByterate().getMean().intValue());
       assertEquals(12, configuration.getSlotLength().getMean().longValue());
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
       assertEquals(0.1, configuration.getRelativeJitter(), 0.00001);
@@ -136,7 +136,7 @@ public class ConfigurationReaderTest {
    @Test
    public void testIntermittent() throws Exception {
       line("ticks 10");
-      line("max-byterate 11");
+      line("byterate 11");
       line("slot-length 12");
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
@@ -177,7 +177,7 @@ public class ConfigurationReaderTest {
    @Test
    public void testSeedPresent() throws Exception {
       line("ticks 10");
-      line("max-byterate 11");
+      line("byterate 11");
       line("slot-length 12");
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
@@ -198,7 +198,7 @@ public class ConfigurationReaderTest {
    @Test
    public void testSeedAbsent() throws Exception {
       line("ticks 10");
-      line("max-byterate 11");
+      line("byterate 11");
       line("slot-length 12");
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
@@ -217,7 +217,7 @@ public class ConfigurationReaderTest {
    @Test
    public void testSeriesExact1() throws Exception {
       line("ticks 10");
-      line("max-byterate 11");
+      line("byterate 11");
       line("slot-length 12");
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
@@ -244,7 +244,7 @@ public class ConfigurationReaderTest {
    @Test
    public void testSeriesExact2() throws Exception {
       line("ticks 10");
-      line("max-byterate 11");
+      line("byterate 11");
       line("slot-length 12");
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
@@ -271,7 +271,7 @@ public class ConfigurationReaderTest {
    @Test
    public void testSeriesUniform() throws Exception {
       line("ticks 10");
-      line("max-byterate 11");
+      line("byterate 11");
       line("slot-length 12");
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
@@ -298,7 +298,7 @@ public class ConfigurationReaderTest {
    @Test
    public void testSeriesNormal() throws Exception {
       line("ticks 10");
-      line("max-byterate 11");
+      line("byterate 11");
       line("slot-length 12");
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
@@ -325,7 +325,7 @@ public class ConfigurationReaderTest {
    @Test
    public void testRequest() throws Exception {
       line("ticks 10");
-      line("max-byterate 11");
+      line("byterate 11");
       line("slot-length 12");
       line("network-uptime 0.95");
       line("relative-jitter 0.1");

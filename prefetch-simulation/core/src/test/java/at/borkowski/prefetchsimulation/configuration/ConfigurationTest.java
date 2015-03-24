@@ -21,7 +21,7 @@ public class ConfigurationTest {
    @Test
    public void test() {
       long totalTicks = 1234;
-      int maximumByterate = 4321;
+      Distribution<Integer> byterate = Distributions.exact(4334);
       Distribution<Long> slotLength = Distributions.exact(1010L);
       double networkUptime = 3.1415;
       double relativeJitter = 2.71;
@@ -33,10 +33,10 @@ public class ConfigurationTest {
       Class<? extends PrefetchAlgorithm> algorithm = IgnoreRatePredictionAlgorithm.class;
       long lookAheadTime = 271;
 
-      Configuration sut = new Configuration(totalTicks, maximumByterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy, recurringRequestSeries, intermittentRequests, algorithm, lookAheadTime);
+      Configuration sut = new Configuration(totalTicks, byterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy, recurringRequestSeries, intermittentRequests, algorithm, lookAheadTime);
 
       assertEquals(1234, sut.getTotalTicks());
-      assertEquals(4321, sut.getMaximumByterate());
+      assertEquals(4334, sut.getByterate().getMean().intValue());
       assertEquals(1010, sut.getSlotLength().getMean().longValue());
       assertEquals(3.1415, sut.getNetworkUptime(), 0.0000001);
       assertEquals(2.71, sut.getRelativeJitter(), 0.0000001);
