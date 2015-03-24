@@ -8,9 +8,9 @@ import at.borkowski.prefetchsimulation.genesis.Genesis;
 import at.borkowski.prefetchsimulation.genesis.GenesisGenerator;
 import at.borkowski.prefetchsimulation.genesis.GenesisReader;
 import at.borkowski.prefetchsimulation.genesis.GenesisWriter;
-import at.borkowski.prefetchsimulation.painter.GenesisPainter;
-import at.borkowski.prefetchsimulation.painter.PaintResult;
+import at.borkowski.prefetchsimulation.painter.GenesisVisualiser;
 import at.borkowski.prefetchsimulation.painter.Saver;
+import at.borkowski.prefetchsimulation.painter.result.VisualisationResult;
 
 public class Main {
    public static void main(String[] args) throws Exception {
@@ -39,11 +39,11 @@ public class Main {
          genesisWriter.write(genesis);
       } else if (operation.equals("png")) {
          Genesis genesis = new GenesisReader(System.in).read();
-         PaintResult result = GenesisPainter.paint(genesis);
+         VisualisationResult result = GenesisVisualiser.visualise(genesis);
          Saver.savePNG(result, System.out);
       } else if (operation.equals("eps")) {
          Genesis genesis = new GenesisReader(System.in).read();
-         PaintResult result = GenesisPainter.paint(genesis);
+         VisualisationResult result = GenesisVisualiser.visualise(genesis);
          Saver.saveEPS(result, System.out);
       } else {
          System.err.println("Unknown operation: " + operation);

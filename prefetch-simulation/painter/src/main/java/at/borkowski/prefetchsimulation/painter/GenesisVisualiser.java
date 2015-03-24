@@ -7,6 +7,8 @@ import java.util.List;
 
 import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
+import at.borkowski.prefetchsimulation.painter.result.VisualisationResult;
+import at.borkowski.prefetchsimulation.painter.result.XChartVisualisationResultImpl;
 
 import com.xeiam.xchart.Chart;
 import com.xeiam.xchart.ChartBuilder;
@@ -17,9 +19,9 @@ import com.xeiam.xchart.StyleManager;
 import com.xeiam.xchart.StyleManager.ChartTheme;
 import com.xeiam.xchart.StyleManager.LegendPosition;
 
-public class GenesisPainter {
+public class GenesisVisualiser {
 
-   public static PaintResult paint(Genesis genesis) {
+   public static VisualisationResult visualise(Genesis genesis) {
       List<Long> ticks = new LinkedList<>(genesis.getRateReal().keySet());
       Collections.sort(ticks);
 
@@ -86,7 +88,7 @@ public class GenesisPainter {
       style.setYAxisDecimalPattern("#0");
       style.setLegendPosition(LegendPosition.InsideNE);
 
-      return new PaintResultImpl(chart);
+      return new XChartVisualisationResultImpl(chart);
    }
 
 }
