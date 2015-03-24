@@ -3,7 +3,7 @@ package at.borkowski.prefetchsimulation.members.client;
 import java.io.IOException;
 
 import at.borkowski.prefetchsimulation.Request;
-import at.borkowski.prefetchsimulation.impl.VirtualPayload;
+import at.borkowski.prefetchsimulation.internal.VirtualPayload;
 import at.borkowski.scovillej.services.comm.CommunicationService;
 import at.borkowski.scovillej.services.comm.SimulationSocket;
 import at.borkowski.scovillej.simulation.Simulation;

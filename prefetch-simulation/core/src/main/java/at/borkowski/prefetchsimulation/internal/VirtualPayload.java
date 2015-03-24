@@ -1,4 +1,4 @@
-package at.borkowski.prefetchsimulation.impl;
+package at.borkowski.prefetchsimulation.internal;
 
 public class VirtualPayload {
    private final int size;

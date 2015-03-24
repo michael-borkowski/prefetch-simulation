@@ -6,7 +6,7 @@ import java.util.Map;
 
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
-import at.borkowski.prefetchsimulation.impl.VirtualPayloadSerializer;
+import at.borkowski.prefetchsimulation.internal.VirtualPayloadSerializer;
 import at.borkowski.prefetchsimulation.members.aux.RatePredictionServiceProvider;
 import at.borkowski.prefetchsimulation.members.aux.RateSetter;
 import at.borkowski.prefetchsimulation.members.client.FetchClient;

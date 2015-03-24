@@ -6,8 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import at.borkowski.prefetchsimulation.impl.VirtualPayload;
-import at.borkowski.prefetchsimulation.impl.VirtualPayloadSerializer;
+import at.borkowski.prefetchsimulation.internal.VirtualPayload;
+import at.borkowski.prefetchsimulation.internal.VirtualPayloadSerializer;
 
 public class VirtualPayloadSerializerTest {
 

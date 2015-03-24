@@ -12,7 +12,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 
-import at.borkowski.prefetchsimulation.impl.VirtualPayload;
+import at.borkowski.prefetchsimulation.internal.VirtualPayload;
 import at.borkowski.prefetchsimulation.members.server.ClientProcessor;
 import at.borkowski.prefetchsimulation.members.server.FetchServer;
 import at.borkowski.prefetchsimulation.members.server.SocketProcessor;

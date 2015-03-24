@@ -21,7 +21,7 @@ import org.mockito.stubbing.Answer;
 
 import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
-import at.borkowski.prefetchsimulation.impl.VirtualPayload;
+import at.borkowski.prefetchsimulation.internal.VirtualPayload;
 import at.borkowski.prefetchsimulation.members.aux.RateControlService;
 import at.borkowski.prefetchsimulation.members.aux.RatePredictionService;
 import at.borkowski.prefetchsimulation.profiling.PrefetchProfilingService;
