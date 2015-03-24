@@ -50,11 +50,6 @@
       <artifactId>core</artifactId>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>at.borkowski.prefetch-simulation</groupId>
-      <artifactId>painter</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency>
   </dependencies>
 
 

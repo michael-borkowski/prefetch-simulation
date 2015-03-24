@@ -1,7 +1,5 @@
 package at.borkowski.prefetchsimulation.painter;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -12,11 +10,14 @@ import at.borkowski.prefetchsimulation.genesis.GenesisReader;
 import at.borkowski.prefetchsimulation.profiling.PrefetchProfilingResults;
 import at.borkowski.scovillej.simulation.Simulation;
 
-public class Playground {
+public class Main {
+   public static void main(String[] args) throws IOException {
+      InputStream genesisSource = System.in;
+      if (args.length > 1) {
+         usage();
+         return;
+      }
 
-   public static void main(String[] args) throws FileNotFoundException {
-
-      InputStream genesisSource = new FileInputStream("/home/michael/projects/da_projects/prefetch-simulation/simulations/2/genesis");
       Genesis genesis = null;
 
       try {
@@ -39,9 +40,24 @@ public class Playground {
       Simulation sim = builder.create();
       PrefetchProfilingResults profiling = builder.getProfiling();
 
-      sim.executeToEnd();
+      String command = args[0];
 
-      ResultVisualiser.visualise(genesis, profiling);
+      if ("png".equals(command))
+         Saver.savePNG(GenesisVisualiser.visualise(genesis), System.out);
+      if ("eps".equals(command))
+         Saver.saveEPS(GenesisVisualiser.visualise(genesis), System.out);
+      if ("tex-timeline".equals(command)) {
+         sim.executeToEnd();
+         Saver.saveLaTeX(ResultVisualiser.visualise(genesis, profiling), System.out);
+      } else
+         usage();
+
+      sim.executeToEnd();
    }
 
+   private static void usage() {
+      System.err.println("Usage: painter <operation>");
+      System.err.println();
+      System.err.println("      <operation>: png | eps | tex-timeline");
+   }
 }

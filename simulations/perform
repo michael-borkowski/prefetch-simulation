@@ -18,8 +18,10 @@ fi
 
 materialiser_jar=$(find "$maven_parent_dir/materialiser/target" -name materialiser-*-jar-with-dependencies.jar)
 runner_jar=$(find "$maven_parent_dir/runner/target" -name runner-*-jar-with-dependencies.jar)
+painter_jar=$(find "$maven_parent_dir/painter/target" -name painter-*-jar-with-dependencies.jar)
 [ -z "$materialiser_jar" ] && die "materialiser JAR not found"
 [ -z "$runner_jar" ] && die "runner JAR not found"
+[ -z "$painter_jar" ] && die "painter JAR not found"
 
 [ -d "$sim_dir/$id" ] || die "simulation $id not found"
 [ -f "$sim_dir/$id/configuration" ] || die "configuration for $id not found"
@@ -27,7 +29,8 @@ runner_jar=$(find "$maven_parent_dir/runner/target" -name runner-*-jar-with-depe
 sim="$sim_dir/$id"
 
 java -jar "$materialiser_jar" generate-genesis < "$sim/configuration" > "$sim/genesis" || die "generating genesis failed"
-java -jar "$materialiser_jar" png < "$sim/genesis" > "$sim/genesis.png" || die "drawing genesis PNG failed"
-java -jar "$materialiser_jar" eps < "$sim/genesis" > "$sim/genesis.eps" || die "drawing genesis EPS failed"
-java -jar "$runner_jar" < "$sim_dir/$id/genesis" #> "$sim_dir/$id/result"
+java -jar "$painter_jar" png < "$sim/genesis" > "$sim/genesis.png" || die "drawing genesis PNG failed"
+java -jar "$painter_jar" eps < "$sim/genesis" > "$sim/genesis.eps" || die "drawing genesis EPS failed"
+java -jar "$runner_jar" < "$sim_dir/$id/genesis"
+java -jar "$painter_jar" tex-timeline < "$sim/genesis" > "$sim/genesis.eps" || die "drawing genesis EPS failed"
 
