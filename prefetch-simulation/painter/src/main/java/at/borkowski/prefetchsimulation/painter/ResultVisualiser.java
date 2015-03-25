@@ -29,8 +29,8 @@ public class ResultVisualiser {
 
    public static final double TICK_LENGTH = 0.1;
 
-   public static final double SPAN_OFFSET = 0.5;
-   public static final double SPAN_HEIGHT = 0.3;
+   public static final double SPAN_OFFSET = -0.9;
+   public static final double SPAN_HEIGHT = -0.3;
    public static final double SPAN_PADDING_LEFT = 0.6;
    public static final double SPAN_PADDING_RIGHT = 0.1;
    public static final double SPAN_ARROW_LENGTH = 0.5;
@@ -240,7 +240,8 @@ public class ResultVisualiser {
             lines.add("\\draw (" + xWasFrom + "," + yLevel + ") -- (" + xWasTo + "," + yLevel + ");");
          } else if (wasFrom != null) {
             double xWasFrom = OFFSET_X + xS * wasFrom;
-            lines.add("\\draw[->] (" + xWasFrom + "," + yLevel + ") -- (" + (xPlanTo + SPAN_ARROW_LENGTH) + "," + yLevel + ");");
+            double xArrowTo = xPlanTo > xWasFrom ? xPlanTo : xWasFrom;
+            lines.add("\\draw[->] (" + xWasFrom + "," + yLevel + ") -- (" + (xArrowTo + SPAN_ARROW_LENGTH) + "," + yLevel + ");");
          }
 
          lines.add("\\node[anchor=east] at (" + xMin + "," + yLevel + ") {\\tiny\\texttt{" + names.get(request) + "}};");
