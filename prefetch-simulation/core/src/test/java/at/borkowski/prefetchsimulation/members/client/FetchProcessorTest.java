@@ -59,6 +59,9 @@ public class FetchProcessorTest {
 
       sut = new FetchProcessor(owner);
       sut.setAlgorithm(new PrefetchAlgorithm() {
+         @Override
+         public void configure(Map<String, String> configuration) {
+         }
 
          @Override
          public Map<Request, Long> schedule(Collection<Request> requests, RatePredictionService ratePredictionService) {

@@ -12,4 +12,6 @@ import at.borkowski.prefetchsimulation.members.aux.RatePredictionService;
  */
 public interface PrefetchAlgorithm {
    Map<Request, Long> schedule(Collection<Request> requests, RatePredictionService ratePredictionService);
+
+   void configure(Map<String, String> configuration);
 }

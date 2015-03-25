@@ -13,6 +13,9 @@ import at.borkowski.prefetchsimulation.members.aux.RatePredictionService;
  */
 public class StartAtDeadlineAlgorithm implements PrefetchAlgorithm {
    @Override
+   public void configure(Map<String, String> configuration) {}
+
+   @Override
    public Map<Request, Long> schedule(Collection<Request> requests, RatePredictionService ratePredictionService) {
       HashMap<Request, Long> ret = new HashMap<>();
 

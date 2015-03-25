@@ -11,6 +11,9 @@ public class GenesisReaderTest_BadAlgorithm2 implements PrefetchAlgorithm {
    public GenesisReaderTest_BadAlgorithm2() {
       throw new RuntimeException();
    }
+   @Override
+   public void configure(Map<String, String> configuration) {
+   }
    
    @Override
    public Map<Request, Long> schedule(Collection<Request> requests, RatePredictionService ratePredictionService) {

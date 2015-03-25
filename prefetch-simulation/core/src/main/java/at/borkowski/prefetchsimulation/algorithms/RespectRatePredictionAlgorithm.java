@@ -17,7 +17,14 @@ import at.borkowski.prefetchsimulation.members.aux.RatePredictionService;
  */
 public class RespectRatePredictionAlgorithm implements PrefetchAlgorithm {
    public final static long CONNECTION_OVERHEAD = 5;
-   public final static double ALPHA = 1;
+
+   private double alpha = 1;
+
+   @Override
+   public void configure(Map<String, String> configuration) {
+      if (configuration.containsKey("alpha"))
+         alpha = Double.parseDouble(configuration.get("alpha"));
+   }
 
    @Override
    public Map<Request, Long> schedule(Collection<Request> requests, RatePredictionService ratePredictionService) {
@@ -36,7 +43,7 @@ public class RespectRatePredictionAlgorithm implements PrefetchAlgorithm {
       for (Request req : sortedByDeadline) {
          long start = getStart(previousStart, req, ratePredictionService);
          ret.put(req, start);
-         
+
          previousStart = start;
       }
 
@@ -49,7 +56,10 @@ public class RespectRatePredictionAlgorithm implements PrefetchAlgorithm {
 
       while (data > 0 && tick >= 0) {
          Integer prediction = ratePredictionService.predict(tick);
-         if(prediction == null) prediction = Integer.MAX_VALUE;
+         if (prediction == null)
+            prediction = Integer.MAX_VALUE;
+         else
+            prediction = (int) (prediction.doubleValue() * alpha);
          data -= Math.min(req.getAvailableByterate(), prediction);
          tick--;
       }
