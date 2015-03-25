@@ -8,6 +8,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -345,6 +346,31 @@ public class ConfigurationReaderTest {
       assertEquals(1500001, request.getDeadline());
       assertEquals(1000, request.getData());
       assertEquals(400, request.getAvailableByterate());
+   }
+
+   @Test
+   public void testAlgorithmConfiguration() throws Exception {
+      line("ticks 10");
+      line("byterate 11");
+      line("slot-length 12");
+      line("network-uptime 0.95");
+      line("relative-jitter 0.1");
+      line("absolute-jitter 13");
+      line("prediction-time-accuracy 0.5");
+      line("prediction-amplitude-accuracy 0.8");
+      line("algorithm " + IgnoreRatePredictionAlgorithm.class.getName());
+      line("algorithm-parameter key1 value1");
+      line("algorithm-parameter key2 value2");
+      line("algorithm-parameter key3 value3");
+      line("look-ahead 1");
+      buildSut();
+
+      Configuration configuration = sut.read();
+
+      Map<String, String> algorithmConfiguration = configuration.getAlgorithmConfiguration();
+      assertEquals("value1", algorithmConfiguration.get("key1"));
+      assertEquals("value2", algorithmConfiguration.get("key2"));
+      assertEquals("value3", algorithmConfiguration.get("key3"));
    }
 
    @Test(expected = ConfigurationException.class)

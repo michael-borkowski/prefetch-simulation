@@ -6,7 +6,9 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -31,9 +33,10 @@ public class ConfigurationTest {
       Collection<RequestSeries> recurringRequestSeries = new LinkedList<>();
       Collection<Request> intermittentRequests = new LinkedList<>();
       Class<? extends PrefetchAlgorithm> algorithm = IgnoreRatePredictionAlgorithm.class;
+      Map<String, String> algorithmConfiguration = new HashMap<>();
       long lookAheadTime = 271;
 
-      Configuration sut = new Configuration(totalTicks, byterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy, recurringRequestSeries, intermittentRequests, algorithm, lookAheadTime);
+      Configuration sut = new Configuration(totalTicks, byterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy, recurringRequestSeries, intermittentRequests, algorithm, algorithmConfiguration, lookAheadTime);
 
       assertEquals(1234, sut.getTotalTicks());
       assertEquals(4334, sut.getByterate().getMean().intValue());
@@ -46,6 +49,7 @@ public class ConfigurationTest {
       assertSame(recurringRequestSeries, sut.getRecurringRequestSeries());
       assertSame(intermittentRequests, sut.getIntermittentRequests());
       assertEquals(IgnoreRatePredictionAlgorithm.class, sut.getAlgorithm());
+      assertSame(algorithmConfiguration, sut.getAlgorithmConfiguration());
       assertEquals(271, sut.getLookAheadTime());
 
       assertFalse(sut.hasSeed());

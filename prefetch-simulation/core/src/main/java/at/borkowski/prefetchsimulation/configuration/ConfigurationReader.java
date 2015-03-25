@@ -6,7 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.NullAlgorithm;
@@ -30,6 +32,7 @@ public class ConfigurationReader {
    public static final String CMD_REQUEST = "request";
    public static final String CMD_LOOK_AHEAD = "look-ahead";
    public static final String CMD_ALGORITHM = "algorithm";
+   public static final String CMD_ALGORITHM_PARAMETER = "algorithm-parameter";
 
    public ConfigurationReader(InputStream input) {
       try {
@@ -53,6 +56,7 @@ public class ConfigurationReader {
       Collection<Request> intermittentRequests = new LinkedList<>();
       Long lookAheadTime = null;
       Class<? extends PrefetchAlgorithm> algorithm = NullAlgorithm.class;
+      Map<String, String> algorithmConfiguration = new HashMap<>();
 
       String line;
       int lineCounter = 0;
@@ -98,6 +102,8 @@ public class ConfigurationReader {
             lookAheadTime = parseLong(lineCounter, CMD_LOOK_AHEAD, reader);
          else if (command.equals(CMD_ALGORITHM))
             algorithm = parseAlgorithm(lineCounter, reader);
+         else if (command.equals(CMD_ALGORITHM_PARAMETER))
+            parseAlgorithmParameter(lineCounter, reader, algorithmConfiguration);
          else
             throw new ConfigurationException("unknown command: " + command);
       }
@@ -112,10 +118,17 @@ public class ConfigurationReader {
       require(predictionAmplitudeAccuracy, "prediction amplitude accuracy");
       require(lookAheadTime, "look ahead time");
 
-      Configuration configuration = new Configuration(totalTicks, byterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy, recurringRequestSeries, intermittentRequests, algorithm, lookAheadTime);
+      Configuration configuration = new Configuration(totalTicks, byterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy, recurringRequestSeries, intermittentRequests, algorithm, algorithmConfiguration, lookAheadTime);
       if (seed != null)
          configuration.setSeed(seed);
       return configuration;
+   }
+
+   private void parseAlgorithmParameter(int lineCounter, ArrayReader reader, Map<String, String> algorithmConfiguration) throws ConfigurationException {
+      assertLeft(reader, 2, "algorithm-parameter");
+      String k = reader.next();
+      String v = reader.next();
+      algorithmConfiguration.put(k, v);
    }
 
    private Request parseRequest(int lineCounter, ArrayReader reader) throws ConfigurationException {
@@ -218,7 +231,7 @@ public class ConfigurationReader {
    private String getParam(int lineCouter, String param, ArrayReader reader) throws ConfigurationException {
       if (param == null)
          return reader.next();
-      
+
       ArrayReader clone = new ArrayReader(reader);
 
       while (true) {

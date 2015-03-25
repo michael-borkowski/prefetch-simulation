@@ -27,6 +27,7 @@ public class GenesisGenerator {
    private final Collection<RequestSeries> recurringSeries;
    private final Collection<Request> intermittentRequests;
    private final Class<? extends PrefetchAlgorithm> algorithm;
+   private final Map<String, String> algorithmConfiguration;
 
    public GenesisGenerator(Configuration configuration) {
       random = new RepeatableRandom(seedSource.nextLong());
@@ -41,6 +42,7 @@ public class GenesisGenerator {
       this.predictionAmplitudeAccuracy = configuration.getPredictionAmplitudeAccuracy();
       this.recurringSeries = configuration.getRecurringRequestSeries();
       this.intermittentRequests = configuration.getIntermittentRequests();
+      this.algorithmConfiguration = configuration.getAlgorithmConfiguration();
       this.algorithm = configuration.getAlgorithm();
       this.lookAheadTime = configuration.getLookAheadTime();
 
@@ -86,7 +88,7 @@ public class GenesisGenerator {
       for (RequestSeries series : recurringSeries)
          generateSeries(randomSeries, requests, series);
 
-      Genesis genesis = new Genesis(totalTicks, requests, networkQuality, prediction, algorithm, lookAheadTime);
+      Genesis genesis = new Genesis(totalTicks, requests, networkQuality, prediction, algorithm, algorithmConfiguration, lookAheadTime);
       return genesis;
    }
 
