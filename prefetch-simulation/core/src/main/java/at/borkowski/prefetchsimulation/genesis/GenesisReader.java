@@ -108,7 +108,7 @@ public class GenesisReader {
          throw new GenesisException("line " + lineCounter + ": usage is \"0 " + CMD_ALGORITHM_PARAMETER + " <key> <value>");
 
       String k = split[2];
-      String v = split[2];
+      String v = split[3];
       algorithmConfiguration.put(k, v);
    }
 

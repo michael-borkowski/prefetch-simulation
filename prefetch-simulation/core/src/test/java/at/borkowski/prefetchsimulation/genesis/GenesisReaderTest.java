@@ -173,6 +173,20 @@ public class GenesisReaderTest {
       assertEquals(GenesisReaderTest_Algorithm.class, genesis.getAlgorithm());
    }
 
+   @Test
+   public void testAlgorithmParameters() throws Exception {
+      line("# comment");
+      line("0 algorithm-parameter a b");
+      line("0 algorithm-parameter c d");
+      line("300 end");
+      buildSut();
+
+      Genesis genesis = sut.read();
+
+      assertEquals("b", genesis.getAlgorithmConfiguration().get("a"));
+      assertEquals("d", genesis.getAlgorithmConfiguration().get("c"));
+   }
+
    @Test(expected = GenesisException.class)
    public void testNonMonotonic() throws Exception {
       line("# comment");
@@ -314,18 +328,6 @@ public class GenesisReaderTest {
    public void testAlgorithmNotzero() throws Exception {
       line("# comment");
       line("1 algorithm NOT_" + GenesisReaderTest_Algorithm.class.getName());
-      line("100 request 40 5");
-      line("110 request 40 50");
-      line("300 end");
-      buildSut();
-
-      sut.read();
-   }
-
-   @Test(expected = GenesisException.class)
-   public void testAlgorithmParameters() throws Exception {
-      line("# comment");
-      line("0 algorithm a b");
       line("100 request 40 5");
       line("110 request 40 50");
       line("300 end");
