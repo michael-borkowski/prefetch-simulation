@@ -33,12 +33,10 @@ public class Main {
 
       sim.executeToEnd();
 
-      System.err.println();
-      System.err.println();
-      System.err.println("RT:          " + profiling.getResponseTime());
-      System.err.println("DA:          " + profiling.getDataAge());
-      System.err.println("DV:          " + profiling.getDataVolume());
-      System.err.println("Hit Rate:    " + profiling.getCacheHits().getCount() + " / " + genesis.getRequests().size() + " (" + formatHitRate(profiling.getCacheHits().getCount(), genesis.getRequests().size()) + ")");
+      System.out.println("RT:          " + profiling.getResponseTime());
+      System.out.println("DA:          " + profiling.getDataAge());
+      System.out.println("DV:          " + profiling.getDataVolume());
+      System.out.println("Hit Rate:    " + profiling.getCacheHits().getCount() + " / " + genesis.getRequests().size() + " (" + formatHitRate(profiling.getCacheHits().getCount(), genesis.getRequests().size()) + ")");
    }
 
    private static String formatHitRate(long count, int size) {

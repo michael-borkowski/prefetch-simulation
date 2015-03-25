@@ -13,7 +13,7 @@ import at.borkowski.scovillej.simulation.Simulation;
 public class Main {
    public static void main(String[] args) throws IOException {
       InputStream genesisSource = System.in;
-      if (args.length > 1) {
+      if (args.length != 1) {
          usage();
          return;
       }
@@ -44,13 +44,15 @@ public class Main {
 
       if ("png".equals(command))
          Saver.savePNG(GenesisVisualiser.visualise(genesis), System.out);
-      if ("eps".equals(command))
+      else if ("eps".equals(command))
          Saver.saveEPS(GenesisVisualiser.visualise(genesis), System.out);
-      if ("tex-timeline".equals(command)) {
+      else if ("tex-timeline".equals(command)) {
          sim.executeToEnd();
          Saver.saveLaTeX(ResultVisualiser.visualise(genesis, profiling), System.out);
-      } else
+      } else {
+         System.err.println("Unknown operation: " + command);
          usage();
+      }
 
       sim.executeToEnd();
    }
