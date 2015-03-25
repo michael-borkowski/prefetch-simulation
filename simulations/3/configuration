@@ -1,13 +1,13 @@
 # This simulation uses ticks in the dimension of 1s
 
-seed 26031991001
+seed 26031991
 
 ticks 3600				# 1 * 3600 -> 1 hour
 byterate u/3000/5000			# 30-50 kB/s (up to 0.4 Mbit/s)
 slot-length 180				# slots have a length of ~3 minutes
 network-uptime 0.90			# 10% chance that a slot has 0 byterate
-relative-jitter 0			# 
-absolute-jitter 0			# 
+relative-jitter 0.05			# 
+absolute-jitter 100			# 
 prediction-time-accuracy 1.0		# temporal prediction accuracy 100%
 prediction-amplitude-accuracy 1.0	# amplitudinal prediction accuracy 100%
 look-ahead 3600				# look-ahead practically infinite
@@ -19,6 +19,7 @@ algorithm at.borkowski.prefetchsimulation.algorithms.RespectRatePredictionAlgori
 algorithm-parameter alpha 0.9
 
 request-series interval u/200/100 size ~/500000/60000 byterate ~/4000/100 start 1000 end 3500
+request-series interval u/200/10 size ~/50/6 byterate ~/400/10 start 100 end 3500
 
 #request tick 1590 data 1000 byterate 400
 #request tick 1890 data 1000 byterate 400
