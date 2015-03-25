@@ -30,6 +30,8 @@ public class GenesisWriter {
       Map<Long, Collection<String>> lines = new HashMap<>();
 
       add(lines, 0, GenesisReader.CMD_ALGORITHM, genesis.getAlgorithm().getName());
+      for (String key : genesis.getAlgorithmConfiguration().keySet())
+         add(lines, 0, GenesisReader.CMD_ALGORITHM_PARAMETER, key, genesis.getAlgorithmConfiguration().get(key));
       add(lines, 0, GenesisReader.CMD_LOOK_AHEAD, String.valueOf(genesis.getLookAheadTime()));
 
       addRates(lines, genesis.getRateReal(), GenesisReader.CMD_RATE_REAL);

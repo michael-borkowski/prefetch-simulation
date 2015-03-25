@@ -2,6 +2,7 @@ package at.borkowski.prefetchsimulation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
@@ -60,16 +61,26 @@ public class PrefetchSimulationBuilder {
    }
 
    public static PrefetchSimulationBuilder fromGenesis(Genesis genesis) {
+      return fromGenesis(genesis, getAlgorithm(genesis));
+   }
+
+   private static PrefetchAlgorithm getAlgorithm(Genesis genesis) {
+      try {
+         PrefetchAlgorithm algorithm = genesis.getAlgorithm().newInstance();
+         return algorithm;
+      } catch (InstantiationException | IllegalAccessException e) {
+         throw new RuntimeException(e);
+      }
+   }
+
+   private static PrefetchSimulationBuilder fromGenesis(Genesis genesis, PrefetchAlgorithm algorithm) {
       PrefetchSimulationBuilder builder = new PrefetchSimulationBuilder();
       builder.totalTicks(genesis.getTicks());
       builder.requests(genesis.getRequests());
       builder.limitsReal(genesis.getRateReal());
       builder.limitsPredicted(genesis.getRatePredicted());
-      try {
-         builder.algorithm(genesis.getAlgorithm().newInstance());
-      } catch (InstantiationException | IllegalAccessException e) {
-         throw new RuntimeException(e);
-      }
+      builder.algorithm(algorithm);
+      algorithm.configure(genesis.getAlgorithmConfiguration());
       builder.lookAheadTime(genesis.getLookAheadTime());
 
       return builder;
@@ -167,6 +178,10 @@ public class PrefetchSimulationBuilder {
       return this;
    }
 
+   public void algorithmConfiguration(HashMap<String, String> algorithmConfiguration) {
+      fetchClient.getFetchProcessor().getAlgorithm().configure(algorithmConfiguration);
+   }
+
    public PrefetchSimulationBuilder lookAheadTime(long lookAheadTime) {
       fetchClient.getFetchProcessor().setLookAheadTime(lookAheadTime);
       return this;
@@ -219,5 +234,13 @@ public class PrefetchSimulationBuilder {
 
    RatePredictionServiceProvider test__getRatePredictionServiceProvider() {
       return ratePredictionServiceProvider;
+   }
+
+   static PrefetchSimulationBuilder __test_fromGenesisMockAlgorithm(Genesis genesis, Mocker<PrefetchAlgorithm> mocker) {
+      return fromGenesis(genesis, mocker.mock(getAlgorithm(genesis)));
+   }
+
+   public interface Mocker<T> {
+      T mock(T t);
    }
 }

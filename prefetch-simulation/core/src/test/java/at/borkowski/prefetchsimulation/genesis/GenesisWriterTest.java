@@ -47,6 +47,7 @@ public class GenesisWriterTest {
       Map<Long, Integer> rateReal = new HashMap<>();
       Map<Long, Integer> ratePredicted = new HashMap<>();
       Class<? extends PrefetchAlgorithm> algorithm = IgnoreRatePredictionAlgorithm.class;
+      Map<String, String> algorithmConfiguration = new HashMap<>();
 
       rateReal.put(0L, 10);
       rateReal.put(1L, 11);
@@ -54,7 +55,7 @@ public class GenesisWriterTest {
       ratePredicted.put(2L, 20);
       ratePredicted.put(3L, 23);
 
-      sut.write(new Genesis(ticks, requests, rateReal, ratePredicted, algorithm, lookAhead));
+      sut.write(new Genesis(ticks, requests, rateReal, ratePredicted, algorithm, algorithmConfiguration, lookAhead));
 
       List<String> expected = new LinkedList<>();
       expected.add("0 algorithm " + IgnoreRatePredictionAlgorithm.class.getName());
@@ -78,12 +79,13 @@ public class GenesisWriterTest {
       Map<Long, Integer> rateReal = new HashMap<>();
       Map<Long, Integer> ratePredicted = new HashMap<>();
       Class<? extends PrefetchAlgorithm> algorithm = IgnoreRatePredictionAlgorithm.class;
+      Map<String, String> algorithmConfiguration = new HashMap<>();
 
       requests.add(new Request(10, 20, 30));
       requests.add(new Request(11, 21, 31));
       requests.add(new Request(21, 22, 32));
 
-      sut.write(new Genesis(ticks, requests, rateReal, ratePredicted, algorithm, lookAhead));
+      sut.write(new Genesis(ticks, requests, rateReal, ratePredicted, algorithm, algorithmConfiguration, lookAhead));
 
       List<String> expected = new LinkedList<>();
       expected.add("0 algorithm " + IgnoreRatePredictionAlgorithm.class.getName());
@@ -91,6 +93,34 @@ public class GenesisWriterTest {
       expected.add("10 request 20 30");
       expected.add("11 request 21 31");
       expected.add("21 request 22 32");
+      expected.add("9999 end");
+      String[] expectedArray = expected.toArray(new String[0]);
+
+      assertArrayEquals(expectedArray, parse());
+   }
+
+   @Test
+   public void testAlgorithmConfiguration() throws IOException {
+      long ticks = 10000;
+      long lookAhead = 8000;
+      List<Request> requests = new LinkedList<>();
+      Map<Long, Integer> rateReal = new HashMap<>();
+      Map<Long, Integer> ratePredicted = new HashMap<>();
+      Class<? extends PrefetchAlgorithm> algorithm = IgnoreRatePredictionAlgorithm.class;
+      Map<String, String> algorithmConfiguration = new HashMap<>();
+
+      algorithmConfiguration.put("key1", "value1");
+      algorithmConfiguration.put("key2", "value2");
+      algorithmConfiguration.put("key3", "value3");
+
+      sut.write(new Genesis(ticks, requests, rateReal, ratePredicted, algorithm, algorithmConfiguration, lookAhead));
+
+      List<String> expected = new LinkedList<>();
+      expected.add("0 algorithm " + IgnoreRatePredictionAlgorithm.class.getName());
+      expected.add("0 algorithm-parameter key1 value1");
+      expected.add("0 algorithm-parameter key2 value2");
+      expected.add("0 algorithm-parameter key3 value3");
+      expected.add("0 look-ahead 8000");
       expected.add("9999 end");
       String[] expectedArray = expected.toArray(new String[0]);
 

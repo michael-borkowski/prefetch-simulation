@@ -23,6 +23,7 @@ public class GenesisReader {
    public static final String CMD_RATE_REAL = "rate-real";
    public static final String CMD_RATE_PREDICTION = "rate-prediction";
    public static final String CMD_ALGORITHM = "algorithm";
+   public static final String CMD_ALGORITHM_PARAMETER = "algorithm-parameter";
    public static final String CMD_LOOK_AHEAD = "look-ahead";
 
    public GenesisReader(InputStream input) {
@@ -38,6 +39,7 @@ public class GenesisReader {
       Map<Long, Integer> real = new HashMap<>();
       Map<Long, Integer> predicted = new HashMap<>();
       Class<? extends PrefetchAlgorithm> algorithm = NullAlgorithm.class;
+      Map<String, String> algorithmConfiguration = new HashMap<>();
 
       Long lookAhead = null;
 
@@ -80,6 +82,8 @@ public class GenesisReader {
             parseRate(tick, lineCounter, CMD_RATE_PREDICTION, predicted, split);
          else if (split[1].equals(CMD_ALGORITHM))
             algorithm = parseAlgorithm(tick, lineCounter, split);
+         else if (split[1].equals(CMD_ALGORITHM_PARAMETER))
+            parseAlgorithmParam(tick, lineCounter, split, algorithmConfiguration);
          else if (split[1].equals(CMD_LOOK_AHEAD))
             lookAhead = parseLookAhead(tick, lineCounter, split);
          else
@@ -94,7 +98,18 @@ public class GenesisReader {
       if (lookAhead == null)
          lookAhead = end + 1;
 
-      return new Genesis(end + 1, requests, real, predicted, algorithm, lookAhead);
+      return new Genesis(end + 1, requests, real, predicted, algorithm, algorithmConfiguration, lookAhead);
+   }
+
+   private void parseAlgorithmParam(long tick, int lineCounter, String[] split, Map<String, String> algorithmConfiguration) throws GenesisException {
+      if (tick != 0)
+         throw new GenesisException("line " + lineCounter + ": algorithm parameters must be set at tick 0");
+      if (split.length != 4)
+         throw new GenesisException("line " + lineCounter + ": usage is \"0 " + CMD_ALGORITHM_PARAMETER + " <key> <value>");
+
+      String k = split[2];
+      String v = split[2];
+      algorithmConfiguration.put(k, v);
    }
 
    private Long parseLookAhead(long tick, int lineCounter, String[] split) throws GenesisException {

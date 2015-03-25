@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +15,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import at.borkowski.prefetchsimulation.PrefetchSimulationBuilder.Mocker;
 import at.borkowski.prefetchsimulation.algorithms.NullAlgorithm;
 import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
@@ -25,12 +28,15 @@ public class PrefetchSimulationBuilderTest {
    PrefetchSimulationBuilder sut;
 
    Class<? extends PrefetchAlgorithm> algorithm;
+   HashMap<String, String> algorithmConfiguration = new HashMap<>();
 
    HashMap<Long, Integer> limitsReal = new HashMap<>();
    HashMap<Long, Integer> limitsPredicted = new HashMap<>();
    Request request0;
    List<Request> requests = new LinkedList<>();
    List<Request> allRequests = new LinkedList<>();
+
+   PrefetchAlgorithm algorithmInstance;
 
    @Before
    public void setUp() throws Exception {
@@ -51,7 +57,8 @@ public class PrefetchSimulationBuilderTest {
 
    @Test
    public void test() throws InstantiationException, IllegalAccessException {
-      sut.algorithm(algorithm.newInstance());
+      sut.algorithm(algorithmInstance = spy(algorithm.newInstance()));
+      sut.algorithmConfiguration(algorithmConfiguration);
       sut.limitReal(13);
       sut.limitsReal(limitsReal);
       sut.limitsPredicted(limitsPredicted);
@@ -63,7 +70,8 @@ public class PrefetchSimulationBuilderTest {
 
       assertNotNull(sut.getProfiling());
 
-      assertSame(algorithm, sut.test__getFetchClient().getFetchProcessor().getAlgorithm().getClass());
+      assertSame(algorithmInstance.getClass(), sut.test__getFetchClient().getFetchProcessor().getAlgorithm().getClass());
+      verify(algorithmInstance).configure(algorithmConfiguration);
       assertEquals(13, sut.test__getCommunicationService().getService().getUplinkRate(sut.test__getSocketName()).intValue());
       assertEquals(13, sut.test__getCommunicationService().getService().getDownlinkRate(sut.test__getSocketName()).intValue());
 
@@ -75,7 +83,7 @@ public class PrefetchSimulationBuilderTest {
       assertEquals(null, ratePredictionService.predict(0));
       assertEquals(null, ratePredictionService.predict(9));
       assertEquals(95, ratePredictionService.predict(10).intValue());
-      
+
       event.executePhase(null);
       assertEquals(100, sut.test__getCommunicationService().getService().getUplinkRate(sut.test__getSocketName()).intValue());
       assertEquals(100, sut.test__getCommunicationService().getService().getDownlinkRate(sut.test__getSocketName()).intValue());
@@ -91,17 +99,18 @@ public class PrefetchSimulationBuilderTest {
       }
       assertEquals(10000, simulation.getTotalTicks());
    }
-   
+
    @Test
    public void testFromGenesis() {
-      Genesis genesis = new Genesis(10000, allRequests, limitsReal, limitsPredicted, algorithm, 5000);
-      PrefetchSimulationBuilder sut = PrefetchSimulationBuilder.fromGenesis(genesis);
+      Genesis genesis = new Genesis(10000, allRequests, limitsReal, limitsPredicted, algorithm, algorithmConfiguration, 5000);
+      PrefetchSimulationBuilder sut = PrefetchSimulationBuilder.__test_fromGenesisMockAlgorithm(genesis, spyAlgorithm());
+      algorithmInstance = sut.test__getFetchClient().getFetchProcessor().getAlgorithm();
       sut.limitReal(13);
       Simulation simulation = sut.create();
 
       assertNotNull(sut.getProfiling());
 
-      assertSame(algorithm, sut.test__getFetchClient().getFetchProcessor().getAlgorithm().getClass());
+      verify(algorithmInstance).configure(algorithmConfiguration);
       assertEquals(5000, sut.test__getFetchClient().getFetchProcessor().getLookAheadTime());
       assertEquals(13, sut.test__getCommunicationService().getService().getUplinkRate(sut.test__getSocketName()).intValue());
       assertEquals(13, sut.test__getCommunicationService().getService().getDownlinkRate(sut.test__getSocketName()).intValue());
@@ -114,7 +123,7 @@ public class PrefetchSimulationBuilderTest {
       assertEquals(null, ratePredictionService.predict(0));
       assertEquals(null, ratePredictionService.predict(9));
       assertEquals(95, ratePredictionService.predict(10).intValue());
-      
+
       event.executePhase(null);
       assertEquals(100, sut.test__getCommunicationService().getService().getUplinkRate(sut.test__getSocketName()).intValue());
       assertEquals(100, sut.test__getCommunicationService().getService().getDownlinkRate(sut.test__getSocketName()).intValue());
@@ -129,5 +138,14 @@ public class PrefetchSimulationBuilderTest {
          assertTrue(found);
       }
       assertEquals(10000, simulation.getTotalTicks());
+   }
+
+   private Mocker<PrefetchAlgorithm> spyAlgorithm() {
+      return new Mocker<PrefetchAlgorithm>() {
+         @Override
+         public PrefetchAlgorithm mock(PrefetchAlgorithm t) {
+            return spy(t);
+         }
+      };
    }
 }
