@@ -35,6 +35,28 @@ public class ResultVisualiser {
    public static final double SPAN_PADDING_RIGHT = 0.1;
    public static final double SPAN_ARROW_LENGTH = 0.5;
 
+   public static final String STYLE_REAL = "blue";
+   public static final String STYLE_PREDICTED = "blue,densely dotted";
+
+   public static final double LEGEND_WIDTH = 3.53;
+   public static final double LEGEND_HEIGHT = 2.0;
+   public static final double LEGEND_X = 12;
+   public static final double LEGEND_Y = 8.3;
+
+   public static final double LEGEND_PADDING_X = 0.2;
+   public static final double LEGEND_PADDING_Y = 0.2;
+   public static final double LEGEND_BOX_SIZE = 0.2;
+   public static final double LEGEND_COL1_WIDTH = 1.4;
+   public static final double LEGEND_ROW_HEIGHT = 0.3;
+
+   public static final String REQ_CACHE_HIT_STYLE = "fill=green!10, draw=green!30,fill opacity=0.5";
+   public static final String REQ_CACHE_MISS_STYLE = "fill=yellow!10, draw=yellow!30,fill opacity=0.5";
+   public static final String REQ_UNFINISHED_STYLE = "fill=red!10, draw=red!30,fill opacity=0.5";
+
+   public static final String REQ_CACHE_HIT_TEXT_STYLE = "text=green!60";
+   public static final String REQ_CACHE_MISS_TEXT_STYLE = "text=orange!40";
+   public static final String REQ_UNFINISHED_TEXT_STYLE = "text=red!60";
+
    private final Genesis genesis;
    private final PrefetchProfilingResults results;
    private final List<String> lines;
@@ -81,10 +103,12 @@ public class ResultVisualiser {
    LaTeXVisualisationResult visualise() {
       createGenesisRequests(genesis.getRequests());
 
-      createRates(genesis.getRateReal(), "blue,thick");
-      createRates(genesis.getRatePredicted(), "orange");
+      createRates(genesis.getRateReal(), STYLE_REAL);
+      createRates(genesis.getRatePredicted(), STYLE_PREDICTED);
 
       createSpans(genesis.getRequests());
+
+      createLegend();
 
       createFooter();
 
@@ -189,6 +213,52 @@ public class ResultVisualiser {
       return s.substring(0, 3);
    }
 
+   private void createLegend() {
+      lines.add("\\filldraw[fill=white, draw=black] (" + LEGEND_X + "," + LEGEND_Y + ") rectangle (" + (LEGEND_X + LEGEND_WIDTH) + "," + (LEGEND_Y + LEGEND_HEIGHT) + ");");
+
+      double y = LEGEND_Y + LEGEND_HEIGHT - LEGEND_PADDING_Y;
+      double box_x = LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH / 2 - LEGEND_BOX_SIZE / 2;
+
+      lines.add("\\filldraw[" + REQ_CACHE_HIT_STYLE + "] (" + box_x + "," + y + ") rectangle (" + (box_x + LEGEND_BOX_SIZE) + "," + (y - LEGEND_BOX_SIZE) + ");");
+      lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{Cache Hit}};");
+      y -= LEGEND_ROW_HEIGHT;
+
+      lines.add("\\filldraw[" + REQ_CACHE_MISS_STYLE + "] (" + box_x + "," + y + ") rectangle (" + (box_x + LEGEND_BOX_SIZE) + "," + (y - LEGEND_BOX_SIZE) + ");");
+      lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{Cache Miss}};");
+      y -= LEGEND_ROW_HEIGHT;
+
+      lines.add("\\filldraw[" + REQ_UNFINISHED_STYLE + "] (" + box_x + "," + y + ") rectangle (" + (box_x + LEGEND_BOX_SIZE) + "," + (y - LEGEND_BOX_SIZE) + ");");
+      lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{Unfinished}};");
+      y -= LEGEND_ROW_HEIGHT;
+
+      double xspace = LEGEND_COL1_WIDTH - LEGEND_PADDING_X;
+      double x1 = LEGEND_X + 1.5 * LEGEND_PADDING_X + 0 * xspace / 3;
+      double x2 = LEGEND_X + 1.5 * LEGEND_PADDING_X + 1 * xspace / 3;
+      double x3 = LEGEND_X + 1.5 * LEGEND_PADDING_X + 2 * xspace / 3;
+      double x4 = LEGEND_X + 1.5 * LEGEND_PADDING_X + 3 * xspace / 3;
+
+      lines.add("\\draw[" + STYLE_REAL + "] (" + x2 + "," + (y - LEGEND_BOX_SIZE / 2) + ") -- (" + x3 + "," + (y - LEGEND_BOX_SIZE / 2) + ");");
+      lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{Real Bandwidth}};");
+      y -= LEGEND_ROW_HEIGHT;
+      lines.add("\\draw[" + STYLE_PREDICTED + "] (" + x2 + "," + (y - LEGEND_BOX_SIZE / 2) + ") -- (" + x3 + "," + (y - LEGEND_BOX_SIZE / 2) + ");");
+      lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{Prediction}};");
+      y -= LEGEND_ROW_HEIGHT;
+
+      lines.add("\\draw[densely dotted] (" + x1 + "," + (y + TICK_LENGTH) + ") -- (" + x1 + "," + (y - TICK_LENGTH) + ");");
+      lines.add("\\draw[densely dotted] (" + x4 + "," + (y + TICK_LENGTH) + ") -- (" + x4 + "," + (y - TICK_LENGTH) + ");");
+      lines.add("\\draw[densely dotted] (" + x1 + "," + y + ") -- (" + x4 + "," + y + ");");
+      lines.add("\\draw (" + x2 + "," + (y + TICK_LENGTH) + ") -- (" + x2 + "," + (y - TICK_LENGTH) + ");");
+      lines.add("\\draw (" + x3 + "," + (y + TICK_LENGTH) + ") -- (" + x3 + "," + (y - TICK_LENGTH) + ");");
+      lines.add("\\draw (" + x2 + "," + y + ") -- (" + x3 + "," + y + ");");
+      lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{Request Timing}};");
+
+      y -= LEGEND_ROW_HEIGHT * 1.2;
+      lines.add("\\node[anchor=south] at (" + x1 + "," + y + ") {\\tiny{$\\lambda$}};");
+      lines.add("\\node[anchor=south] at (" + x4 + "," + y + ") {\\tiny{$\\tau$}};");
+      lines.add("\\node[anchor=south] at (" + (x2 + x3) / 2 + "," + y + ") {\\scalebox{.4}{transmit}};");
+
+   }
+
    private void createHeader() {
       lines.add("\\documentclass{standalone}");
       lines.add("\\usepackage{tikz}");
@@ -218,12 +288,12 @@ public class ResultVisualiser {
          double yLevel = SPAN_OFFSET + SPAN_HEIGHT * level;
 
          double xPlanTo = OFFSET_X + xS * planTo;
-         lines.add("\\draw[dotted] (" + xPlanTo + "," + (yLevel - TICK_LENGTH) + ") -- (" + xPlanTo + "," + (yLevel + TICK_LENGTH) + ");"); // node[anchor=south] {\\tiny$\\tau$};");
+         lines.add("\\draw[densely dotted] (" + xPlanTo + "," + (yLevel - TICK_LENGTH) + ") -- (" + xPlanTo + "," + (yLevel + TICK_LENGTH) + ");"); // node[anchor=south] {\\tiny$\\tau$};");
 
          if (planFrom != null) {
             double xPlanFrom = OFFSET_X + xS * planFrom;
-            lines.add("\\draw[dotted] (" + xPlanFrom + "," + (yLevel - TICK_LENGTH) + ") -- (" + xPlanFrom + "," + (yLevel + TICK_LENGTH) + ");"); // node[anchor=south] {\\tiny$\\lambda$};");
-            lines.add("\\draw[dotted] (" + xPlanFrom + "," + yLevel + ") -- (" + xPlanTo + "," + yLevel + ");");
+            lines.add("\\draw[densely dotted] (" + xPlanFrom + "," + (yLevel - TICK_LENGTH) + ") -- (" + xPlanFrom + "," + (yLevel + TICK_LENGTH) + ");"); // node[anchor=south] {\\tiny$\\lambda$};");
+            lines.add("\\draw[densely dotted] (" + xPlanFrom + "," + yLevel + ") -- (" + xPlanTo + "," + yLevel + ");");
          }
 
          if (wasFrom != null) {
@@ -255,22 +325,19 @@ public class ResultVisualiser {
          double xMid = (xStart + xEnd) / 2;
          double yTop = OFFSET_Y + yS * request.getAvailableByterate();
 
-         String fillColor, drawColor, textColor;
+         String style, textStyle;
          if (cacheHits.contains(request)) {
-            fillColor = "green!10";
-            drawColor = "green!30";
-            textColor = "green!80!black";
+            style = REQ_CACHE_HIT_STYLE;
+            textStyle = REQ_CACHE_HIT_TEXT_STYLE;
          } else if (isTolerable(request)) {
-            fillColor = "yellow!10";
-            drawColor = "yellow!30";
-            textColor = "yellow!80!black";
+            style = REQ_CACHE_MISS_STYLE;
+            textStyle = REQ_CACHE_MISS_TEXT_STYLE;
          } else {
-            fillColor = "red!10";
-            drawColor = "red!30";
-            textColor = "red!80!black";
+            style = REQ_UNFINISHED_STYLE;
+            textStyle = REQ_UNFINISHED_TEXT_STYLE;
          }
-         lines.add("\\filldraw[fill=" + fillColor + ", draw=" + drawColor + ",fill opacity=0.5] (" + xStart + "," + OFFSET_Y + ") rectangle (" + xEnd + "," + yTop + ");");
-         lines.add("\\node[" + textColor + ", anchor=south] at (" + xMid + "," + yTop + ") {\\tiny\\texttt{" + names.get(request) + "}};");
+         lines.add("\\filldraw[" + style + "] (" + xStart + "," + OFFSET_Y + ") rectangle (" + xEnd + "," + yTop + ");");
+         lines.add("\\node[anchor=south," + textStyle + "] at (" + xMid + "," + yTop + ") {\\tiny\\texttt{" + names.get(request) + "}};");
       }
    }
 
