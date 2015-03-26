@@ -195,7 +195,7 @@ public class GenesisGenerator {
             predictionTick = tick + absoluteTime + (long) (relativeTime * slotLength.getMean());
          }
 
-         predictionTick = Math.max(0, Math.min(totalTicks, predictionTick));
+         predictionTick = clamp(0, predictionTick, totalTicks - 1);
 
          double relativeAmplitude = this.relativePredictionAmplitudeAccuracy.getValue(randomAccuracy);
          int absoluteAmplitude = this.absolutePredictionAmplitudeAccuracy.getValue(randomAccuracy);
