@@ -5,56 +5,53 @@ import java.io.InputStream;
 
 import at.borkowski.prefetchsimulation.PrefetchSimulationBuilder;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
-import at.borkowski.prefetchsimulation.genesis.GenesisException;
 import at.borkowski.prefetchsimulation.genesis.GenesisReader;
 import at.borkowski.prefetchsimulation.profiling.PrefetchProfilingResults;
 import at.borkowski.scovillej.simulation.Simulation;
 
 public class Main {
    public static void main(String[] args) throws IOException {
-      InputStream genesisSource = System.in;
-      if (args.length != 1) {
-         usage();
-         return;
-      }
-
-      Genesis genesis = null;
-
       try {
-         genesis = new GenesisReader(genesisSource).read();
-      } catch (IOException | GenesisException cEx) {
-         cEx.printStackTrace();
-         return;
-      } finally {
-         if (genesisSource != System.in) {
-            try {
-               genesisSource.close();
-            } catch (IOException e) {
-               e.printStackTrace();
-               return;
-            }
+         InputStream genesisSource = System.in;
+         if (args.length != 1) {
+            usage();
+            System.exit(1);
+            return;
          }
-      }
 
-      PrefetchSimulationBuilder builder = PrefetchSimulationBuilder.fromGenesis(genesis);
-      Simulation sim = builder.create();
-      PrefetchProfilingResults profiling = builder.getProfiling();
+         Genesis genesis = null;
 
-      String command = args[0];
+         try {
+            genesis = new GenesisReader(genesisSource).read();
+         } finally {
+            if (genesisSource != System.in)
+               genesisSource.close();
+         }
 
-      if ("png".equals(command))
-         Saver.savePNG(GenesisVisualiser.visualise(genesis), System.out);
-      else if ("eps".equals(command))
-         Saver.saveEPS(GenesisVisualiser.visualise(genesis), System.out);
-      else if ("tex-timeline".equals(command)) {
+         PrefetchSimulationBuilder builder = PrefetchSimulationBuilder.fromGenesis(genesis);
+         Simulation sim = builder.create();
+         PrefetchProfilingResults profiling = builder.getProfiling();
+
+         String command = args[0];
+
+         if ("png".equals(command))
+            Saver.savePNG(GenesisVisualiser.visualise(genesis), System.out);
+         else if ("eps".equals(command))
+            Saver.saveEPS(GenesisVisualiser.visualise(genesis), System.out);
+         else if ("tex-timeline".equals(command)) {
+            sim.executeToEnd();
+            Saver.saveLaTeX(ResultVisualiser.visualise(genesis, profiling), System.out);
+         } else {
+            System.err.println("Unknown operation: " + command);
+            usage();
+         }
+
          sim.executeToEnd();
-         Saver.saveLaTeX(ResultVisualiser.visualise(genesis, profiling), System.out);
-      } else {
-         System.err.println("Unknown operation: " + command);
-         usage();
+      } catch (Throwable t) {
+         System.err.println(t);
+         t.printStackTrace();
+         System.exit(1);
       }
-
-      sim.executeToEnd();
    }
 
    private static void usage() {

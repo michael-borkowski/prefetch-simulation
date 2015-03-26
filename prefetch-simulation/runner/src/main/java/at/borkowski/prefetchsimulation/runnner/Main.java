@@ -13,30 +13,37 @@ import at.borkowski.scovillej.simulation.Simulation;
 public class Main {
 
    public static void main(String[] args) throws IOException {
-      if (args.length != 0) {
-         System.err.println("No operations supported");
-         return;
-      }
-
-      Genesis genesis = null;
-
       try {
-         genesis = new GenesisReader(System.in).read();
-      } catch (IOException | GenesisException cEx) {
-         cEx.printStackTrace();
-         return;
+         if (args.length != 0) {
+            System.err.println("No operations supported");
+            System.exit(1);
+            return;
+         }
+
+         Genesis genesis = null;
+
+         try {
+            genesis = new GenesisReader(System.in).read();
+         } catch (IOException | GenesisException cEx) {
+            cEx.printStackTrace();
+            return;
+         }
+
+         PrefetchSimulationBuilder builder = PrefetchSimulationBuilder.fromGenesis(genesis);
+         Simulation sim = builder.create();
+         PrefetchProfilingResults profiling = builder.getProfiling();
+
+         sim.executeToEnd();
+
+         System.out.println("RT:          " + profiling.getResponseTime());
+         System.out.println("DA:          " + profiling.getDataAge());
+         System.out.println("DV:          " + profiling.getDataVolume());
+         System.out.println("Hit Rate:    " + profiling.getCacheHits().getCount() + " / " + genesis.getRequests().size() + " (" + formatHitRate(profiling.getCacheHits().getCount(), genesis.getRequests().size()) + ")");
+      } catch (Throwable t) {
+         System.err.println(t);
+         t.printStackTrace();
+         System.exit(1);
       }
-
-      PrefetchSimulationBuilder builder = PrefetchSimulationBuilder.fromGenesis(genesis);
-      Simulation sim = builder.create();
-      PrefetchProfilingResults profiling = builder.getProfiling();
-
-      sim.executeToEnd();
-
-      System.out.println("RT:          " + profiling.getResponseTime());
-      System.out.println("DA:          " + profiling.getDataAge());
-      System.out.println("DV:          " + profiling.getDataVolume());
-      System.out.println("Hit Rate:    " + profiling.getCacheHits().getCount() + " / " + genesis.getRequests().size() + " (" + formatHitRate(profiling.getCacheHits().getCount(), genesis.getRequests().size()) + ")");
    }
 
    private static String formatHitRate(long count, int size) {
