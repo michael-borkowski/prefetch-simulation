@@ -68,8 +68,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("relative-prediction-time-accuracy 0.5");
-      line("relative-prediction-amplitude-accuracy 0.8");
+      line("relative-prediction-time-error 0.5");
+      line("relative-prediction-amplitude-error 0.8");
       line("absolute-prediction-time-error 400");
       line("absolute-prediction-amplitude-error -20");
       line("algorithm " + IgnoreRatePredictionAlgorithm.class.getName());
@@ -84,10 +84,10 @@ public class ConfigurationReaderTest {
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
       assertEquals(0.1, configuration.getRelativeJitter().getMean().doubleValue(), 0.00001);
       assertEquals(13, configuration.getAbsoluteJitter().getMean().intValue());
-      assertEquals(0.5, configuration.getRelativePredictionTimeAccuracy().getMean(), 0.00001);
-      assertEquals(0.8, configuration.getRelativePredictionAmplitudeAccuracy().getMean(), 0.00001);
-      assertEquals(400, configuration.getAbsolutePredictionTimeAccuracy().getMean().longValue());
-      assertEquals(-20, configuration.getAbsolutePredictionAmplitudeAccuracy().getMean().intValue());
+      assertEquals(0.5, configuration.getRelativePredictionTimeError().getMean(), 0.00001);
+      assertEquals(0.8, configuration.getRelativePredictionAmplitudeError().getMean(), 0.00001);
+      assertEquals(400, configuration.getAbsolutePredictionTimeError().getMean().longValue());
+      assertEquals(-20, configuration.getAbsolutePredictionAmplitudeError().getMean().intValue());
       assertEquals(1, configuration.getLookAheadTime());
       assertEquals(IgnoreRatePredictionAlgorithm.class, configuration.getAlgorithm());
    }
@@ -100,8 +100,8 @@ public class ConfigurationReaderTest {
       line("\t   \tnetwork-uptime     0.95");
       line("relative-jitter\t0.1");
       line("\tabsolute-jitter  \t13");
-      line("relative-prediction-time-accuracy 0.5");
-      line("\t  \trelative-prediction-amplitude-accuracy   \t 0.8");
+      line("relative-prediction-time-error 0.5");
+      line("\t  \trelative-prediction-amplitude-error   \t 0.8");
       line("\t\tabsolute-prediction-time-error\t400");
       line("      \t absolute-prediction-amplitude-error\t\t-20");
       line("look-ahead 1");
@@ -115,10 +115,10 @@ public class ConfigurationReaderTest {
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
       assertEquals(0.1, configuration.getRelativeJitter().getMean().doubleValue(), 0.00001);
       assertEquals(13, configuration.getAbsoluteJitter().getMean().intValue());
-      assertEquals(0.5, configuration.getRelativePredictionTimeAccuracy().getMean(), 0.00001);
-      assertEquals(0.8, configuration.getRelativePredictionAmplitudeAccuracy().getMean(), 0.00001);
-      assertEquals(400, configuration.getAbsolutePredictionTimeAccuracy().getMean().longValue());
-      assertEquals(-20, configuration.getAbsolutePredictionAmplitudeAccuracy().getMean().intValue());
+      assertEquals(0.5, configuration.getRelativePredictionTimeError().getMean(), 0.00001);
+      assertEquals(0.8, configuration.getRelativePredictionAmplitudeError().getMean(), 0.00001);
+      assertEquals(400, configuration.getAbsolutePredictionTimeError().getMean().longValue());
+      assertEquals(-20, configuration.getAbsolutePredictionAmplitudeError().getMean().intValue());
       assertEquals(1, configuration.getLookAheadTime());
    }
 
@@ -130,8 +130,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("relative-prediction-time-accuracy 0.5");
-      line("relative-prediction-amplitude-accuracy 0.8");
+      line("relative-prediction-time-error 0.5");
+      line("relative-prediction-amplitude-error 0.8");
       line("absolute-prediction-time-error 400");
       line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
@@ -173,8 +173,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("relative-prediction-time-accuracy 0.5");
-      line("relative-prediction-amplitude-accuracy 0.8");
+      line("relative-prediction-time-error 0.5");
+      line("relative-prediction-amplitude-error 0.8");
       line("absolute-prediction-time-error 400");
       line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
@@ -196,8 +196,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("relative-prediction-time-accuracy 0.5");
-      line("relative-prediction-amplitude-accuracy 0.8");
+      line("relative-prediction-time-error 0.5");
+      line("relative-prediction-amplitude-error 0.8");
       line("absolute-prediction-time-error 400");
       line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
@@ -217,8 +217,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("relative-prediction-time-accuracy 0.5");
-      line("relative-prediction-amplitude-accuracy 0.8");
+      line("relative-prediction-time-error 0.5");
+      line("relative-prediction-amplitude-error 0.8");
       line("absolute-prediction-time-error 400");
       line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
@@ -246,8 +246,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("relative-prediction-time-accuracy 0.5");
-      line("relative-prediction-amplitude-accuracy 0.8");
+      line("relative-prediction-time-error 0.5");
+      line("relative-prediction-amplitude-error 0.8");
       line("absolute-prediction-time-error 400");
       line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
@@ -275,8 +275,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("relative-prediction-time-accuracy 0.5");
-      line("relative-prediction-amplitude-accuracy 0.8");
+      line("relative-prediction-time-error 0.5");
+      line("relative-prediction-amplitude-error 0.8");
       line("absolute-prediction-time-error 400");
       line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
@@ -304,8 +304,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("relative-prediction-time-accuracy n/0/0.12");
-      line("relative-prediction-amplitude-accuracy n/-0.8/0.2");
+      line("relative-prediction-time-error n/0/0.12");
+      line("relative-prediction-amplitude-error n/-0.8/0.2");
       line("absolute-prediction-time-error u/350/450");
       line("absolute-prediction-amplitude-error u/-20/-10");
       line("look-ahead 1");
@@ -333,8 +333,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter u/0.1/0.3");
       line("absolute-jitter u/11/13");
-      line("relative-prediction-time-accuracy n/0/0.12");
-      line("relative-prediction-amplitude-accuracy n/-0.8/0.2");
+      line("relative-prediction-time-error n/0/0.12");
+      line("relative-prediction-amplitude-error n/-0.8/0.2");
       line("absolute-prediction-time-error u/350/450");
       line("absolute-prediction-amplitude-error u/-20/-10");
       line("look-ahead 1");
@@ -350,10 +350,10 @@ public class ConfigurationReaderTest {
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
       assertEquals(0.2, configuration.getRelativeJitter().getMean().doubleValue(), 0.00001);
       assertEquals(12, configuration.getAbsoluteJitter().getMean().intValue());
-      assertEquals(0, configuration.getRelativePredictionTimeAccuracy().getMean(), 0.00001);
-      assertEquals(-0.8, configuration.getRelativePredictionAmplitudeAccuracy().getMean(), 0.00001);
-      assertEquals(400, configuration.getAbsolutePredictionTimeAccuracy().getMean().longValue());
-      assertEquals(-15, configuration.getAbsolutePredictionAmplitudeAccuracy().getMean().intValue());
+      assertEquals(0, configuration.getRelativePredictionTimeError().getMean(), 0.00001);
+      assertEquals(-0.8, configuration.getRelativePredictionAmplitudeError().getMean(), 0.00001);
+      assertEquals(400, configuration.getAbsolutePredictionTimeError().getMean().longValue());
+      assertEquals(-15, configuration.getAbsolutePredictionAmplitudeError().getMean().intValue());
       assertEquals(1, configuration.getLookAheadTime());
    }
 
@@ -365,8 +365,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("relative-prediction-time-accuracy 0.5");
-      line("relative-prediction-amplitude-accuracy 0.8");
+      line("relative-prediction-time-error 0.5");
+      line("relative-prediction-amplitude-error 0.8");
       line("absolute-prediction-time-error 400");
       line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
@@ -392,8 +392,8 @@ public class ConfigurationReaderTest {
       line("network-uptime 0.95");
       line("relative-jitter 0.1");
       line("absolute-jitter 13");
-      line("relative-prediction-time-accuracy 0.5");
-      line("relative-prediction-amplitude-accuracy 0.8");
+      line("relative-prediction-time-error 0.5");
+      line("relative-prediction-amplitude-error 0.8");
       line("absolute-prediction-time-error 400");
       line("absolute-prediction-amplitude-error -20");
       line("algorithm " + IgnoreRatePredictionAlgorithm.class.getName());

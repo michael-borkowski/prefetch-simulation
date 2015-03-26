@@ -13,10 +13,10 @@ public class Configuration {
    private final Distribution<Integer> byterate;
    private final Distribution<Integer> absoluteJitter;
    private final double networkUptime;
-   private final Distribution<Double> relativePredictionTimeAccuracy;
-   private final Distribution<Double> relativePredictionAmplitudeAccuracy;
-   private final Distribution<Long> absolutePredictionTimeAccuracy;
-   private final Distribution<Integer> absolutePredictionAmplitudeAccuracy;
+   private final Distribution<Double> relativePredictionTimeError;
+   private final Distribution<Double> relativePredictionAmplitudeError;
+   private final Distribution<Long> absolutePredictionTimeError;
+   private final Distribution<Integer> absolutePredictionAmplitudeError;
    Distribution<Double> relativeJitter;
    private final Collection<RequestSeries> recurringRequestSeries;
    private final Collection<Request> intermittentRequests;
@@ -25,17 +25,17 @@ public class Configuration {
 
    private Long seed;
 
-   public Configuration(long totalTicks, Distribution<Integer> byterate, Distribution<Long> slotLength, double networkUptime, Distribution<Double> relativeJitter, Distribution<Integer> absoluteJitter, Distribution<Double> relativePredictionTimeAccuracy, Distribution<Double> relativePredictionAmplitudeAccuracy, Distribution<Long> absolutePredictionTimeAccuracy, Distribution<Integer> absolutePredictionAmplitudeAccuracy, Collection<RequestSeries> recurringRequestSeries, Collection<Request> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm, Map<String, String> algorithmConfiguration, long lookAheadTime) {
+   public Configuration(long totalTicks, Distribution<Integer> byterate, Distribution<Long> slotLength, double networkUptime, Distribution<Double> relativeJitter, Distribution<Integer> absoluteJitter, Distribution<Double> relativePredictionTimeError, Distribution<Double> relativePredictionAmplitudeError, Distribution<Long> absolutePredictionTimeError, Distribution<Integer> absolutePredictionAmplitudeError, Collection<RequestSeries> recurringRequestSeries, Collection<Request> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm, Map<String, String> algorithmConfiguration, long lookAheadTime) {
       this.totalTicks = totalTicks;
       this.byterate = byterate;
       this.slotLength = slotLength;
       this.networkUptime = networkUptime;
       this.relativeJitter = relativeJitter;
       this.absoluteJitter = absoluteJitter;
-      this.relativePredictionTimeAccuracy = relativePredictionTimeAccuracy;
-      this.relativePredictionAmplitudeAccuracy = relativePredictionAmplitudeAccuracy;
-      this.absolutePredictionTimeAccuracy = absolutePredictionTimeAccuracy;
-      this.absolutePredictionAmplitudeAccuracy = absolutePredictionAmplitudeAccuracy;
+      this.relativePredictionTimeError = relativePredictionTimeError;
+      this.relativePredictionAmplitudeError = relativePredictionAmplitudeError;
+      this.absolutePredictionTimeError = absolutePredictionTimeError;
+      this.absolutePredictionAmplitudeError = absolutePredictionAmplitudeError;
       this.recurringRequestSeries = recurringRequestSeries;
       this.intermittentRequests = intermittentRequests;
       this.algorithm = algorithm;
@@ -79,20 +79,20 @@ public class Configuration {
       return networkUptime;
    }
 
-   public Distribution<Integer> getAbsolutePredictionAmplitudeAccuracy() {
-      return absolutePredictionAmplitudeAccuracy;
+   public Distribution<Integer> getAbsolutePredictionAmplitudeError() {
+      return absolutePredictionAmplitudeError;
    }
 
-   public Distribution<Long> getAbsolutePredictionTimeAccuracy() {
-      return absolutePredictionTimeAccuracy;
+   public Distribution<Long> getAbsolutePredictionTimeError() {
+      return absolutePredictionTimeError;
    }
 
-   public Distribution<Double> getRelativePredictionAmplitudeAccuracy() {
-      return relativePredictionAmplitudeAccuracy;
+   public Distribution<Double> getRelativePredictionAmplitudeError() {
+      return relativePredictionAmplitudeError;
    }
 
-   public Distribution<Double> getRelativePredictionTimeAccuracy() {
-      return relativePredictionTimeAccuracy;
+   public Distribution<Double> getRelativePredictionTimeError() {
+      return relativePredictionTimeError;
    }
 
    public Collection<RequestSeries> getRecurringRequestSeries() {

@@ -23,10 +23,10 @@ public class GenesisGenerator {
    private final Distribution<Integer> absoluteJitter;
    private final Distribution<Double> relativeJitter;
    private final double networkUptime;
-   private final Distribution<Double> relativePredictionTimeAccuracy;
-   private final Distribution<Double> relativePredictionAmplitudeAccuracy;
-   private final Distribution<Long> absolutePredictionTimeAccuracy;
-   private final Distribution<Integer> absolutePredictionAmplitudeAccuracy;
+   private final Distribution<Double> relativePredictionTimeError;
+   private final Distribution<Double> relativePredictionAmplitudeError;
+   private final Distribution<Long> absolutePredictionTimeError;
+   private final Distribution<Integer> absolutePredictionAmplitudeError;
    private final Distribution<Integer> byterate;
    private final Distribution<Long> slotLength;
    private final Collection<RequestSeries> recurringSeries;
@@ -43,10 +43,10 @@ public class GenesisGenerator {
       this.networkUptime = configuration.getNetworkUptime();
       this.absoluteJitter = configuration.getAbsoluteJitter();
       this.relativeJitter = configuration.getRelativeJitter();
-      this.relativePredictionTimeAccuracy = configuration.getRelativePredictionTimeAccuracy();
-      this.relativePredictionAmplitudeAccuracy = configuration.getRelativePredictionAmplitudeAccuracy();
-      this.absolutePredictionTimeAccuracy = configuration.getAbsolutePredictionTimeAccuracy();
-      this.absolutePredictionAmplitudeAccuracy = configuration.getAbsolutePredictionAmplitudeAccuracy();
+      this.relativePredictionTimeError = configuration.getRelativePredictionTimeError();
+      this.relativePredictionAmplitudeError = configuration.getRelativePredictionAmplitudeError();
+      this.absolutePredictionTimeError = configuration.getAbsolutePredictionTimeError();
+      this.absolutePredictionAmplitudeError = configuration.getAbsolutePredictionAmplitudeError();
       this.recurringSeries = configuration.getRecurringRequestSeries();
       this.intermittentRequests = configuration.getIntermittentRequests();
       this.algorithmConfiguration = configuration.getAlgorithmConfiguration();
@@ -183,22 +183,22 @@ public class GenesisGenerator {
 
    private Map<Long, Integer> generateNetworkQualityPrediction(RepeatableRandom random, Map<Long, Integer> networkQuality) {
       RepeatableRandom randomTick = random.fork();
-      RepeatableRandom randomAccuracy = random.fork();
+      RepeatableRandom randomAmplitude = random.fork();
 
       Map<Long, Integer> ret = new HashMap<>();
 
       for (long tick : networkQuality.keySet()) {
          long predictionTick = 0;
          if (tick != 0) {
-            double relativeTime = this.relativePredictionTimeAccuracy.getValue(randomTick);
-            long absoluteTime = this.absolutePredictionTimeAccuracy.getValue(randomTick);
+            double relativeTime = this.relativePredictionTimeError.getValue(randomTick);
+            long absoluteTime = this.absolutePredictionTimeError.getValue(randomTick);
             predictionTick = tick + absoluteTime + (long) (relativeTime * slotLength.getMean());
          }
 
          predictionTick = clamp(0, predictionTick, totalTicks - 1);
 
-         double relativeAmplitude = this.relativePredictionAmplitudeAccuracy.getValue(randomAccuracy);
-         int absoluteAmplitude = this.absolutePredictionAmplitudeAccuracy.getValue(randomAccuracy);
+         double relativeAmplitude = this.relativePredictionAmplitudeError.getValue(randomAmplitude);
+         int absoluteAmplitude = this.absolutePredictionAmplitudeError.getValue(randomAmplitude);
 
          int predictionByterate = networkQuality.get(tick);
          predictionByterate = (int) (predictionByterate * relativeAmplitude) + absoluteAmplitude;
