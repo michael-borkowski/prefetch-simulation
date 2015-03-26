@@ -190,18 +190,18 @@ public class GenesisGenerator {
       for (long tick : networkQuality.keySet()) {
          long predictionTick = 0;
          if (tick != 0) {
-            double relativeTime = this.relativePredictionTimeError.getValue(randomTick);
-            long absoluteTime = this.absolutePredictionTimeError.getValue(randomTick);
-            predictionTick = tick + absoluteTime + (long) (relativeTime * slotLength.getMean());
+            double relativeTimeError = this.relativePredictionTimeError.getValue(randomTick);
+            long absoluteTimeError = this.absolutePredictionTimeError.getValue(randomTick);
+            predictionTick = tick + absoluteTimeError + (long) (relativeTimeError * slotLength.getMean());
          }
 
          predictionTick = clamp(0, predictionTick, totalTicks - 1);
 
-         double relativeAmplitude = this.relativePredictionAmplitudeError.getValue(randomAmplitude);
-         int absoluteAmplitude = this.absolutePredictionAmplitudeError.getValue(randomAmplitude);
+         double relativeAmplitudeError = this.relativePredictionAmplitudeError.getValue(randomAmplitude);
+         int absoluteAmplitudeError = this.absolutePredictionAmplitudeError.getValue(randomAmplitude);
 
          int predictionByterate = networkQuality.get(tick);
-         predictionByterate = (int) (predictionByterate * relativeAmplitude) + absoluteAmplitude;
+         predictionByterate = (int) (predictionByterate * (1D + relativeAmplitudeError)) + absoluteAmplitudeError;
          ret.put(predictionTick, predictionByterate);
       }
 
