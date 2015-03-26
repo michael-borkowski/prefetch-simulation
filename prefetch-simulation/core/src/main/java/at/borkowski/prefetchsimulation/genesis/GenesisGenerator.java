@@ -22,7 +22,11 @@ public class GenesisGenerator {
    private final long totalTicks, lookAheadTime;
    private final Distribution<Integer> absoluteJitter;
    private final Distribution<Double> relativeJitter;
-   private final double networkUptime, predictionTimeAccuracy, predictionAmplitudeAccuracy;
+   private final double networkUptime;
+   private final Distribution<Double> relativePredictionTimeAccuracy;
+   private final Distribution<Double> relativePredictionAmplitudeAccuracy;
+   private final Distribution<Long> absolutePredictionTimeAccuracy;
+   private final Distribution<Integer> absolutePredictionAmplitudeAccuracy;
    private final Distribution<Integer> byterate;
    private final Distribution<Long> slotLength;
    private final Collection<RequestSeries> recurringSeries;
@@ -39,8 +43,10 @@ public class GenesisGenerator {
       this.networkUptime = configuration.getNetworkUptime();
       this.absoluteJitter = configuration.getAbsoluteJitter();
       this.relativeJitter = configuration.getRelativeJitter();
-      this.predictionTimeAccuracy = configuration.getPredictionTimeAccuracy();
-      this.predictionAmplitudeAccuracy = configuration.getPredictionAmplitudeAccuracy();
+      this.relativePredictionTimeAccuracy = configuration.getRelativePredictionTimeAccuracy();
+      this.relativePredictionAmplitudeAccuracy = configuration.getRelativePredictionAmplitudeAccuracy();
+      this.absolutePredictionTimeAccuracy = configuration.getAbsolutePredictionTimeAccuracy();
+      this.absolutePredictionAmplitudeAccuracy = configuration.getAbsolutePredictionAmplitudeAccuracy();
       this.recurringSeries = configuration.getRecurringRequestSeries();
       this.intermittentRequests = configuration.getIntermittentRequests();
       this.algorithmConfiguration = configuration.getAlgorithmConfiguration();
@@ -183,19 +189,22 @@ public class GenesisGenerator {
 
       for (long tick : networkQuality.keySet()) {
          long predictionTick = 0;
-         if (tick != 0)
-            predictionTick = (long) (tick + nextDouble(randomTick, -(1D - this.predictionTimeAccuracy), +(1D - this.predictionTimeAccuracy)) * slotLength.getMean());
+         if (tick != 0) {
+            double relativeTime = this.relativePredictionTimeAccuracy.getValue(randomTick);
+            long absoluteTime = this.absolutePredictionTimeAccuracy.getValue(randomTick);
+            predictionTick = tick + absoluteTime + (long) (relativeTime * slotLength.getMean());
+         }
 
          predictionTick = Math.max(0, Math.min(totalTicks, predictionTick));
 
-         int predictionByterate = (int) (nextDouble(randomAccuracy, predictionAmplitudeAccuracy, 2D - predictionAmplitudeAccuracy) * networkQuality.get(tick));
+         double relativeAmplitude = this.relativePredictionAmplitudeAccuracy.getValue(randomAccuracy);
+         int absoluteAmplitude = this.absolutePredictionAmplitudeAccuracy.getValue(randomAccuracy);
+
+         int predictionByterate = networkQuality.get(tick);
+         predictionByterate = (int) (predictionByterate * relativeAmplitude) + absoluteAmplitude;
          ret.put(predictionTick, predictionByterate);
       }
 
       return ret;
-   }
-
-   private double nextDouble(RepeatableRandom random, double min, double max) {
-      return min + random.nextDouble() * (max - min);
    }
 }

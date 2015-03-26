@@ -28,15 +28,17 @@ public class ConfigurationTest {
       double networkUptime = 3.1415;
       Distribution<Double> relativeJitter = Distributions.exact(2.71);
       Distribution<Integer> absoluteJitter = Distributions.exact(1337);
-      double predictionTimeAccuracy = 733.2;
-      double predictionAmplitudeAccuracy = 733.1;
+      Distribution<Double> relativePredictionTimeAccuracy = Distributions.exact(733.2);
+      Distribution<Double> relativePredictionAmplitudeAccuracy = Distributions.exact(733.1);
+      Distribution<Long> absolutePredictionTimeAccuracy = Distributions.exact(733L);
+      Distribution<Integer> absolutePredictionAmplitudeAccuracy = Distributions.exact(733);
       Collection<RequestSeries> recurringRequestSeries = new LinkedList<>();
       Collection<Request> intermittentRequests = new LinkedList<>();
       Class<? extends PrefetchAlgorithm> algorithm = IgnoreRatePredictionAlgorithm.class;
       Map<String, String> algorithmConfiguration = new HashMap<>();
       long lookAheadTime = 271;
 
-      Configuration sut = new Configuration(totalTicks, byterate, slotLength, networkUptime, relativeJitter, absoluteJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy, recurringRequestSeries, intermittentRequests, algorithm, algorithmConfiguration, lookAheadTime);
+      Configuration sut = new Configuration(totalTicks, byterate, slotLength, networkUptime, relativeJitter, absoluteJitter, relativePredictionTimeAccuracy, relativePredictionAmplitudeAccuracy, absolutePredictionTimeAccuracy, absolutePredictionAmplitudeAccuracy, recurringRequestSeries, intermittentRequests, algorithm, algorithmConfiguration, lookAheadTime);
 
       assertEquals(1234, sut.getTotalTicks());
       assertEquals(4334, sut.getByterate().getMean().intValue());
@@ -44,8 +46,10 @@ public class ConfigurationTest {
       assertEquals(3.1415, sut.getNetworkUptime(), 0.0000001);
       assertEquals(2.71, sut.getRelativeJitter().getMean().doubleValue(), 0.0000001);
       assertEquals(1337, sut.getAbsoluteJitter().getMean().intValue());
-      assertEquals(733.2, sut.getPredictionTimeAccuracy(), 0.0000001);
-      assertEquals(733.1, sut.getPredictionAmplitudeAccuracy(), 0.0000001);
+      assertEquals(733.2, sut.getRelativePredictionTimeAccuracy().getMean(), 0.0000001);
+      assertEquals(733.1, sut.getRelativePredictionAmplitudeAccuracy().getMean(), 0.0000001);
+      assertEquals(733L, sut.getAbsolutePredictionTimeAccuracy().getMean().longValue());
+      assertEquals(733, sut.getAbsolutePredictionAmplitudeAccuracy().getMean().intValue());
       assertSame(recurringRequestSeries, sut.getRecurringRequestSeries());
       assertSame(intermittentRequests, sut.getIntermittentRequests());
       assertEquals(IgnoreRatePredictionAlgorithm.class, sut.getAlgorithm());

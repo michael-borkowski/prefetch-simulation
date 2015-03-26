@@ -12,7 +12,11 @@ public class Configuration {
    private final Distribution<Long> slotLength;
    private final Distribution<Integer> byterate;
    private final Distribution<Integer> absoluteJitter;
-   private final double networkUptime, predictionTimeAccuracy, predictionAmplitudeAccuracy;
+   private final double networkUptime;
+   private final Distribution<Double> relativePredictionTimeAccuracy;
+   private final Distribution<Double> relativePredictionAmplitudeAccuracy;
+   private final Distribution<Long> absolutePredictionTimeAccuracy;
+   private final Distribution<Integer> absolutePredictionAmplitudeAccuracy;
    Distribution<Double> relativeJitter;
    private final Collection<RequestSeries> recurringRequestSeries;
    private final Collection<Request> intermittentRequests;
@@ -21,15 +25,17 @@ public class Configuration {
 
    private Long seed;
 
-   public Configuration(long totalTicks, Distribution<Integer> byterate, Distribution<Long> slotLength, double networkUptime, Distribution<Double> relativeJitter, Distribution<Integer> absoluteJitter, double predictionTimeAccuracy, double predictionAmplitudeAccuracy, Collection<RequestSeries> recurringRequestSeries, Collection<Request> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm, Map<String, String> algorithmConfiguration, long lookAheadTime) {
+   public Configuration(long totalTicks, Distribution<Integer> byterate, Distribution<Long> slotLength, double networkUptime, Distribution<Double> relativeJitter, Distribution<Integer> absoluteJitter, Distribution<Double> relativePredictionTimeAccuracy, Distribution<Double> relativePredictionAmplitudeAccuracy, Distribution<Long> absolutePredictionTimeAccuracy, Distribution<Integer> absolutePredictionAmplitudeAccuracy, Collection<RequestSeries> recurringRequestSeries, Collection<Request> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm, Map<String, String> algorithmConfiguration, long lookAheadTime) {
       this.totalTicks = totalTicks;
       this.byterate = byterate;
       this.slotLength = slotLength;
       this.networkUptime = networkUptime;
       this.relativeJitter = relativeJitter;
       this.absoluteJitter = absoluteJitter;
-      this.predictionTimeAccuracy = predictionTimeAccuracy;
-      this.predictionAmplitudeAccuracy = predictionAmplitudeAccuracy;
+      this.relativePredictionTimeAccuracy = relativePredictionTimeAccuracy;
+      this.relativePredictionAmplitudeAccuracy = relativePredictionAmplitudeAccuracy;
+      this.absolutePredictionTimeAccuracy = absolutePredictionTimeAccuracy;
+      this.absolutePredictionAmplitudeAccuracy = absolutePredictionAmplitudeAccuracy;
       this.recurringRequestSeries = recurringRequestSeries;
       this.intermittentRequests = intermittentRequests;
       this.algorithm = algorithm;
@@ -73,12 +79,20 @@ public class Configuration {
       return networkUptime;
    }
 
-   public double getPredictionTimeAccuracy() {
-      return predictionTimeAccuracy;
+   public Distribution<Integer> getAbsolutePredictionAmplitudeAccuracy() {
+      return absolutePredictionAmplitudeAccuracy;
    }
 
-   public double getPredictionAmplitudeAccuracy() {
-      return predictionAmplitudeAccuracy;
+   public Distribution<Long> getAbsolutePredictionTimeAccuracy() {
+      return absolutePredictionTimeAccuracy;
+   }
+
+   public Distribution<Double> getRelativePredictionAmplitudeAccuracy() {
+      return relativePredictionAmplitudeAccuracy;
+   }
+
+   public Distribution<Double> getRelativePredictionTimeAccuracy() {
+      return relativePredictionTimeAccuracy;
    }
 
    public Collection<RequestSeries> getRecurringRequestSeries() {
@@ -96,7 +110,7 @@ public class Configuration {
    public long getTotalTicks() {
       return totalTicks;
    }
-   
+
    public Distribution<Integer> getByterate() {
       return byterate;
    }
