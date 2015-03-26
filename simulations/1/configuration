@@ -2,15 +2,17 @@
 
 seed 26031991001
 
-ticks 3600				# 1 * 3600 -> 1 hour
-byterate u/3000/5000			# 30-50 kB/s (up to 0.4 Mbit/s)
-slot-length 180				# slots have a length of ~3 minutes
-network-uptime 0.90			# 10% chance that a slot has 0 byterate
-relative-jitter 0			# 
-absolute-jitter 0			# 
-prediction-time-accuracy 1.0		# temporal prediction accuracy 100%
-prediction-amplitude-accuracy 1.0	# amplitudinal prediction accuracy 100%
-look-ahead 3600				# look-ahead practically infinite
+ticks 3600					# 1 * 3600 -> 1 hour
+byterate u/3000/5000				# 30-50 kB/s (up to 0.4 Mbit/s)
+slot-length 180					# slots have a length of ~3 minutes
+network-uptime 0.90				# 10% chance that a slot has 0 byterate
+relative-jitter 0				# 
+absolute-jitter 0				# 
+relative-prediction-time-error 0		# relative temporal prediction error 0%
+relative-prediction-amplitude-error 0		# relative amplitudinal prediction error 0%
+absolute-prediction-time-error 0		# absolute temporal prediction error 0%
+absolute-prediction-amplitude-error 0		# absolute amplitudinal prediction error 0%
+look-ahead 3600					# look-ahead practically infinite
 
 #algorithm at.borkowski.prefetchsimulation.algorithms.NullAlgorithm
 #algorithm at.borkowski.prefetchsimulation.algorithms.IgnoreRatePredictionAlgorithm
