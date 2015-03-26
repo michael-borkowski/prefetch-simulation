@@ -41,7 +41,7 @@ public class ResultVisualiser {
    public static final double LEGEND_WIDTH = 3.53;
    public static final double LEGEND_HEIGHT = 2.0;
    public static final double LEGEND_X = 12;
-   public static final double LEGEND_Y = 8.3;
+   public static final double LEGEND_Y = 8.6;
 
    public static final double LEGEND_PADDING_X = 0.2;
    public static final double LEGEND_PADDING_Y = 0.2;
