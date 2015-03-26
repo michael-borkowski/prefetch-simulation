@@ -6,19 +6,19 @@ ticks 3600					# 1 * 3600 -> 1 hour
 byterate u/3000/5000				# 30-50 kB/s (up to 0.4 Mbit/s)
 slot-length 180					# slots have a length of ~3 minutes
 network-uptime 0.90				# 10% chance that a slot has 0 byterate
-relative-jitter 0.05				# 
-absolute-jitter 100				# 
+relative-jitter n/0/0.05			# 
+absolute-jitter 0				# 
 relative-prediction-time-error 0.0		# relative temporal prediction error 0%
 relative-prediction-amplitude-error 0.0		# relative amplitudinal prediction error 0%
 absolute-prediction-time-error 0		# absolute temporal prediction error 100%
-absolute-prediction-amplitude-error 0		# absolute amplitudinal prediction error 100%
+absolute-prediction-amplitude-error n/100/10	# absolute amplitudinal prediction error 100%
 look-ahead 3600					# look-ahead practically infinite
 
 #algorithm at.borkowski.prefetchsimulation.algorithms.NullAlgorithm
 #algorithm at.borkowski.prefetchsimulation.algorithms.IgnoreRatePredictionAlgorithm
 algorithm at.borkowski.prefetchsimulation.algorithms.RespectRatePredictionAlgorithm
 
-algorithm-parameter alpha 0.9
+algorithm-parameter alpha 0.95
 
 request-series interval u/200/100 size ~/500000/60000 byterate ~/4000/100 start 1000 end 3500
 request-series interval u/200/10 size ~/50/6 byterate ~/400/10 start 100 end 3500
