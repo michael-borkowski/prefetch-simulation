@@ -172,7 +172,7 @@ public class GenesisGenerator {
             int byterate = lastRate;
 
             if (byterate != 0)
-               byterate = (int) (relativeJitter * byterate + absoluteJitter);
+               byterate = (int) ((1D + relativeJitter) * byterate + absoluteJitter);
 
             ret.put(tick, clamp(0, byterate, Integer.MAX_VALUE));
          }
