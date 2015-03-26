@@ -28,8 +28,8 @@ public class ConfigurationReader {
    public static final String CMD_ABSOLUTE_JITTER = "absolute-jitter";
    public static final String CMD_REL_PREDICTION_TIME_ACCURACY = "relative-prediction-time-accuracy";
    public static final String CMD_REL_PREDICTION_AMPLITUDE_ACCURACY = "relative-prediction-amplitude-accuracy";
-   public static final String CMD_ABS_PREDICTION_TIME_ACCURACY = "absolute-prediction-time-accuracy";
-   public static final String CMD_ABS_PREDICTION_AMPLITUDE_ACCURACY = "absolute-prediction-amplitude-accuracy";
+   public static final String CMD_ABS_PREDICTION_TIME_ERROR = "absolute-prediction-time-error";
+   public static final String CMD_ABS_PREDICTION_AMPLITUDE_ERROR = "absolute-prediction-amplitude-error";
    public static final String CMD_REQUEST_SERIES = "request-series";
    public static final String CMD_REQUEST = "request";
    public static final String CMD_LOOK_AHEAD = "look-ahead";
@@ -98,9 +98,9 @@ public class ConfigurationReader {
             relativePredictionTimeAccuracy = parseDistribution(lineCounter, null, reader, Double.class);
          else if (command.equals(CMD_REL_PREDICTION_AMPLITUDE_ACCURACY))
             relativePredictionAmplitudeAccuracy = parseDistribution(lineCounter, null, reader, Double.class);
-         else if (command.equals(CMD_ABS_PREDICTION_TIME_ACCURACY))
+         else if (command.equals(CMD_ABS_PREDICTION_TIME_ERROR))
             absolutePredictionTimeAccuracy = parseDistribution(lineCounter, null, reader, Long.class);
-         else if (command.equals(CMD_ABS_PREDICTION_AMPLITUDE_ACCURACY))
+         else if (command.equals(CMD_ABS_PREDICTION_AMPLITUDE_ERROR))
             absolutePredictionAmplitudeAccuracy = parseDistribution(lineCounter, null, reader, Integer.class);
          else if (command.equals(CMD_REQUEST_SERIES))
             recurringRequestSeries.add(parseSeries(lineCounter, reader));

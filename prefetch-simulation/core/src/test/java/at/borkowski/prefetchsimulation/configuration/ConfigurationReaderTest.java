@@ -70,8 +70,8 @@ public class ConfigurationReaderTest {
       line("absolute-jitter 13");
       line("relative-prediction-time-accuracy 0.5");
       line("relative-prediction-amplitude-accuracy 0.8");
-      line("absolute-prediction-time-accuracy 400");
-      line("absolute-prediction-amplitude-accuracy -20");
+      line("absolute-prediction-time-error 400");
+      line("absolute-prediction-amplitude-error -20");
       line("algorithm " + IgnoreRatePredictionAlgorithm.class.getName());
       line("look-ahead 1");
       buildSut();
@@ -102,8 +102,8 @@ public class ConfigurationReaderTest {
       line("\tabsolute-jitter  \t13");
       line("relative-prediction-time-accuracy 0.5");
       line("\t  \trelative-prediction-amplitude-accuracy   \t 0.8");
-      line("\t\tabsolute-prediction-time-accuracy\t400");
-      line("      \t absolute-prediction-amplitude-accuracy\t\t-20");
+      line("\t\tabsolute-prediction-time-error\t400");
+      line("      \t absolute-prediction-amplitude-error\t\t-20");
       line("look-ahead 1");
       buildSut();
 
@@ -132,8 +132,8 @@ public class ConfigurationReaderTest {
       line("absolute-jitter 13");
       line("relative-prediction-time-accuracy 0.5");
       line("relative-prediction-amplitude-accuracy 0.8");
-      line("absolute-prediction-time-accuracy 400");
-      line("absolute-prediction-amplitude-accuracy -20");
+      line("absolute-prediction-time-error 400");
+      line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
 
       line("request tick 10 byterate 11 data 12");
@@ -175,8 +175,8 @@ public class ConfigurationReaderTest {
       line("absolute-jitter 13");
       line("relative-prediction-time-accuracy 0.5");
       line("relative-prediction-amplitude-accuracy 0.8");
-      line("absolute-prediction-time-accuracy 400");
-      line("absolute-prediction-amplitude-accuracy -20");
+      line("absolute-prediction-time-error 400");
+      line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
 
       line("seed 31337");
@@ -198,8 +198,8 @@ public class ConfigurationReaderTest {
       line("absolute-jitter 13");
       line("relative-prediction-time-accuracy 0.5");
       line("relative-prediction-amplitude-accuracy 0.8");
-      line("absolute-prediction-time-accuracy 400");
-      line("absolute-prediction-amplitude-accuracy -20");
+      line("absolute-prediction-time-error 400");
+      line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
 
       buildSut();
@@ -219,8 +219,8 @@ public class ConfigurationReaderTest {
       line("absolute-jitter 13");
       line("relative-prediction-time-accuracy 0.5");
       line("relative-prediction-amplitude-accuracy 0.8");
-      line("absolute-prediction-time-accuracy 400");
-      line("absolute-prediction-amplitude-accuracy -20");
+      line("absolute-prediction-time-error 400");
+      line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
 
       line("request-series interval 10 size 11 byterate 12 start 13 end 14");
@@ -248,8 +248,8 @@ public class ConfigurationReaderTest {
       line("absolute-jitter 13");
       line("relative-prediction-time-accuracy 0.5");
       line("relative-prediction-amplitude-accuracy 0.8");
-      line("absolute-prediction-time-accuracy 400");
-      line("absolute-prediction-amplitude-accuracy -20");
+      line("absolute-prediction-time-error 400");
+      line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
 
       line("request-series interval exact/10 size exact/11 byterate exact/12 start exact/13 end exact/14");
@@ -277,8 +277,8 @@ public class ConfigurationReaderTest {
       line("absolute-jitter 13");
       line("relative-prediction-time-accuracy 0.5");
       line("relative-prediction-amplitude-accuracy 0.8");
-      line("absolute-prediction-time-accuracy 400");
-      line("absolute-prediction-amplitude-accuracy -20");
+      line("absolute-prediction-time-error 400");
+      line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
 
       line("request-series interval uniform/10/15 size uniform/15/20 byterate uniform/20/25 start uniform/25/30 end uniform/30/35");
@@ -306,8 +306,8 @@ public class ConfigurationReaderTest {
       line("absolute-jitter 13");
       line("relative-prediction-time-accuracy n/0/0.12");
       line("relative-prediction-amplitude-accuracy n/-0.8/0.2");
-      line("absolute-prediction-time-accuracy u/350/450");
-      line("absolute-prediction-amplitude-accuracy u/-20/-10");
+      line("absolute-prediction-time-error u/350/450");
+      line("absolute-prediction-amplitude-error u/-20/-10");
       line("look-ahead 1");
 
       line("request-series interval norm/10/2 size norm/15/10 byterate norm/20/18 start norm/25/10 end norm/30/5");
@@ -335,8 +335,8 @@ public class ConfigurationReaderTest {
       line("absolute-jitter u/11/13");
       line("relative-prediction-time-accuracy n/0/0.12");
       line("relative-prediction-amplitude-accuracy n/-0.8/0.2");
-      line("absolute-prediction-time-accuracy u/350/450");
-      line("absolute-prediction-amplitude-accuracy u/-20/-10");
+      line("absolute-prediction-time-error u/350/450");
+      line("absolute-prediction-amplitude-error u/-20/-10");
       line("look-ahead 1");
 
       line("request-series interval norm/10/2 size norm/15/10 byterate norm/20/18 start norm/25/10 end norm/30/5");
@@ -367,8 +367,8 @@ public class ConfigurationReaderTest {
       line("absolute-jitter 13");
       line("relative-prediction-time-accuracy 0.5");
       line("relative-prediction-amplitude-accuracy 0.8");
-      line("absolute-prediction-time-accuracy 400");
-      line("absolute-prediction-amplitude-accuracy -20");
+      line("absolute-prediction-time-error 400");
+      line("absolute-prediction-amplitude-error -20");
       line("look-ahead 1");
 
       line("request tick 1500001 data 1000 byterate 400");
@@ -394,8 +394,8 @@ public class ConfigurationReaderTest {
       line("absolute-jitter 13");
       line("relative-prediction-time-accuracy 0.5");
       line("relative-prediction-amplitude-accuracy 0.8");
-      line("absolute-prediction-time-accuracy 400");
-      line("absolute-prediction-amplitude-accuracy -20");
+      line("absolute-prediction-time-error 400");
+      line("absolute-prediction-amplitude-error -20");
       line("algorithm " + IgnoreRatePredictionAlgorithm.class.getName());
       line("algorithm-parameter key1 value1");
       line("algorithm-parameter key2 value2");
