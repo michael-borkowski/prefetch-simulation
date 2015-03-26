@@ -48,8 +48,8 @@ public class ConfigurationReader {
       Distribution<Integer> byterate = null;
       Distribution<Long> slotLength = null;
       Double networkUptime = null;
-      Double relativeJitter = null;
-      Integer absoluteJitter = null;
+      Distribution<Double> relativeJitter = null;
+      Distribution<Integer> absoluteJitter = null;
       Double predictionTimeAccuracy = null;
       Double predictionAmplitudeAccuracy = null;
       Collection<RequestSeries> recurringRequestSeries = new LinkedList<>();
@@ -87,11 +87,11 @@ public class ConfigurationReader {
          else if (command.equals(CMD_NETWORK_UPTIME))
             networkUptime = parseDouble(lineCounter, CMD_NETWORK_UPTIME, reader);
          else if (command.equals(CMD_RELATIVE_JITTER))
-            relativeJitter = parseDouble(lineCounter, CMD_RELATIVE_JITTER, reader);
+            relativeJitter = parseDistribution(lineCounter, null, reader, Double.class);
          else if (command.equals(CMD_ABSOLUTE_JITTER))
-            absoluteJitter = parseInt(lineCounter, CMD_ABSOLUTE_JITTER, reader);
+            absoluteJitter = parseDistribution(lineCounter, null, reader, Integer.class);
          else if (command.equals(CMD_PREDICTION_TIME_ACCURACY))
-            predictionTimeAccuracy = parseDouble(lineCounter, CMD_PREDICTION_TIME_ACCURACY, reader);
+            predictionTimeAccuracy = parseDouble(lineCounter, null, reader);
          else if (command.equals(CMD_PREDICTION_AMPLITUDE_ACCURACY))
             predictionAmplitudeAccuracy = parseDouble(lineCounter, CMD_PREDICTION_AMPLITUDE_ACCURACY, reader);
          else if (command.equals(CMD_REQUEST_SERIES))
@@ -186,6 +186,8 @@ public class ConfigurationReader {
          return (T) new Long(parseLong(lineCounter, command, param));
       else if (clazz.equals(Integer.class))
          return (T) new Integer(parseInt(lineCounter, command, param));
+      else if(clazz.equals(Double.class))
+         return (T) new Double(parseDouble(lineCounter, command, param));
       else
          throw new RuntimeException("unknown parse class " + clazz);
    }
@@ -258,13 +260,6 @@ public class ConfigurationReader {
       if (param == null)
          throw new ConfigurationException("line " + lineCounter + ": usage is \"" + command + " <parameter>");
       return parseLong(lineCounter, command, param);
-   }
-
-   private Integer parseInt(int lineCounter, String command, ArrayReader reader) throws ConfigurationException {
-      String param = reader.next();
-      if (param == null)
-         throw new ConfigurationException("line " + lineCounter + ": usage is \"" + command + " <parameter>");
-      return parseInt(lineCounter, command, param);
    }
 
    private void require(Object parameter, String name) throws ConfigurationException {

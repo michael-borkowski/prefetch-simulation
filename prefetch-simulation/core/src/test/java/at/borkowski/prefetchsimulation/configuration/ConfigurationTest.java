@@ -26,8 +26,8 @@ public class ConfigurationTest {
       Distribution<Integer> byterate = Distributions.exact(4334);
       Distribution<Long> slotLength = Distributions.exact(1010L);
       double networkUptime = 3.1415;
-      double relativeJitter = 2.71;
-      int absoluteJitter = 1337;
+      Distribution<Double> relativeJitter = Distributions.exact(2.71);
+      Distribution<Integer> absoluteJitter = Distributions.exact(1337);
       double predictionTimeAccuracy = 733.2;
       double predictionAmplitudeAccuracy = 733.1;
       Collection<RequestSeries> recurringRequestSeries = new LinkedList<>();
@@ -42,8 +42,8 @@ public class ConfigurationTest {
       assertEquals(4334, sut.getByterate().getMean().intValue());
       assertEquals(1010, sut.getSlotLength().getMean().longValue());
       assertEquals(3.1415, sut.getNetworkUptime(), 0.0000001);
-      assertEquals(2.71, sut.getRelativeJitter(), 0.0000001);
-      assertEquals(1337, sut.getAbsoluteJitter());
+      assertEquals(2.71, sut.getRelativeJitter().getMean().doubleValue(), 0.0000001);
+      assertEquals(1337, sut.getAbsoluteJitter().getMean().intValue());
       assertEquals(733.2, sut.getPredictionTimeAccuracy(), 0.0000001);
       assertEquals(733.1, sut.getPredictionAmplitudeAccuracy(), 0.0000001);
       assertSame(recurringRequestSeries, sut.getRecurringRequestSeries());

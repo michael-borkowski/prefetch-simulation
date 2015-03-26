@@ -85,6 +85,7 @@ public final class RepeatableRandom implements RandomSource {
       }
   }
 
+   @Override
    public double nextDouble() {
       return (((long) (next(26)) << 27) + next(27)) * DOUBLE_UNIT;
    }

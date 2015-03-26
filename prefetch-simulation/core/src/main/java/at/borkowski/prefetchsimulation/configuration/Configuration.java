@@ -11,8 +11,9 @@ public class Configuration {
    private final long totalTicks, lookAheadTime;
    private final Distribution<Long> slotLength;
    private final Distribution<Integer> byterate;
-   private final int absoluteJitter;
-   private final double networkUptime, relativeJitter, predictionTimeAccuracy, predictionAmplitudeAccuracy;
+   private final Distribution<Integer> absoluteJitter;
+   private final double networkUptime, predictionTimeAccuracy, predictionAmplitudeAccuracy;
+   Distribution<Double> relativeJitter;
    private final Collection<RequestSeries> recurringRequestSeries;
    private final Collection<Request> intermittentRequests;
    private final Class<? extends PrefetchAlgorithm> algorithm;
@@ -20,7 +21,7 @@ public class Configuration {
 
    private Long seed;
 
-   public Configuration(long totalTicks, Distribution<Integer> byterate, Distribution<Long> slotLength, double networkUptime, double relativeJitter, int absoluteJitter, double predictionTimeAccuracy, double predictionAmplitudeAccuracy, Collection<RequestSeries> recurringRequestSeries, Collection<Request> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm, Map<String, String> algorithmConfiguration, long lookAheadTime) {
+   public Configuration(long totalTicks, Distribution<Integer> byterate, Distribution<Long> slotLength, double networkUptime, Distribution<Double> relativeJitter, Distribution<Integer> absoluteJitter, double predictionTimeAccuracy, double predictionAmplitudeAccuracy, Collection<RequestSeries> recurringRequestSeries, Collection<Request> intermittentRequests, Class<? extends PrefetchAlgorithm> algorithm, Map<String, String> algorithmConfiguration, long lookAheadTime) {
       this.totalTicks = totalTicks;
       this.byterate = byterate;
       this.slotLength = slotLength;
@@ -52,7 +53,7 @@ public class Configuration {
       return seed != null;
    }
 
-   public int getAbsoluteJitter() {
+   public Distribution<Integer> getAbsoluteJitter() {
       return absoluteJitter;
    }
 
@@ -84,7 +85,7 @@ public class Configuration {
       return recurringRequestSeries;
    }
 
-   public double getRelativeJitter() {
+   public Distribution<Double> getRelativeJitter() {
       return relativeJitter;
    }
 

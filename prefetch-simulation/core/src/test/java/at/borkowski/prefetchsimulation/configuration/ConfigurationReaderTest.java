@@ -36,6 +36,11 @@ public class ConfigurationReaderTest {
          public double nextGaussian() {
             return 0.31415;
          }
+
+         @Override
+         public double nextDouble() {
+            return 0.271;
+         }
       };
    }
 
@@ -75,8 +80,8 @@ public class ConfigurationReaderTest {
       assertEquals(11, configuration.getByterate().getMean().intValue());
       assertEquals(12, configuration.getSlotLength().getMean().longValue());
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
-      assertEquals(0.1, configuration.getRelativeJitter(), 0.00001);
-      assertEquals(13, configuration.getAbsoluteJitter());
+      assertEquals(0.1, configuration.getRelativeJitter().getMean().doubleValue(), 0.00001);
+      assertEquals(13, configuration.getAbsoluteJitter().getMean().intValue());
       assertEquals(0.8, configuration.getPredictionAmplitudeAccuracy(), 0.00001);
       assertEquals(1, configuration.getLookAheadTime());
       assertEquals(IgnoreRatePredictionAlgorithm.class, configuration.getAlgorithm());
@@ -102,8 +107,8 @@ public class ConfigurationReaderTest {
       assertEquals(11, configuration.getByterate().getMean().intValue());
       assertEquals(12, configuration.getSlotLength().getMean().longValue());
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
-      assertEquals(0.1, configuration.getRelativeJitter(), 0.00001);
-      assertEquals(13, configuration.getAbsoluteJitter());
+      assertEquals(0.1, configuration.getRelativeJitter().getMean().doubleValue(), 0.00001);
+      assertEquals(13, configuration.getAbsoluteJitter().getMean().intValue());
       assertEquals(0.8, configuration.getPredictionAmplitudeAccuracy(), 0.00001);
       assertEquals(1, configuration.getLookAheadTime());
       assertEquals(IgnoreRatePredictionAlgorithm.class, configuration.getAlgorithm());
@@ -128,8 +133,8 @@ public class ConfigurationReaderTest {
       assertEquals(11, configuration.getByterate().getMean().intValue());
       assertEquals(12, configuration.getSlotLength().getMean().longValue());
       assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
-      assertEquals(0.1, configuration.getRelativeJitter(), 0.00001);
-      assertEquals(13, configuration.getAbsoluteJitter());
+      assertEquals(0.1, configuration.getRelativeJitter().getMean().doubleValue(), 0.00001);
+      assertEquals(13, configuration.getAbsoluteJitter().getMean().intValue());
       assertEquals(0.8, configuration.getPredictionAmplitudeAccuracy(), 0.00001);
       assertEquals(1, configuration.getLookAheadTime());
    }
@@ -321,6 +326,33 @@ public class ConfigurationReaderTest {
       assertEquals(25, series.getByterate().getValue(fixedRandom).longValue());
       assertEquals(28, series.getStartTick().getValue(fixedRandom).longValue());
       assertEquals(31, series.getEndTick().getValue(fixedRandom).longValue());
+   }
+
+   @Test
+   public void testParametersDistributions() throws Exception {
+      line("ticks 10");
+      line("byterate u/10/16");
+      line("slot-length u/10/12");
+      line("network-uptime 0.95");
+      line("relative-jitter u/0.1/0.3");
+      line("absolute-jitter u/11/13");
+      line("prediction-time-accuracy 0.5");
+      line("prediction-amplitude-accuracy 0.8");
+      line("look-ahead 1");
+
+      line("request-series interval norm/10/2 size norm/15/10 byterate norm/20/18 start norm/25/10 end norm/30/5");
+      buildSut();
+
+      Configuration configuration = sut.read();
+
+      assertEquals(10, configuration.getTotalTicks());
+      assertEquals(13, configuration.getByterate().getMean().intValue());
+      assertEquals(11, configuration.getSlotLength().getMean().longValue());
+      assertEquals(0.95, configuration.getNetworkUptime(), 0.00001);
+      assertEquals(0.2, configuration.getRelativeJitter().getMean().doubleValue(), 0.00001);
+      assertEquals(12, configuration.getAbsoluteJitter().getMean().intValue());
+      assertEquals(0.8, configuration.getPredictionAmplitudeAccuracy(), 0.00001);
+      assertEquals(1, configuration.getLookAheadTime());
    }
 
    @Test
