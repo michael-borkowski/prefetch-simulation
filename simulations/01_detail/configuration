@@ -16,13 +16,10 @@ look-ahead 3600					# look-ahead practically infinite
 
 #algorithm at.borkowski.prefetchsimulation.algorithms.NullAlgorithm
 #algorithm at.borkowski.prefetchsimulation.algorithms.IgnoreRatePredictionAlgorithm
-algorithm at.borkowski.prefetchsimulation.algorithms.RespectRatePredictionAlgorithm
+#algorithm at.borkowski.prefetchsimulation.algorithms.RespectRatePredictionAlgorithm
 
 algorithm-parameter alpha 0.9
 
 request-series interval u/200/100 size ~/500000/60000 byterate ~/3000/100 start 1000 end 3500
-
-#request tick 1590 data 1000 byterate 400
-#request tick 1890 data 1000 byterate 400
 
 

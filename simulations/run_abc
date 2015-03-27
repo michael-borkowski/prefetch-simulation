@@ -1,0 +1,77 @@
+#!/bin/bash
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+maven_parent_dir="$DIR/../prefetch-simulation"
+sim_dir="$DIR/"
+
+function die() {
+	echo "$@" >&2
+	exit 1
+}
+
+id=$1
+
+materialiser_jar=$(find "$maven_parent_dir/materialiser/target" -name materialiser-*-jar-with-dependencies.jar)
+if [ -z "$materialiser_jar" ]; then
+	(cd $maven_parent_dir && mvn clean package) || die "mvn clean package failed."
+fi
+
+materialiser_jar=$(find "$maven_parent_dir/materialiser/target" -name materialiser-*-jar-with-dependencies.jar)
+runner_jar=$(find "$maven_parent_dir/runner/target" -name runner-*-jar-with-dependencies.jar)
+painter_jar=$(find "$maven_parent_dir/painter/target" -name painter-*-jar-with-dependencies.jar)
+[ -z "$materialiser_jar" ] && die "materialiser JAR not found"
+[ -z "$runner_jar" ] && die "runner JAR not found"
+[ -z "$painter_jar" ] && die "painter JAR not found"
+
+[ -d "$sim_dir/$id" ] || die "simulation $id not found"
+[ -f "$sim_dir/$id/configuration" ] || die "configuration for $id not found"
+
+sim="$sim_dir/$id"
+
+cp "$sim/configuration" "$sim/configuration_A"
+cp "$sim/configuration" "$sim/configuration_B"
+cp "$sim/configuration" "$sim/configuration_C"
+
+echo >> "$sim/configuration_A"
+echo "algorithm at.borkowski.prefetchsimulation.algorithms.NullAlgorithm" >> "$sim/configuration_A"
+
+echo >> "$sim/configuration_B"
+echo "algorithm at.borkowski.prefetchsimulation.algorithms.IgnoreRatePredictionAlgorithm" >> "$sim/configuration_B"
+
+echo >> "$sim/configuration_C"
+echo "algorithm at.borkowski.prefetchsimulation.algorithms.RespectRatePredictionAlgorithm" >> "$sim/configuration_C"
+
+function tex2pdf() {
+	file="$1"
+	(cd "$sim"
+		pdflatex "$file" >/dev/null
+		ret=$?
+		rm -f *.aux *.log
+		exit $ret
+	) || die "pdflatex failed"
+}
+
+function doPerform() {
+	sim="$1"
+	var="$2"
+
+	java -jar "$materialiser_jar" < "$sim/configuration$var" > "$sim/genesis$var" || die "generating genesis failed"
+	java -jar "$runner_jar" < "$sim/genesis$var" | tee "$sim/result-summary${var}.txt" || die "running failed"
+	java -jar "$painter_jar" tex-timeline < "$sim/genesis$var" > "$sim/result-timeline${var}.tex" || die "drawing timeline TeX failed"
+
+	tex2pdf "result-timeline${var}.tex"
+}
+
+java -jar "$materialiser_jar" < "$sim/configuration" > "$sim/genesis" || die "generating genesis failed"
+java -jar "$painter_jar" tex-genesis < "$sim/genesis" > "$sim/genesis.tex" || die "drawing genesis TeX failed"
+tex2pdf "genesis.tex"
+
+rm -f "$sim/genesis"
+
+doPerform "$sim" "_A" || die "perform of A failed"
+doPerform "$sim" "_B" || die "perform of B failed"
+doPerform "$sim" "_C" || die "perform of C failed"
+
+rm -f "$sim"/*.tex
+rm -f "$sim"/configuration_*
+

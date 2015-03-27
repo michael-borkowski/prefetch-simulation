@@ -29,9 +29,9 @@ painter_jar=$(find "$maven_parent_dir/painter/target" -name painter-*-jar-with-d
 sim="$sim_dir/$id"
 
 java -jar "$materialiser_jar" < "$sim/configuration" > "$sim/genesis" || die "generating genesis failed"
-java -jar "$painter_jar" tex-genesis < "$sim/genesis" > "$sim/genesis.tex" || die "drawing TeX failed"
+java -jar "$painter_jar" tex-genesis < "$sim/genesis" > "$sim/genesis.tex" || die "drawing genesis TeX failed"
 java -jar "$runner_jar" < "$sim/genesis" | tee "$sim/result-summary.txt" || die "running failed"
-java -jar "$painter_jar" tex-timeline < "$sim/genesis" > "$sim/result-timeline.tex" || die "drawing genesis EPS failed"
+java -jar "$painter_jar" tex-timeline < "$sim/genesis" > "$sim/result-timeline.tex" || die "drawing timeline TeX failed"
 
 function tex2pdf() {
 	file="$1"
