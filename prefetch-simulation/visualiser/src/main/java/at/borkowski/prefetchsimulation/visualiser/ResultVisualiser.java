@@ -24,7 +24,8 @@ public class ResultVisualiser {
    public static final double SPAN_PADDING_LEFT = 0.6;
    public static final double SPAN_PADDING_RIGHT = 0.1;
    public static final double SPAN_ARROW_LENGTH = 0.5;
-   
+   public static final double SPAN_BOX_PADDING = 0.04;
+
    public static final double LEGEND_HEIGHT = 2.2;
 
    public static final String REQ_CACHE_HIT_STYLE = "fill=green!10, draw=green!30,fill opacity=0.5";
@@ -185,9 +186,11 @@ public class ResultVisualiser {
       y -= 2.0 * GenesisVisualiser.LEGEND_ROW_HEIGHT;
 
       double yLine = y - GenesisVisualiser.LEGEND_BOX_SIZE / 2;
-      lines.add("\\draw[densely dotted] (" + x1 + "," + (yLine + GenesisVisualiser.TICK_LENGTH) + ") -- (" + x1 + "," + (yLine - GenesisVisualiser.TICK_LENGTH) + ");");
-      lines.add("\\draw[densely dotted] (" + x4 + "," + (yLine + GenesisVisualiser.TICK_LENGTH) + ") -- (" + x4 + "," + (yLine - GenesisVisualiser.TICK_LENGTH) + ");");
-      lines.add("\\draw[densely dotted] (" + x1 + "," + yLine + ") -- (" + x4 + "," + yLine + ");");
+
+      lines.add("\\filldraw[fill=black!5!white, draw=black!20!white, opacity=0.3] (" + (x1 - SPAN_BOX_PADDING) + "," + (yLine - GenesisVisualiser.TICK_LENGTH - SPAN_BOX_PADDING) + ") rectangle (" + (x4 + SPAN_BOX_PADDING) + "," + (yLine + GenesisVisualiser.TICK_LENGTH + SPAN_BOX_PADDING) + ");");
+      lines.add("\\draw[opacity=0.1] (" + x1 + "," + (yLine + GenesisVisualiser.TICK_LENGTH) + ") -- (" + x1 + "," + (yLine - GenesisVisualiser.TICK_LENGTH) + ");");
+      lines.add("\\draw[opacity=0.1] (" + x4 + "," + (yLine + GenesisVisualiser.TICK_LENGTH) + ") -- (" + x4 + "," + (yLine - GenesisVisualiser.TICK_LENGTH) + ");");
+      lines.add("\\draw[opacity=0.1] (" + x1 + "," + yLine + ") -- (" + x4 + "," + yLine + ");");
       lines.add("\\draw (" + x2 + "," + (yLine + GenesisVisualiser.TICK_LENGTH) + ") -- (" + x2 + "," + (yLine - GenesisVisualiser.TICK_LENGTH) + ");");
       lines.add("\\draw (" + x3 + "," + (yLine + GenesisVisualiser.TICK_LENGTH) + ") -- (" + x3 + "," + (yLine - GenesisVisualiser.TICK_LENGTH) + ");");
       lines.add("\\draw (" + x2 + "," + yLine + ") -- (" + x3 + "," + yLine + ");");
@@ -208,19 +211,25 @@ public class ResultVisualiser {
          long planTo = request.getDeadline();
          Long wasFrom = results.getFetchStart(request);
          Long wasTo = results.getFetchFinish(request);
+         
+         boolean arrow = wasFrom != null && wasTo == null;
 
          long min = min(planFrom, planTo, wasFrom, wasTo);
          double xMin = GenesisVisualiser.OFFSET_X + xS * min;
+         long max = max(planFrom, planTo, wasFrom, wasTo);
+         double xMax = GenesisVisualiser.OFFSET_X + xS * max + (arrow ? SPAN_ARROW_LENGTH : 0);
 
          double yLevel = SPAN_OFFSET + SPAN_HEIGHT * level;
+         
+         lines.add("\\filldraw[fill=black!5!white, draw=black!20!white, opacity=0.3] (" + (xMin - SPAN_BOX_PADDING) + "," + (yLevel - GenesisVisualiser.TICK_LENGTH - SPAN_BOX_PADDING) + ") rectangle (" + (xMax + SPAN_BOX_PADDING) + "," + (yLevel + GenesisVisualiser.TICK_LENGTH + SPAN_BOX_PADDING) + ");");
 
          double xPlanTo = GenesisVisualiser.OFFSET_X + xS * planTo;
-         lines.add("\\draw[densely dotted] (" + xPlanTo + "," + (yLevel - GenesisVisualiser.TICK_LENGTH) + ") -- (" + xPlanTo + "," + (yLevel + GenesisVisualiser.TICK_LENGTH) + ");"); // node[anchor=south] {\\tiny$\\tau$};");
+         lines.add("\\draw[opacity=0.1] (" + xPlanTo + "," + (yLevel - GenesisVisualiser.TICK_LENGTH) + ") -- (" + xPlanTo + "," + (yLevel + GenesisVisualiser.TICK_LENGTH) + ");"); // node[anchor=south] {\\tiny$\\tau$};");
 
          if (planFrom != null) {
             double xPlanFrom = GenesisVisualiser.OFFSET_X + xS * planFrom;
-            lines.add("\\draw[densely dotted] (" + xPlanFrom + "," + (yLevel - GenesisVisualiser.TICK_LENGTH) + ") -- (" + xPlanFrom + "," + (yLevel + GenesisVisualiser.TICK_LENGTH) + ");"); // node[anchor=south] {\\tiny$\\lambda$};");
-            lines.add("\\draw[densely dotted] (" + xPlanFrom + "," + yLevel + ") -- (" + xPlanTo + "," + yLevel + ");");
+            lines.add("\\draw[opacity=0.1] (" + xPlanFrom + "," + (yLevel - GenesisVisualiser.TICK_LENGTH) + ") -- (" + xPlanFrom + "," + (yLevel + GenesisVisualiser.TICK_LENGTH) + ");"); // node[anchor=south] {\\tiny$\\lambda$};");
+            lines.add("\\draw[opacity=0.1] (" + xPlanFrom + "," + yLevel + ") -- (" + xPlanTo + "," + yLevel + ");");
          }
 
          if (wasFrom != null) {
@@ -235,7 +244,9 @@ public class ResultVisualiser {
             double xWasFrom = GenesisVisualiser.OFFSET_X + xS * wasFrom;
             double xWasTo = GenesisVisualiser.OFFSET_X + xS * wasTo;
             lines.add("\\draw (" + xWasFrom + "," + yLevel + ") -- (" + xWasTo + "," + yLevel + ");");
-         } else if (wasFrom != null) {
+         }
+         
+         if (arrow) {
             double xWasFrom = GenesisVisualiser.OFFSET_X + xS * wasFrom;
             double xArrowTo = xPlanTo > xWasFrom ? xPlanTo : xWasFrom;
             lines.add("\\draw[->] (" + xWasFrom + "," + yLevel + ") -- (" + (xArrowTo + SPAN_ARROW_LENGTH) + "," + yLevel + ");");
