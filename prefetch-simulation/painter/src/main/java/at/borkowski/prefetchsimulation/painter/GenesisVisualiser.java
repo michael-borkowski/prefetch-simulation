@@ -26,12 +26,6 @@ public class GenesisVisualiser {
 
    public static final double TICK_LENGTH = 0.1;
 
-   public static final double SPAN_OFFSET = -0.9;
-   public static final double SPAN_HEIGHT = -0.3;
-   public static final double SPAN_PADDING_LEFT = 0.6;
-   public static final double SPAN_PADDING_RIGHT = 0.1;
-   public static final double SPAN_ARROW_LENGTH = 0.5;
-
    public static final String STYLE_REAL = "blue";
    public static final String STYLE_PREDICTED = "blue,densely dotted";
 
@@ -49,13 +43,15 @@ public class GenesisVisualiser {
    public static final String REQ_STYLE = "fill=black!10, draw=black!30,fill opacity=0.5";
    public static final String REQ_TEXT_STYLE = "text=black!60";
 
-   private final Genesis genesis;
-   private final List<String> lines;
-   private final long xMax, yMax;
-   private final double xS, yS, xTickStep, yTickStep;
+   final Genesis genesis;
+   final List<String> lines;
+   final long xMax, yMax;
+   final double xS, yS, xTickStep, yTickStep;
 
-   private int nameCounter = 0;
-   private final Map<Request, String> names = new HashMap<>();
+   int nameCounter = 0;
+   final Map<Request, String> names = new HashMap<>();
+
+   final long xTickInterval, yTickInterval;
 
    public static LaTeXVisualisationResult visualise(Genesis genesis) {
       return new GenesisVisualiser(genesis).visualise();
@@ -69,30 +65,24 @@ public class GenesisVisualiser {
       xMax = genesis.getTicks();
       yMax = getMaxByterate(genesis);
 
-      long xTickInterval = calcXTickInterval(xMax);
-      long yTickInterval = calcYTickInterval(yMax);
+      xTickInterval = calcXTickInterval(xMax);
+      yTickInterval = calcYTickInterval(yMax);
 
       xS = (double) (DIAGRAM_WIDTH - OFFSET_X - HEADSPACE_X) / xMax;
       yS = (double) (DIAGRAM_HEIGHT - 2 * OFFSET_Y - HEADSPACE_Y) / yMax;
 
       xTickStep = xTickInterval * xS;
       yTickStep = yTickInterval * yS;
-      
-      createNames(genesis.getRequests());
 
-      createHeader();
-      createSystem(xTickInterval, yTickInterval);
+      createNames(genesis.getRequests());
    }
 
    LaTeXVisualisationResult visualise() {
+      createBase();
       createGenesisRequests(genesis.getRequests());
-
-      createRates(genesis.getRateReal(), STYLE_REAL);
-      createRates(genesis.getRatePredicted(), STYLE_PREDICTED);
-
-      createLegend();
-
-      createFooter();
+      createRates();
+      createLegend(LEGEND_HEIGHT, false);
+      createFinish();
 
       try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); PrintWriter pw = new PrintWriter(baos)) {
          for (String line : lines)
@@ -102,6 +92,20 @@ public class GenesisVisualiser {
       } catch (IOException e) {
          throw new RuntimeException(e);
       }
+   }
+
+   void createBase() {
+      createHeader();
+      createSystem(xTickInterval, yTickInterval);
+   }
+
+   void createRates() {
+      createRates(genesis.getRateReal(), STYLE_REAL);
+      createRates(genesis.getRatePredicted(), STYLE_PREDICTED);
+   }
+
+   void createFinish() {
+      createFooter();
    }
 
    private void createNames(List<Request> requests) {
@@ -123,15 +127,19 @@ public class GenesisVisualiser {
       return s.substring(0, 3);
    }
 
-   private void createLegend() {
-      lines.add("\\filldraw[fill=white, draw=black] (" + LEGEND_X + "," + (LEGEND_Y - LEGEND_HEIGHT) + ") rectangle (" + (LEGEND_X + LEGEND_WIDTH) + "," + LEGEND_Y + ");");
+   void createLegend(double height, boolean enhancedSpace) {
+      lines.add("\\filldraw[fill=white, draw=black] (" + LEGEND_X + "," + (LEGEND_Y - height) + ") rectangle (" + (LEGEND_X + LEGEND_WIDTH) + "," + LEGEND_Y + ");");
 
       double y = LEGEND_Y - LEGEND_PADDING_Y;
       double box_x = LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH / 2 - LEGEND_BOX_SIZE / 2;
 
-      lines.add("\\filldraw[" + REQ_STYLE + "] (" + box_x + "," + y + ") rectangle (" + (box_x + LEGEND_BOX_SIZE) + "," + (y - LEGEND_BOX_SIZE) + ");");
-      lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{Request}};");
-      y -= LEGEND_ROW_HEIGHT;
+      if (enhancedSpace) {
+         y -= 3 * LEGEND_ROW_HEIGHT;
+      } else {
+         lines.add("\\filldraw[" + REQ_STYLE + "] (" + box_x + "," + y + ") rectangle (" + (box_x + LEGEND_BOX_SIZE) + "," + (y - LEGEND_BOX_SIZE) + ");");
+         lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{Request}};");
+         y -= LEGEND_ROW_HEIGHT;
+      }
 
       double xspace = LEGEND_COL1_WIDTH - LEGEND_PADDING_X;
       double x2 = LEGEND_X + 1.5 * LEGEND_PADDING_X + 1 * xspace / 3;
