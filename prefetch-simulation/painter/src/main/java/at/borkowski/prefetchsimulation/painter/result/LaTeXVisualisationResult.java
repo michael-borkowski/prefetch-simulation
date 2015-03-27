@@ -1,6 +1,6 @@
 package at.borkowski.prefetchsimulation.painter.result;
 
-public class LaTeXVisualisationResult extends VisualisationResult {
+public class LaTeXVisualisationResult {
    private final byte[] bytes;
 
    public LaTeXVisualisationResult(byte[] bytes) {

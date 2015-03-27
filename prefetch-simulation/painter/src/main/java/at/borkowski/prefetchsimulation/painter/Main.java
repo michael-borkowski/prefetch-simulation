@@ -34,10 +34,8 @@ public class Main {
 
          String command = args[0];
 
-         if ("png".equals(command))
-            Saver.savePNG(GenesisVisualiser.visualise(genesis), System.out);
-         else if ("eps".equals(command))
-            Saver.saveEPS(GenesisVisualiser.visualise(genesis), System.out);
+         if ("tex-genesis".equals(command))
+            Saver.saveLaTeX(GenesisVisualiser.visualise(genesis), System.out);
          else if ("tex-timeline".equals(command)) {
             sim.executeToEnd();
             Saver.saveLaTeX(ResultVisualiser.visualise(genesis, profiling), System.out);
@@ -57,6 +55,6 @@ public class Main {
    private static void usage() {
       System.err.println("Usage: painter <operation>");
       System.err.println();
-      System.err.println("      <operation>: png | eps | tex-timeline");
+      System.err.println("      <operation>: tex-genesis | tex-timeline");
    }
 }

@@ -18,8 +18,13 @@ import at.borkowski.prefetchsimulation.members.aux.RatePredictionService;
 public class IgnoreRatePredictionAlgorithm implements PrefetchAlgorithm {
    public final static long CONNECTION_OVERHEAD = 5;
 
+   private double alpha = 1;
+
    @Override
-   public void configure(Map<String, String> configuration) {}
+   public void configure(Map<String, String> configuration) {
+      if (configuration.containsKey("alpha"))
+         alpha = Double.parseDouble(configuration.get("alpha"));
+   }
 
    @Override
    public Map<Request, Long> schedule(Collection<Request> requests, RatePredictionService ratePredictionService) {
@@ -46,7 +51,7 @@ public class IgnoreRatePredictionAlgorithm implements PrefetchAlgorithm {
    }
 
    private long getStart(long busyUntil, Request req) {
-      long required = (long) (req.getData() / req.getAvailableByterate()) + 1;
+      long required = (long) (req.getData() / (alpha * req.getAvailableByterate())) + 1;
       required += CONNECTION_OVERHEAD;
       return Math.min(busyUntil, req.getDeadline()) - required;
    }

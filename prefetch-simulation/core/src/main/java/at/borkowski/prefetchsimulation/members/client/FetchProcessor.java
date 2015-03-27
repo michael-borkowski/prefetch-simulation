@@ -83,7 +83,8 @@ public class FetchProcessor {
             newRequest |= !scheduled.containsKey(req);
 
       if (newRequest) {
-         scheduled = algorithm.schedule(current, ratePredictionService);
+         Map<Request, Long> newSchedules = algorithm.schedule(current, ratePredictionService);
+         scheduled.putAll(newSchedules);
 
          // prevent null pointer exception if simulation is not yet initialized
          if (owner.getProfilingService() != null)
