@@ -7,8 +7,8 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
 
-  <artifactId>painter</artifactId>
-  <name>Painting Components</name>
+  <artifactId>visualiser</artifactId>
+  <name>Visualiser Components</name>
   <description>Components for graphical output of prefetch simulation related data</description>
   
   <build>
@@ -29,7 +29,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>at.borkowski.prefetchsimulation.painter.Main</mainClass>
+              <mainClass>at.borkowski.prefetchsimulation.visualiser.Main</mainClass>
             </manifest>
           </archive>
         </configuration>

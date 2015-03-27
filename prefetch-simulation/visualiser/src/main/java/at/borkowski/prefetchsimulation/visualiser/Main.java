@@ -1,4 +1,4 @@
-package at.borkowski.prefetchsimulation.painter;
+package at.borkowski.prefetchsimulation.visualiser;
 
 import java.io.IOException;
 import java.io.InputStream;

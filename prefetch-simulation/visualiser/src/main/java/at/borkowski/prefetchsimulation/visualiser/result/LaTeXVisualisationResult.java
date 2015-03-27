@@ -1,4 +1,4 @@
-package at.borkowski.prefetchsimulation.painter.result;
+package at.borkowski.prefetchsimulation.visualiser.result;
 
 public class LaTeXVisualisationResult {
    private final byte[] bytes;

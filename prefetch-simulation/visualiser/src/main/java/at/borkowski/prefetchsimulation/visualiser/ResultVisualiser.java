@@ -1,4 +1,4 @@
-package at.borkowski.prefetchsimulation.painter;
+package at.borkowski.prefetchsimulation.visualiser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -15,8 +15,8 @@ import java.util.Set;
 
 import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
-import at.borkowski.prefetchsimulation.painter.result.LaTeXVisualisationResult;
 import at.borkowski.prefetchsimulation.profiling.PrefetchProfilingResults;
+import at.borkowski.prefetchsimulation.visualiser.result.LaTeXVisualisationResult;
 
 public class ResultVisualiser {
    public static final double SPAN_OFFSET = -0.9;

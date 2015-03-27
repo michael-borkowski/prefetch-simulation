@@ -18,10 +18,10 @@ fi
 
 materialiser_jar=$(find "$maven_parent_dir/materialiser/target" -name materialiser-*-jar-with-dependencies.jar)
 runner_jar=$(find "$maven_parent_dir/runner/target" -name runner-*-jar-with-dependencies.jar)
-painter_jar=$(find "$maven_parent_dir/painter/target" -name painter-*-jar-with-dependencies.jar)
+painter_jar=$(find "$maven_parent_dir/visualiser/target" -name visualiser-*-jar-with-dependencies.jar)
 [ -z "$materialiser_jar" ] && die "materialiser JAR not found"
 [ -z "$runner_jar" ] && die "runner JAR not found"
-[ -z "$painter_jar" ] && die "painter JAR not found"
+[ -z "$painter_jar" ] && die "visualiser JAR not found"
 
 [ -d "$sim_dir/$id" ] || die "simulation $id not found"
 [ -f "$sim_dir/$id/configuration" ] || die "configuration for $id not found"

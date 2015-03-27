@@ -15,7 +15,7 @@
     <module>core</module>
     <module>materialiser</module>
     <module>runner</module>
-    <module>painter</module>
+    <module>visualiser</module>
   </modules>
 
   <properties>
