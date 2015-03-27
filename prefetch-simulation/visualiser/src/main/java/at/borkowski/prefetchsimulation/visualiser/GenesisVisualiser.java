@@ -24,7 +24,7 @@ public class GenesisVisualiser {
    public static final double HEADSPACE_X = 0.6;
    public static final double HEADSPACE_Y = 1;
 
-   public static final double TICK_LENGTH = 0.1;
+   public static final double TICK_LENGTH = 0.08;
 
    public static final String STYLE_REAL = "blue";
    public static final String STYLE_PREDICTED = "blue,densely dotted";
@@ -206,9 +206,6 @@ public class GenesisVisualiser {
    }
 
    private void createSystem(long xValueStep, long yValueStep) {
-      lines.add("\\draw[thick,->] (0,0) -- (" + DIAGRAM_WIDTH + ",0) node[anchor=north] {$t$};");
-      lines.add("\\draw[thick,->] (0,0) -- (0," + DIAGRAM_HEIGHT + ") node[anchor=east] {$B$};");
-
       double xMax = DIAGRAM_WIDTH - OFFSET_X;
       double yMax = DIAGRAM_HEIGHT - OFFSET_Y;
 
@@ -234,6 +231,9 @@ public class GenesisVisualiser {
          lines.add("\\draw (" + TICK_LENGTH + "," + y + ") -- (-" + TICK_LENGTH + "," + y + ") node [anchor=east] {" + valueY + "};");
          lines.add("\\draw[black!5] (0," + y + ") -- (" + DIAGRAM_WIDTH + "," + y + ");");
       }
+      
+      lines.add("\\draw[thick,->] (0,0) -- (" + DIAGRAM_WIDTH + ",0) node[anchor=north] {$t$};");
+      lines.add("\\draw[thick,->] (0,0) -- (0," + DIAGRAM_HEIGHT + ") node[anchor=east] {$B$};");
    }
 
    private static int getMaxByterate(Genesis genesis) {
