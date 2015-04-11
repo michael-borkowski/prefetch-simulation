@@ -18,10 +18,10 @@ fi
 
 materialiser_jar=$(find "$maven_parent_dir/materialiser/target" -name materialiser-*-jar-with-dependencies.jar)
 runner_jar=$(find "$maven_parent_dir/runner/target" -name runner-*-jar-with-dependencies.jar)
-painter_jar=$(find "$maven_parent_dir/visualiser/target" -name visualiser-*-jar-with-dependencies.jar)
+visualiser_jar=$(find "$maven_parent_dir/visualiser/target" -name visualiser-*-jar-with-dependencies.jar)
 [ -z "$materialiser_jar" ] && die "materialiser JAR not found"
 [ -z "$runner_jar" ] && die "runner JAR not found"
-[ -z "$painter_jar" ] && die "visualiser JAR not found"
+[ -z "$visualiser_jar" ] && die "visualiser JAR not found"
 
 [ -d "$sim_dir/$id" ] || die "simulation $id not found"
 [ -f "$sim_dir/$id/configuration" ] || die "configuration for $id not found"
@@ -29,9 +29,9 @@ painter_jar=$(find "$maven_parent_dir/visualiser/target" -name visualiser-*-jar-
 sim="$sim_dir/$id"
 
 java -jar "$materialiser_jar" < "$sim/configuration" > "$sim/genesis" || die "generating genesis failed"
-java -jar "$painter_jar" tex-genesis < "$sim/genesis" > "$sim/genesis.tex" || die "drawing genesis TeX failed"
+java -jar "$visualiser_jar" tex-genesis < "$sim/genesis" > "$sim/genesis.tex" || die "drawing genesis TeX failed"
 java -jar "$runner_jar" < "$sim/genesis" | tee "$sim/result-summary.txt" || die "running failed"
-java -jar "$painter_jar" tex-timeline < "$sim/genesis" > "$sim/result-timeline.tex" || die "drawing timeline TeX failed"
+java -jar "$visualiser_jar" tex-timeline < "$sim/genesis" > "$sim/result-timeline.tex" || die "drawing timeline TeX failed"
 
 function tex2pdf() {
 	file="$1"
