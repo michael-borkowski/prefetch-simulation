@@ -9,8 +9,8 @@ network-uptime 0.90				# 10% chance that a slot has 0 byterate
 relative-jitter 0				# 
 absolute-jitter 0				# 
 relative-prediction-time-error 0		# relative temporal prediction error 0%
-relative-prediction-amplitude-error u/0/0.01	# relative amplitudinal prediction error 0 +- 1%
-absolute-prediction-time-error u/0/10		# absolute temporal prediction error 0 +- 10 ticks
+relative-prediction-amplitude-error ~/0/0.01	# relative amplitudinal prediction error 0 +- 1%
+absolute-prediction-time-error ~/0/10		# absolute temporal prediction error 0 +- 10 ticks
 absolute-prediction-amplitude-error 0		# absolute amplitudinal prediction error 0
 look-ahead 3600					# look-ahead practically infinite
 
@@ -20,7 +20,7 @@ look-ahead 3600					# look-ahead practically infinite
 
 algorithm-parameter alpha 0.9
 
-request-series interval u/500/100 size ~/500000/60000 byterate ~/3800/100 start 1000 end 3000
+request-series interval u/500/900 size ~/500000/60000 byterate ~/3800/100 start 1000 end 3000
 request tick 3400 byterate 3600 data 480000
 
 
