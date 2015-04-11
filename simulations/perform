@@ -46,5 +46,3 @@ function tex2pdf() {
 tex2pdf "genesis.tex"
 tex2pdf "result-timeline.tex"
 
-rm -f "$sim"/*.tex
-

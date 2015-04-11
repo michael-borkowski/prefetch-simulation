@@ -72,6 +72,5 @@ doPerform "$sim" "_A" || die "perform of A failed"
 doPerform "$sim" "_B" || die "perform of B failed"
 doPerform "$sim" "_C" || die "perform of C failed"
 
-rm -f "$sim"/*.tex
 rm -f "$sim"/configuration_*
 
