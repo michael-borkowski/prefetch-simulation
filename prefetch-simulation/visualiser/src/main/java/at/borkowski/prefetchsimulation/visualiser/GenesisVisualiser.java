@@ -143,7 +143,7 @@ public class GenesisVisualiser {
       if (requestFetchingTitle != null)
          title = requestFetchingTitle;
       lines.add("\\filldraw[" + REQ_STYLE + "] (" + box_x + "," + y + ") rectangle (" + (box_x + LEGEND_BOX_SIZE) + "," + (y - LEGEND_BOX_SIZE) + ");");
-      lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{" + title + "}};");
+      lines.add("\\node[anchor=west, scale=0.65] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {" + title + "};");
       y -= LEGEND_ROW_HEIGHT;
 
       double xspace = LEGEND_COL1_WIDTH - LEGEND_PADDING_X;
@@ -151,10 +151,10 @@ public class GenesisVisualiser {
       double x3 = LEGEND_X + 1.5 * LEGEND_PADDING_X + xspace / 2 + LEGEND_LINE_LENGTH / 2;
 
       lines.add("\\draw[" + STYLE_REAL + "] (" + x2 + "," + (y - LEGEND_BOX_SIZE / 2) + ") -- (" + x3 + "," + (y - LEGEND_BOX_SIZE / 2) + ");");
-      lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{Real Bandwidth}};");
+      lines.add("\\node[anchor=west, scale=0.65] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {Real Bandwidth};");
       y -= LEGEND_ROW_HEIGHT;
       lines.add("\\draw[" + STYLE_PREDICTED + "] (" + x2 + "," + (y - LEGEND_BOX_SIZE / 2) + ") -- (" + x3 + "," + (y - LEGEND_BOX_SIZE / 2) + ");");
-      lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{Prediction}};");
+      lines.add("\\node[anchor=west, scale=0.65] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {Prediction};");
       y -= LEGEND_ROW_HEIGHT;
    }
 
