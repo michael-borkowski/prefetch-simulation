@@ -27,16 +27,17 @@ public class GenesisVisualiser {
    public static final double TICK_LENGTH = 0.08;
 
    public static final String STYLE_REAL = "blue";
-   public static final String STYLE_PREDICTED = "blue,densely dotted";
+   public static final String STYLE_PREDICTED = "blue,dotted";
 
-   public static final double LEGEND_WIDTH = 3.53;
+   public static final double LEGEND_WIDTH = 5;
    public static final double LEGEND_HEIGHT = 1.15;
-   public static final double LEGEND_X = 12;
+   public static final double LEGEND_X = 11;
    public static final double LEGEND_Y = 10.6;
 
    public static final double LEGEND_PADDING_X = 0.2;
    public static final double LEGEND_PADDING_Y = 0.2;
    public static final double LEGEND_BOX_SIZE = 0.2;
+   public static final double LEGEND_LINE_LENGTH = 0.435;
    public static final double LEGEND_COL1_WIDTH = 1.4;
    public static final double LEGEND_ROW_HEIGHT = 0.3;
 
@@ -81,7 +82,7 @@ public class GenesisVisualiser {
       createBase();
       createGenesisRequests(genesis.getRequests());
       createRates();
-      createLegend(LEGEND_HEIGHT, false);
+      createLegend(LEGEND_HEIGHT, false, null);
       createFinish();
 
       try (ByteArrayOutputStream baos = new ByteArrayOutputStream(); PrintWriter pw = new PrintWriter(baos)) {
@@ -127,23 +128,27 @@ public class GenesisVisualiser {
       return s.substring(0, 3);
    }
 
-   void createLegend(double height, boolean enhancedSpace) {
+   void createLegend(double height, boolean enhancedSpace, String requestFetchingTitle) {
       lines.add("\\filldraw[fill=white, draw=black] (" + LEGEND_X + "," + (LEGEND_Y - height) + ") rectangle (" + (LEGEND_X + LEGEND_WIDTH) + "," + LEGEND_Y + ");");
 
       double y = LEGEND_Y - LEGEND_PADDING_Y;
       double box_x = LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH / 2 - LEGEND_BOX_SIZE / 2;
 
+      String title = "Theoretical Request Fetching";
+
       if (enhancedSpace) {
          y -= 3 * LEGEND_ROW_HEIGHT;
-      } else {
-         lines.add("\\filldraw[" + REQ_STYLE + "] (" + box_x + "," + y + ") rectangle (" + (box_x + LEGEND_BOX_SIZE) + "," + (y - LEGEND_BOX_SIZE) + ");");
-         lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{Request}};");
-         y -= LEGEND_ROW_HEIGHT;
       }
 
+      if (requestFetchingTitle != null)
+         title = requestFetchingTitle;
+      lines.add("\\filldraw[" + REQ_STYLE + "] (" + box_x + "," + y + ") rectangle (" + (box_x + LEGEND_BOX_SIZE) + "," + (y - LEGEND_BOX_SIZE) + ");");
+      lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{" + title + "}};");
+      y -= LEGEND_ROW_HEIGHT;
+
       double xspace = LEGEND_COL1_WIDTH - LEGEND_PADDING_X;
-      double x2 = LEGEND_X + 1.5 * LEGEND_PADDING_X + 1 * xspace / 3;
-      double x3 = LEGEND_X + 1.5 * LEGEND_PADDING_X + 2 * xspace / 3;
+      double x2 = LEGEND_X + 1.5 * LEGEND_PADDING_X + xspace / 2 - LEGEND_LINE_LENGTH / 2;
+      double x3 = LEGEND_X + 1.5 * LEGEND_PADDING_X + xspace / 2 + LEGEND_LINE_LENGTH / 2;
 
       lines.add("\\draw[" + STYLE_REAL + "] (" + x2 + "," + (y - LEGEND_BOX_SIZE / 2) + ") -- (" + x3 + "," + (y - LEGEND_BOX_SIZE / 2) + ");");
       lines.add("\\node[anchor=west] at (" + (LEGEND_X + LEGEND_PADDING_X + LEGEND_COL1_WIDTH) + "," + (y - LEGEND_BOX_SIZE / 2) + ") {\\tiny{Real Bandwidth}};");
@@ -231,7 +236,7 @@ public class GenesisVisualiser {
          lines.add("\\draw (" + TICK_LENGTH + "," + y + ") -- (-" + TICK_LENGTH + "," + y + ") node [anchor=east] {" + valueY + "};");
          lines.add("\\draw[black!5] (0," + y + ") -- (" + DIAGRAM_WIDTH + "," + y + ");");
       }
-      
+
       lines.add("\\draw[thick,->] (0,0) -- (" + DIAGRAM_WIDTH + ",0) node[anchor=north] {$t$};");
       lines.add("\\draw[thick,->] (0,0) -- (0," + DIAGRAM_HEIGHT + ") node[anchor=east] {$B$};");
    }
