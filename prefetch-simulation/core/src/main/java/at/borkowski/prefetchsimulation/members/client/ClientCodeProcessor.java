@@ -43,7 +43,7 @@ public class ClientCodeProcessor {
             if (owner.getCacheProcessor().hasFile(request)) {
                if (request.getDeadline() == tick)
                   owner.getProfilingService().cacheHit(request);
-               owner.getProfilingService().arrival(request, tick - request.getDeadline(), tick - owner.getCacheProcessor().getTimestamp(request), request.getData());
+               owner.getProfilingService().arrival(request, tick - request.getDeadline(), tick - owner.getCacheProcessor().getRequestTimestamp(request), request.getData());
                done.add(request);
             } else if (!missed.contains(request)) {
                owner.getFetchProcessor().urge(tick, request);

@@ -22,10 +22,11 @@ public class CacheProcessorTest {
       Request request = new Request(1, 2, 3);
       assertFalse(sut.hasFile(request));
 
-      sut.save(request, 123);
+      sut.save(request, 123, 120);
 
       assertTrue(sut.hasFile(request));
       assertEquals(123, sut.getTimestamp(request));
+      assertEquals(120, sut.getRequestTimestamp(request));
    }
 
 }

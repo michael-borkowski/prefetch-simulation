@@ -107,30 +107,31 @@ public class ClientCodeProcessorTest {
       advance();
 
       verify(profiling, times(1)).cacheHit(requests[1]);
-      verify(profiling, times(1)).arrival(requests[1], 0L, 1L, 20);
+      verify(profiling, times(1)).arrival(requests[1], 0L, 20L, 20);
 
       // request 2
 
       advance(9);
       
       verify(profiling, times(1)).cacheHit(requests[1]);
-      verify(profiling, times(1)).arrival(requests[1], 0L, 1L, 20);
+      verify(profiling, times(1)).arrival(requests[1], 0L, 20L, 20);
 
       advance();
       
       verify(profiling, times(1)).cacheHit(requests[1]);
-      verify(profiling, times(1)).arrival(requests[1], 0L, 1L, 20);
+      verify(profiling, times(1)).arrival(requests[1], 0L, 20L, 20);
       
       advance();
 
       when(cacheProcessor.hasFile(requests[2])).thenReturn(true);
       when(cacheProcessor.getTimestamp(requests[2])).thenReturn(31L);
+      when(cacheProcessor.getRequestTimestamp(requests[2])).thenReturn(28L);
       
       advance();
       
       verify(profiling, times(1)).cacheHit(requests[1]);
-      verify(profiling, times(1)).arrival(requests[1], 0L, 1L, 20);
-      verify(profiling, times(1)).arrival(requests[2], 2L, 1L, 20);
+      verify(profiling, times(1)).arrival(requests[1], 0L, 20L, 20);
+      verify(profiling, times(1)).arrival(requests[2], 2L, 4L, 20);
    }
 
    private void advance(int count) throws IOException {

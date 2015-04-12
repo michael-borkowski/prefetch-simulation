@@ -12,6 +12,7 @@ import at.borkowski.prefetchsimulation.Request;
  */
 public class CacheProcessor {
    private Map<Request, Long> cache = new HashMap<>();
+   private Map<Request, Long> requestCache = new HashMap<>();
 
    /**
     * Returns <code>true</code> if the cache contains the given request
@@ -44,8 +45,25 @@ public class CacheProcessor {
     *           the request to save
     * @param tick
     *           the current tick (timestamp of the request)
+    * @param requestTick
+    *           the tick at which the data has been requested
     */
-   public void save(Request request, long tick) {
+   public void save(Request request, long tick, long requestTick) {
       cache.put(request, tick);
+      requestCache.put(request, requestTick);
+   }
+
+   /**
+    * Returns the timestamp with which the request has been requested from the
+    * server. Behavior is undefined (currently throws a
+    * {@link NullPointerException}) if the request is not stored (see
+    * {@link #hasFile(Request)}).
+    * 
+    * @param request
+    *           the request to be checked
+    * @return the timestamp at which the request has been requested
+    */
+   public long getRequestTimestamp(Request request) {
+      return requestCache.get(request);
    }
 }

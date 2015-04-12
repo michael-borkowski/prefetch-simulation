@@ -135,13 +135,13 @@ public class FetchProcessorTest {
       advance();
       advance();
 
-      verify(cacheProcessor, never()).save(any(Request.class), anyLong());
+      verify(cacheProcessor, never()).save(any(Request.class), anyLong(), anyLong());
 
       data = new VirtualPayload(11);
 
       advance();
 
-      verify(cacheProcessor).save(requests[0], 114);
+      verify(cacheProcessor).save(requests[0], 114, 110);
 
       data = null;
    }
@@ -163,13 +163,13 @@ public class FetchProcessorTest {
       advance();
       advance();
 
-      verify(cacheProcessor, never()).save(same(requests[1]), anyLong());
+      verify(cacheProcessor, never()).save(same(requests[1]), anyLong(), anyLong());
 
       data = new VirtualPayload(37);
 
       advance();
 
-      verify(cacheProcessor).save(requests[1], 219);
+      verify(cacheProcessor).save(requests[1], 219, 213);
    }
 
    @Test
@@ -196,13 +196,13 @@ public class FetchProcessorTest {
       advance();
       advance();
 
-      verify(cacheProcessor, never()).save(same(requests[1]), anyLong());
+      verify(cacheProcessor, never()).save(same(requests[1]), anyLong(), anyLong());
 
       data = new VirtualPayload(37);
 
       advance();
 
-      verify(cacheProcessor).save(requests[1], 121);
+      verify(cacheProcessor).save(requests[1], 121, 115);
    }
 
    private void advanceUntil(int tick) throws IOException {

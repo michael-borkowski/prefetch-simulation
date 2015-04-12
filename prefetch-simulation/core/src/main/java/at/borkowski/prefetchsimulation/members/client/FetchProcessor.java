@@ -34,6 +34,7 @@ public class FetchProcessor {
    private long lookAheadTime = Long.MAX_VALUE;
 
    private Request current = null;
+   private long currentRequested = -1;
 
    public FetchProcessor(FetchClient owner) {
       this.owner = owner;
@@ -47,7 +48,7 @@ public class FetchProcessor {
          if (payload != null) {
             owner.getProfilingService().response(current);
             rateControlService.setRequestSpecificRate(null);
-            owner.getCacheProcessor().save(current, tick);
+            owner.getCacheProcessor().save(current, tick, currentRequested);
             toFetch.remove(current);
             scheduled.remove(current);
 
@@ -62,6 +63,7 @@ public class FetchProcessor {
          scheduled.remove(current);
 
          if (current != null) {
+            currentRequested = tick;
             owner.getProfilingService().request(current);
             owner.getSocketProcessor().request(current);
             rateControlService.setRequestSpecificRate(current.getAvailableByterate());
