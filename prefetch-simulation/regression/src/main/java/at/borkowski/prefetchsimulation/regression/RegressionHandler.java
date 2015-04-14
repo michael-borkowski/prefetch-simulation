@@ -45,7 +45,6 @@ public class RegressionHandler implements RegressionContext {
       double rtA = 0, rtB = 0, rtC = 0;
       double daA = 0, daB = 0, daC = 0;
       double hrA = 0, hrB = 0, hrC = 0;
-      int count = 0;
 
       for (int i = 0; i < runCount; i++) {
          long seed = 199100 + i;
@@ -71,19 +70,17 @@ public class RegressionHandler implements RegressionContext {
          rtC += builder.getProfiling().getResponseTime().getDoubleMedian();
          daC += builder.getProfiling().getDataAge().getDoubleMedian();
          hrC += (double) builder.getProfiling().getCacheHits().getCount() / genesis.getRequests().size();
-
-         count++;
       }
 
-      rtA /= count;
-      rtB /= count;
-      rtC /= count;
-      daA /= count;
-      daB /= count;
-      daC /= count;
-      hrA /= count;
-      hrB /= count;
-      hrC /= count;
+      rtA /= runCount;
+      rtB /= runCount;
+      rtC /= runCount;
+      daA /= runCount;
+      daB /= runCount;
+      daC /= runCount;
+      hrA /= runCount;
+      hrB /= runCount;
+      hrC /= runCount;
 
       System.out.println(independentVariableLabel + "," + rtA + "," + rtB + "," + rtC + "," + daA + "," + daB + "," + daC + "," + hrA + "," + hrB + "," + hrC);
 
