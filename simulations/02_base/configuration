@@ -1,0 +1,19 @@
+seed 199100
+
+ticks 36000
+byterate u/30/200
+slot-length ~/1270/30
+network-uptime 0.95
+relative-jitter ~/0/0.05
+absolute-jitter 0
+relative-prediction-time-error ~/0/0.05
+relative-prediction-amplitude-error ~/0/0.05
+absolute-prediction-time-error 0
+absolute-prediction-amplitude-error 0
+look-ahead 18000
+
+algorithm-parameter alpha 0.9
+
+# size: 393300 / 20 (load / count)
+request-series interval 1530 size 1967 byterate u/30/200 start 1800 end 32400
+
