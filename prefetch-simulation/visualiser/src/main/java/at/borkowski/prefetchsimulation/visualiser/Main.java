@@ -43,8 +43,6 @@ public class Main {
             System.err.println("Unknown operation: " + command);
             usage();
          }
-
-         sim.executeToEnd();
       } catch (Throwable t) {
          System.err.println(t);
          t.printStackTrace();
