@@ -12,7 +12,7 @@ public class S1RelativeJitter implements RegressionAnalysis {
    public void perform(RegressionContext context) {
       Configuration base = context.getBaseConfiguration();
 
-      for (int i = 0; i <= 200; i += 4) {
+      for (int i = 0; i <= 400; i += 4) {
          Distribution<Double> relativeJitter = Distributions.normal(0, 0.01 * i);
          Configuration configuration = new Configuration(base.getTotalTicks(), base.getByterate(), base.getSlotLength(), base.getNetworkUptime(), relativeJitter, base.getAbsoluteJitter(), base.getRelativePredictionTimeError(), base.getRelativePredictionAmplitudeError(), base.getAbsolutePredictionTimeError(), base.getAbsolutePredictionAmplitudeError(), base.getRecurringRequestSeries(), base.getIntermittentRequests(), base.getAlgorithm(), base.getAlgorithmConfiguration(), base.getLookAheadTime());
          context.executeRun(String.valueOf(0.01 * i), configuration);
