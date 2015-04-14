@@ -194,6 +194,8 @@ public class GenesisVisualiser {
 
       boolean first = false;
 
+      long lineElements = 0;
+
       line.append("\\draw[" + param + "] ");
       double prevY = 0;
       for (Long tick : ticks) {
@@ -206,6 +208,13 @@ public class GenesisVisualiser {
 
          prevY = y;
          first = true;
+         lineElements++;
+
+         if (lineElements >= 100) {
+            lines.add(line.toString());
+            lineElements = 0;
+            line.setLength(0);
+         }
       }
       lines.add(line.append(";").toString());
    }
