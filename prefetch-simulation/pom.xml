@@ -16,6 +16,7 @@
     <module>materialiser</module>
     <module>runner</module>
     <module>visualiser</module>
+    <module>regression</module>
   </modules>
 
   <properties>
