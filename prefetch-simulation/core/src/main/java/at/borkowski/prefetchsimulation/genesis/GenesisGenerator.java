@@ -138,6 +138,8 @@ public class GenesisGenerator {
          int byterate = this.byterate.getValue(randomByterate);
          if (randomUptime.nextDouble() > networkUptime)
             byterate = 0;
+         
+         byterate = clamp(0, byterate, Integer.MAX_VALUE);
 
          if (previousRate != -1 && byterate != 0)
             byterate = (2 * byterate + 1 * previousRate) / 3;
@@ -202,6 +204,7 @@ public class GenesisGenerator {
 
          int predictionByterate = networkQuality.get(tick);
          predictionByterate = (int) (predictionByterate * (1D + relativeAmplitudeError)) + absoluteAmplitudeError;
+         predictionByterate = clamp(0, predictionByterate, Integer.MAX_VALUE);
          ret.put(predictionTick, predictionByterate);
       }
 
