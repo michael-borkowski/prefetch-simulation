@@ -24,18 +24,21 @@ public class Main {
          System.exit(1);
          return;
       }
-
-      RegressionHandler context = new RegressionHandler();
-
       if (name == null) {
-         for (String analysisName : analyses.keySet()) {
-            System.out.println("# " + analysisName);
-            context.execute(analyses.get(analysisName));
-         }
-      } else {
-         System.out.println("# " + name);
-         context.execute(analyses.get(name));
-      }
+         for (String analysisName : analyses.keySet())
+            doAnalysis(analysisName, analyses.get(analysisName));
+      } else
+         doAnalysis(name, analyses.get(name));
 
+   }
+
+   private static void doAnalysis(String name, RegressionAnalysis regressionAnalysis) {
+      RegressionHandler context = new RegressionHandler(500);
+
+      System.out.println();
+      System.out.println();
+      System.out.println();
+      System.out.println("# " + name);
+      context.execute(regressionAnalysis);
    }
 }

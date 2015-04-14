@@ -1,51 +1,23 @@
 package at.borkowski.prefetchsimulation.regression;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 import at.borkowski.prefetchsimulation.PrefetchSimulationBuilder;
-import at.borkowski.prefetchsimulation.Request;
 import at.borkowski.prefetchsimulation.algorithms.IgnoreRatePredictionAlgorithm;
 import at.borkowski.prefetchsimulation.algorithms.NullAlgorithm;
-import at.borkowski.prefetchsimulation.algorithms.PrefetchAlgorithm;
 import at.borkowski.prefetchsimulation.algorithms.RespectRatePredictionAlgorithm;
 import at.borkowski.prefetchsimulation.configuration.Configuration;
 import at.borkowski.prefetchsimulation.configuration.ConfigurationException;
 import at.borkowski.prefetchsimulation.configuration.ConfigurationReader;
-import at.borkowski.prefetchsimulation.configuration.RequestSeries;
-import at.borkowski.prefetchsimulation.configuration.distributions.Distribution;
-import at.borkowski.prefetchsimulation.configuration.distributions.Distributions;
 import at.borkowski.prefetchsimulation.genesis.Genesis;
 import at.borkowski.prefetchsimulation.genesis.GenesisGenerator;
-import at.borkowski.prefetchsimulation.genesis.GenesisWriter;
 
 public class RegressionHandler implements RegressionContext {
 
-   public static final int RUN_COUNT = 10;
-
-   private static final long totalTicks = 36000;
-   private static final Distribution<Integer> byterate = Distributions.uniform(30000, 200000);
-   private static final Distribution<Long> slotLength = Distributions.normal(120L, 30L);
-   private static final double networkUptime = 0.95;
-   private static final Distribution<Double> relativeJitter = Distributions.normal(0, 0.05);
-   private static final Distribution<Integer> absoluteJitter = Distributions.exact(0);
-   private static final Distribution<Double> relativePredictionTimeError = Distributions.normal(0, 0.05);
-   private static final Distribution<Double> relativePredictionAmplitudeError = Distributions.normal(0, 0.05);
-   private static final Distribution<Long> absolutePredictionTimeError = Distributions.exact(0L);
-   private static final Distribution<Integer> absolutePredictionAmplitudeError = Distributions.exact(0);
-   private static final Collection<RequestSeries> recurringRequestSeries = createRequestSeries(327750, 20);
-   private static final Collection<Request> intermittentRequests = new LinkedList<>();
-   private static final Class<? extends PrefetchAlgorithm> algorithm = NullAlgorithm.class;
-   private static final Map<String, String> algorithmConfiguration = new HashMap<>();
-   private static final long lookAheadTime = 18000;
-
-   private static final Configuration baseConfiguration; //= new Configuration(totalTicks, byterate, slotLength, networkUptime, relativeJitter, absoluteJitter, relativePredictionTimeError, relativePredictionAmplitudeError, absolutePredictionTimeError, absolutePredictionAmplitudeError, recurringRequestSeries, intermittentRequests, algorithm, algorithmConfiguration, lookAheadTime);
+   private static final Configuration baseConfiguration;
+   
+   private final int runCount;
 
    static {
       try (InputStream baseConfigurationStream = RegressionHandler.class.getResourceAsStream("/base-configuration")) {
@@ -55,22 +27,13 @@ public class RegressionHandler implements RegressionContext {
          throw new RuntimeException(e);
       }
    }
+   
+   public RegressionHandler(int runCout) {
+      this.runCount = runCout;
+   }
 
    public void execute(RegressionAnalysis analysis) {
       analysis.perform(this);
-   }
-
-   private static Collection<RequestSeries> createRequestSeries(long load, int requestCount) {
-      List<RequestSeries> ret = new LinkedList<>();
-
-      Distribution<Long> interval = Distributions.normal(300L, 25L);
-      Distribution<Integer> size = Distributions.exact((int) (load / requestCount));
-      Distribution<Integer> byterate = RegressionHandler.byterate;
-      Distribution<Long> startTick = Distributions.exact(1800L);
-      Distribution<Long> endTick = Distributions.exact(36000L);
-
-      ret.add(new RequestSeries(interval, size, byterate, startTick, endTick));
-      return ret;
    }
 
    @Override
@@ -84,16 +47,11 @@ public class RegressionHandler implements RegressionContext {
       double hrA = 0, hrB = 0, hrC = 0;
       int count = 0;
 
-      for (int i = 0; i < RUN_COUNT; i++) {
+      for (int i = 0; i < runCount; i++) {
          long seed = 199100 + i;
          configuration.setSeed(seed);
 
          Genesis genesis = new GenesisGenerator(configuration).generate();
-         try {
-            new GenesisWriter(new FileOutputStream("/tmp/genesis")).write(genesis);
-         } catch (IOException e) {
-            e.printStackTrace();
-         }
          PrefetchSimulationBuilder builder;
 
          builder = PrefetchSimulationBuilder.fromGenesis(genesis).algorithm(new NullAlgorithm());
