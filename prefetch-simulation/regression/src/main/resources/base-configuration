@@ -1,18 +1,20 @@
 seed 199100
 
-ticks 36000
-byterate u/30/200
-slot-length ~/1270/30
-network-uptime 0.95
-relative-jitter ~/0/0.05
-absolute-jitter 0
-relative-prediction-time-error ~/0/0.05
-relative-prediction-amplitude-error ~/0/0.05
-absolute-prediction-time-error 0
-absolute-prediction-amplitude-error 0
-look-ahead 18000
+ticks 36000										# 10 hours
+byterate u/30/200								# 30..200 kB/s
+slot-length ~/120/30							# around 2 minuts slot length
+network-uptime 0.95								# 5% downtime
+relative-jitter ~/0/0.05						# 5% relative jitter
+absolute-jitter 0								# no absolute jitter
+relative-prediction-time-error ~/0/0.05			# 5% relative time error in prediction
+relative-prediction-amplitude-error ~/0/0.05	# 5% relative amplitude error in prediction
+absolute-prediction-time-error 0				# no absolute time error in prediction
+absolute-prediction-amplitude-error 0			# no absolute amplitude error in prediction
+look-ahead 18000								# 5 hours look-ahead
 
-algorithm-parameter alpha 0.9
+algorithm-parameter alpha 0.9					# 10% correction factor (alpha)
 
-# size: 393300 / 20 (load / count)
+# 20 requests, 1.967 MB each -> 39340000 B (load)
+# capacity: 393300000 B
+# saturation 39340000/393300000 ~ 0.1 (10%)
 request-series interval 1530 size 1967 byterate u/30/200 start 1800 end 32400
