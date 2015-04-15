@@ -55,19 +55,19 @@ public class RegressionHandler implements RegressionContext {
 
          builder = PrefetchSimulationBuilder.fromGenesis(genesis).algorithm(new NullAlgorithm());
          builder.create().executeToEnd();
-         rtA += builder.getProfiling().getResponseTime().getDoubleMedian();
+         rtA += builder.getProfiling().getResponseTime().getAverage();
          daA += builder.getProfiling().getDataAge().getDoubleMedian();
          hrA += (double) builder.getProfiling().getCacheHits().getCount() / genesis.getRequests().size();
 
          builder = PrefetchSimulationBuilder.fromGenesis(genesis).algorithm(new IgnoreRatePredictionAlgorithm());
          builder.create().executeToEnd();
-         rtB += builder.getProfiling().getResponseTime().getDoubleMedian();
+         rtB += builder.getProfiling().getResponseTime().getAverage();
          daB += builder.getProfiling().getDataAge().getDoubleMedian();
          hrB += (double) builder.getProfiling().getCacheHits().getCount() / genesis.getRequests().size();
 
          builder = PrefetchSimulationBuilder.fromGenesis(genesis).algorithm(new RespectRatePredictionAlgorithm());
          builder.create().executeToEnd();
-         rtC += builder.getProfiling().getResponseTime().getDoubleMedian();
+         rtC += builder.getProfiling().getResponseTime().getAverage();
          daC += builder.getProfiling().getDataAge().getDoubleMedian();
          hrC += (double) builder.getProfiling().getCacheHits().getCount() / genesis.getRequests().size();
       }
