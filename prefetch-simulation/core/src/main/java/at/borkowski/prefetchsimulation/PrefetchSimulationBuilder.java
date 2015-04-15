@@ -35,6 +35,8 @@ public class PrefetchSimulationBuilder {
    private final ServiceProvider<CommunicationService> communicationService;
    private Map<Long, Integer> limitsReal = null;
    private Map<Long, Integer> limitsPredicted = null;
+   
+   private Map<String, String> algorithmConfiguration = new HashMap<>();
 
    private SimulationBuilder builder = new SimulationBuilder();
 
@@ -80,7 +82,7 @@ public class PrefetchSimulationBuilder {
       builder.limitsReal(genesis.getRateReal());
       builder.limitsPredicted(genesis.getRatePredicted());
       builder.algorithm(algorithm);
-      algorithm.configure(genesis.getAlgorithmConfiguration());
+      builder.algorithmConfiguration(genesis.getAlgorithmConfiguration());
       builder.lookAheadTime(genesis.getLookAheadTime());
 
       return builder;
@@ -174,12 +176,13 @@ public class PrefetchSimulationBuilder {
     * @return this object
     */
    public PrefetchSimulationBuilder algorithm(PrefetchAlgorithm algorithm) {
+      algorithm.configure(algorithmConfiguration);
       fetchClient.getFetchProcessor().setAlgorithm(algorithm);
       return this;
    }
 
-   public void algorithmConfiguration(HashMap<String, String> algorithmConfiguration) {
-      fetchClient.getFetchProcessor().getAlgorithm().configure(algorithmConfiguration);
+   public void algorithmConfiguration(Map<String, String> algorithmConfiguration) {
+      fetchClient.getFetchProcessor().getAlgorithm().configure(this.algorithmConfiguration = algorithmConfiguration);
    }
 
    public PrefetchSimulationBuilder lookAheadTime(long lookAheadTime) {

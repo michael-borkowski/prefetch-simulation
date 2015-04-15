@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
@@ -71,7 +72,7 @@ public class PrefetchSimulationBuilderTest {
       assertNotNull(sut.getProfiling());
 
       assertSame(algorithmInstance.getClass(), sut.test__getFetchClient().getFetchProcessor().getAlgorithm().getClass());
-      verify(algorithmInstance).configure(algorithmConfiguration);
+      verify(algorithmInstance, atLeast(1)).configure(algorithmConfiguration);
       assertEquals(13, sut.test__getCommunicationService().getService().getUplinkRate(sut.test__getSocketName()).intValue());
       assertEquals(13, sut.test__getCommunicationService().getService().getDownlinkRate(sut.test__getSocketName()).intValue());
 
@@ -110,7 +111,7 @@ public class PrefetchSimulationBuilderTest {
 
       assertNotNull(sut.getProfiling());
 
-      verify(algorithmInstance).configure(algorithmConfiguration);
+      verify(algorithmInstance, atLeast(1)).configure(algorithmConfiguration);
       assertEquals(5000, sut.test__getFetchClient().getFetchProcessor().getLookAheadTime());
       assertEquals(13, sut.test__getCommunicationService().getService().getUplinkRate(sut.test__getSocketName()).intValue());
       assertEquals(13, sut.test__getCommunicationService().getService().getDownlinkRate(sut.test__getSocketName()).intValue());
