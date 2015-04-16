@@ -33,6 +33,7 @@ public class RegressionHandler implements RegressionContext {
    }
 
    public void execute(RegressionAnalysis analysis) {
+      System.out.println("x,URTA,URTB,URTC,DAA,DAB,DAC,HRA,HRB,HRC,URTA_s,URTB_s,URTC_s,DAA_s,DAB_s,DAC_s,HRA_s,HRB_s,HRC_s");
       analysis.perform(this);
    }
 
@@ -41,10 +42,16 @@ public class RegressionHandler implements RegressionContext {
       Long previousSeed = null;
       if (configuration.hasSeed())
          previousSeed = configuration.getSeed();
-
-      double rtA = 0, rtB = 0, rtC = 0;
-      double daA = 0, daB = 0, daC = 0;
-      double hrA = 0, hrB = 0, hrC = 0;
+      
+      Quantity rtA = new Quantity();
+      Quantity rtB = new Quantity();
+      Quantity rtC = new Quantity();
+      Quantity daA = new Quantity();
+      Quantity daB = new Quantity();
+      Quantity daC = new Quantity();
+      Quantity hrA = new Quantity();
+      Quantity hrB = new Quantity();
+      Quantity hrC = new Quantity();
 
       for (int i = 0; i < runCount; i++) {
          long seed = 199100 + i;
@@ -55,34 +62,69 @@ public class RegressionHandler implements RegressionContext {
 
          builder = PrefetchSimulationBuilder.fromGenesis(genesis).algorithm(new NullAlgorithm());
          builder.create().executeToEnd();
-         rtA += builder.getProfiling().getResponseTime().getAverage();
-         daA += builder.getProfiling().getDataAge().getDoubleMedian();
-         hrA += (double) builder.getProfiling().getCacheHits().getCount() / genesis.getRequests().size();
+         rtA.add(builder.getProfiling().getResponseTime().getAverage());
+         daA.add(builder.getProfiling().getDataAge().getDoubleMedian());
+         hrA.add((double) builder.getProfiling().getCacheHits().getCount() / genesis.getRequests().size());
 
          builder = PrefetchSimulationBuilder.fromGenesis(genesis).algorithm(new IgnoreRatePredictionAlgorithm());
          builder.create().executeToEnd();
-         rtB += builder.getProfiling().getResponseTime().getAverage();
-         daB += builder.getProfiling().getDataAge().getDoubleMedian();
-         hrB += (double) builder.getProfiling().getCacheHits().getCount() / genesis.getRequests().size();
+         rtB.add(builder.getProfiling().getResponseTime().getAverage());
+         daB.add(builder.getProfiling().getDataAge().getDoubleMedian());
+         hrB.add((double) builder.getProfiling().getCacheHits().getCount() / genesis.getRequests().size());
 
          builder = PrefetchSimulationBuilder.fromGenesis(genesis).algorithm(new RespectRatePredictionAlgorithm());
          builder.create().executeToEnd();
-         rtC += builder.getProfiling().getResponseTime().getAverage();
-         daC += builder.getProfiling().getDataAge().getDoubleMedian();
-         hrC += (double) builder.getProfiling().getCacheHits().getCount() / genesis.getRequests().size();
+         rtC.add(builder.getProfiling().getResponseTime().getAverage());
+         daC.add(builder.getProfiling().getDataAge().getDoubleMedian());
+         hrC.add((double) builder.getProfiling().getCacheHits().getCount() / genesis.getRequests().size());
       }
 
-      rtA /= runCount;
-      rtB /= runCount;
-      rtC /= runCount;
-      daA /= runCount;
-      daB /= runCount;
-      daC /= runCount;
-      hrA /= runCount;
-      hrB /= runCount;
-      hrC /= runCount;
+      StringBuilder sb = new StringBuilder();
+      sb.append(independentVariableLabel);
+      
+      sb.append(',');
+      sb.append(rtA.getMean());
+      sb.append(',');
+      sb.append(rtB.getMean());
+      sb.append(',');
+      sb.append(rtC.getMean());
 
-      System.out.println(independentVariableLabel + "," + rtA + "," + rtB + "," + rtC + "," + daA + "," + daB + "," + daC + "," + hrA + "," + hrB + "," + hrC);
+      sb.append(',');
+      sb.append(daA.getMean());
+      sb.append(',');
+      sb.append(daB.getMean());
+      sb.append(',');
+      sb.append(daC.getMean());
+
+      sb.append(',');
+      sb.append(hrA.getMean());
+      sb.append(',');
+      sb.append(hrB.getMean());
+      sb.append(',');
+      sb.append(hrC.getMean());
+      
+      sb.append(',');
+      sb.append(rtA.getStandardDeviation());
+      sb.append(',');
+      sb.append(rtB.getStandardDeviation());
+      sb.append(',');
+      sb.append(rtC.getStandardDeviation());
+
+      sb.append(',');
+      sb.append(daA.getStandardDeviation());
+      sb.append(',');
+      sb.append(daB.getStandardDeviation());
+      sb.append(',');
+      sb.append(daC.getStandardDeviation());
+
+      sb.append(',');
+      sb.append(hrA.getStandardDeviation());
+      sb.append(',');
+      sb.append(hrB.getStandardDeviation());
+      sb.append(',');
+      sb.append(hrC.getStandardDeviation());
+      
+      System.out.println(sb.toString());
 
       if (previousSeed == null)
          configuration.clearSeed();
