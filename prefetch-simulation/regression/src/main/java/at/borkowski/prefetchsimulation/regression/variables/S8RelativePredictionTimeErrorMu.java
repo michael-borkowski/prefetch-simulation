@@ -13,7 +13,7 @@ public class S8RelativePredictionTimeErrorMu implements RegressionAnalysis {
       Configuration base = context.getBaseConfiguration();
 
       for (int i = -100; i <= 100; i += 4) {
-         Distribution<Double> relativePredictionTimeError = Distributions.normal(0.01 * i, 0.01);
+         Distribution<Double> relativePredictionTimeError = Distributions.normal(0.01 * i, 0.05);
          Configuration configuration = new Configuration(base.getTotalTicks(), base.getByterate(), base.getSlotLength(), base.getNetworkUptime(), base.getRelativeJitter(), base.getAbsoluteJitter(), relativePredictionTimeError, base.getRelativePredictionAmplitudeError(), base.getAbsolutePredictionTimeError(), base.getAbsolutePredictionAmplitudeError(), base.getRecurringRequestSeries(), base.getIntermittentRequests(), base.getAlgorithm(), base.getAlgorithmConfiguration(), base.getLookAheadTime());
          context.executeRun(String.valueOf(0.01 * i), configuration);
       }
