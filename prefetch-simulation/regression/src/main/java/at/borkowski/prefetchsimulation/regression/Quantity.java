@@ -34,4 +34,8 @@ public class Quantity {
    public double getUpperSD() {
       return getMean() + getStandardDeviation();
    }
+
+   public int getCount() {
+      return values.size();
+   }
 }

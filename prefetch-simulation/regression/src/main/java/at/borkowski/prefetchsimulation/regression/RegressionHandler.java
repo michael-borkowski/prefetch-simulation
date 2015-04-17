@@ -16,7 +16,7 @@ import at.borkowski.prefetchsimulation.genesis.GenesisGenerator;
 public class RegressionHandler implements RegressionContext {
 
    private static final Configuration baseConfiguration;
-   
+
    private final int runCount;
 
    static {
@@ -27,13 +27,13 @@ public class RegressionHandler implements RegressionContext {
          throw new RuntimeException(e);
       }
    }
-   
+
    public RegressionHandler(int runCout) {
       this.runCount = runCout;
    }
 
    public void execute(RegressionAnalysis analysis) {
-      System.out.println("x,URTA,URTB,URTC,DAA,DAB,DAC,HRA,HRB,HRC,URTA_s,URTB_s,URTC_s,DAA_s,DAB_s,DAC_s,HRA_s,HRB_s,HRC_s");
+      System.out.println("x,URTA,URTB,URTC,DAA,DAB,DAC,HRA,HRB,HRC,URTA_s,URTB_s,URTC_s,DAA_s,DAB_s,DAC_s,HRA_s,HRB_s,HRC_s,t_URT_ac,t_URT_bc,t_DA_ac,t_DA_bc,t_max");
       analysis.perform(this);
    }
 
@@ -42,7 +42,7 @@ public class RegressionHandler implements RegressionContext {
       Long previousSeed = null;
       if (configuration.hasSeed())
          previousSeed = configuration.getSeed();
-      
+
       Quantity rtA = new Quantity();
       Quantity rtB = new Quantity();
       Quantity rtC = new Quantity();
@@ -81,7 +81,7 @@ public class RegressionHandler implements RegressionContext {
 
       StringBuilder sb = new StringBuilder();
       sb.append(independentVariableLabel);
-      
+
       sb.append(',');
       sb.append(rtA.getMean());
       sb.append(',');
@@ -102,7 +102,7 @@ public class RegressionHandler implements RegressionContext {
       sb.append(hrB.getMean());
       sb.append(',');
       sb.append(hrC.getMean());
-      
+
       sb.append(',');
       sb.append(rtA.getStandardDeviation());
       sb.append(',');
@@ -123,13 +123,42 @@ public class RegressionHandler implements RegressionContext {
       sb.append(hrB.getStandardDeviation());
       sb.append(',');
       sb.append(hrC.getStandardDeviation());
-      
+
+      double tURT_AC = tTest(rtA, rtC);
+      double tURT_BC = tTest(rtB, rtC);
+      double tDA_AC = tTest(daA, daC);
+      double tDA_BC = tTest(daB, daC);
+
+      sb.append(',');
+      sb.append(tURT_AC);
+      sb.append(',');
+      sb.append(tURT_BC);
+
+      sb.append(',');
+      sb.append(tDA_AC);
+      sb.append(',');
+      sb.append(tDA_BC);
+
+      sb.append(',');
+      sb.append(Math.max(Math.max(Math.max(tURT_AC, tURT_BC), tDA_AC), tDA_BC));
+
       System.out.println(sb.toString());
 
       if (previousSeed == null)
          configuration.clearSeed();
       else
          configuration.setSeed(previousSeed);
+   }
+
+   private double tTest(Quantity a, Quantity b) {
+      double n = 0.5 * (a.getCount() + b.getCount());
+      double num = a.getMean() - b.getMean();
+      double denom = Math.sqrt(0.5 * (sq(a.getStandardDeviation()) + sq(b.getStandardDeviation()))) * Math.sqrt(2 / n);
+      return Math.abs(num / denom);
+   }
+
+   private double sq(double x) {
+      return x * x;
    }
 
    @Override
