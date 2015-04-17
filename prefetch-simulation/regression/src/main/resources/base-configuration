@@ -17,4 +17,4 @@ algorithm-parameter alpha 0.9					# 10% correction factor (alpha)
 # 20 requests, 1.967 MB each -> 39340000 B (load)
 # capacity: 393300000 B
 # saturation 39340000/393300000 ~ 0.1 (10%)
-request-series interval 1530 size 1967 byterate u/30/200 start 1800 end 32400
+request-series interval ~/1530/50 size 1967 byterate u/30/200 start 1800 end 32400
