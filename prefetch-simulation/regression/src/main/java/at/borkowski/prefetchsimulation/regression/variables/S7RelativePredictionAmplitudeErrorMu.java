@@ -12,7 +12,7 @@ public class S7RelativePredictionAmplitudeErrorMu implements RegressionAnalysis 
    public void perform(RegressionContext context) {
       Configuration base = context.getBaseConfiguration();
 
-      for (int i = -72; i <= 100; i += 4) {
+      for (int i = -72; i <= 200; i += 2) {
          Distribution<Double> relativePredictionAmplitudeError = Distributions.normal(0.01 * i, 0.05);
          Configuration configuration = new Configuration(base.getTotalTicks(), base.getByterate(), base.getSlotLength(), base.getNetworkUptime(), base.getRelativeJitter(), base.getAbsoluteJitter(), base.getRelativePredictionTimeError(), relativePredictionAmplitudeError, base.getAbsolutePredictionTimeError(), base.getAbsolutePredictionAmplitudeError(), base.getRecurringRequestSeries(), base.getIntermittentRequests(), base.getAlgorithm(), base.getAlgorithmConfiguration(), base.getLookAheadTime());
          context.executeRun(String.valueOf(0.01 * i), configuration);
