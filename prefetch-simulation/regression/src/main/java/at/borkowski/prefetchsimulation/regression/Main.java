@@ -8,7 +8,8 @@ import at.borkowski.prefetchsimulation.regression.variables.S2RelativePrediction
 import at.borkowski.prefetchsimulation.regression.variables.S3RelativePredictionTimeErrorSigma;
 import at.borkowski.prefetchsimulation.regression.variables.S4LookAheadTime;
 import at.borkowski.prefetchsimulation.regression.variables.S5Alpha;
-import at.borkowski.prefetchsimulation.regression.variables.S7RelativePredictionAmplitudeErrorMu;
+import at.borkowski.prefetchsimulation.regression.variables.S7RelativePredictionAmplitudeErrorMu1;
+import at.borkowski.prefetchsimulation.regression.variables.S7RelativePredictionAmplitudeErrorMu2;
 import at.borkowski.prefetchsimulation.regression.variables.S8RelativePredictionTimeErrorMu;
 
 public class Main {
@@ -20,7 +21,8 @@ public class Main {
       analyses.put("s3", new S3RelativePredictionTimeErrorSigma());
       analyses.put("s4", new S4LookAheadTime());
       analyses.put("s5", new S5Alpha());
-      analyses.put("s7", new S7RelativePredictionAmplitudeErrorMu());
+      analyses.put("s7-1", new S7RelativePredictionAmplitudeErrorMu1());
+      analyses.put("s7-2", new S7RelativePredictionAmplitudeErrorMu2());
       analyses.put("s8", new S8RelativePredictionTimeErrorMu());
 
       String name = null;
