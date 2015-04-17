@@ -5,7 +5,7 @@ import java.util.Map;
 
 import at.borkowski.prefetchsimulation.regression.variables.S1RelativeJitter;
 import at.borkowski.prefetchsimulation.regression.variables.S2RelativePredictionAmplitudeErrorSigma;
-import at.borkowski.prefetchsimulation.regression.variables.S3RelativePredictionTimeError;
+import at.borkowski.prefetchsimulation.regression.variables.S3RelativePredictionTimeErrorSigma;
 import at.borkowski.prefetchsimulation.regression.variables.S4LookAheadTime;
 import at.borkowski.prefetchsimulation.regression.variables.S5Alpha;
 import at.borkowski.prefetchsimulation.regression.variables.S7RelativePredictionAmplitudeErrorMu;
@@ -16,7 +16,7 @@ public class Main {
 
       analyses.put("s1", new S1RelativeJitter());
       analyses.put("s2", new S2RelativePredictionAmplitudeErrorSigma());
-      analyses.put("s3", new S3RelativePredictionTimeError());
+      analyses.put("s3", new S3RelativePredictionTimeErrorSigma());
       analyses.put("s4", new S4LookAheadTime());
       analyses.put("s5", new S5Alpha());
       analyses.put("s7", new S7RelativePredictionAmplitudeErrorMu());
