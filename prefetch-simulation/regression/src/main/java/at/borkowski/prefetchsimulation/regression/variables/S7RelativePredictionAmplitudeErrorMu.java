@@ -6,7 +6,7 @@ import at.borkowski.prefetchsimulation.configuration.distributions.Distributions
 import at.borkowski.prefetchsimulation.regression.RegressionAnalysis;
 import at.borkowski.prefetchsimulation.regression.RegressionContext;
 
-public class S7RelativePredictionAmplitudeErrorMu1 implements RegressionAnalysis {
+public class S7RelativePredictionAmplitudeErrorMu implements RegressionAnalysis {
 
    @Override
    public void perform(RegressionContext context) {
