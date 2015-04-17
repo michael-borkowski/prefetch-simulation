@@ -9,6 +9,7 @@ import at.borkowski.prefetchsimulation.regression.variables.S3RelativePrediction
 import at.borkowski.prefetchsimulation.regression.variables.S4LookAheadTime;
 import at.borkowski.prefetchsimulation.regression.variables.S5Alpha;
 import at.borkowski.prefetchsimulation.regression.variables.S7RelativePredictionAmplitudeErrorMu;
+import at.borkowski.prefetchsimulation.regression.variables.S8RelativePredictionTimeErrorMu;
 
 public class Main {
    public static void main(String[] args) {
@@ -20,6 +21,7 @@ public class Main {
       analyses.put("s4", new S4LookAheadTime());
       analyses.put("s5", new S5Alpha());
       analyses.put("s7", new S7RelativePredictionAmplitudeErrorMu());
+      analyses.put("s8", new S8RelativePredictionTimeErrorMu());
 
       String name = null;
       if (args.length == 1) {
