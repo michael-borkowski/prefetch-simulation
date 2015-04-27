@@ -4,7 +4,7 @@
   <parent>
     <groupId>at.borkowski.prefetch-simulation</groupId>
     <artifactId>prefetch-simulation</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3-SNAPSHOT</version>
   </parent>
 
   <artifactId>materialiser</artifactId>
@@ -49,7 +49,7 @@
     <dependency>
       <groupId>at.borkowski.prefetch-simulation</groupId>
       <artifactId>core</artifactId>
-      <version>0.0.2</version>
+      <version>0.0.3-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
