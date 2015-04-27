@@ -3,7 +3,7 @@
 seed 26031991001
 
 ticks 3600					# 1 * 3600 -> 1 hour
-byterate u/3000/5000				# 30-50 kB/s (up to 0.4 Mbit/s)
+byterate u/1000/5000				# 30-50 kB/s (up to 0.4 Mbit/s)
 slot-length 180					# slots have a length of ~3 minutes
 network-uptime 0.90				# 10% chance that a slot has 0 byterate
 relative-jitter 0				# 
@@ -20,7 +20,7 @@ look-ahead 3600					# look-ahead practically infinite
 
 algorithm-parameter alpha 0.9
 
-request-series interval u/500/900 size ~/500000/60000 byterate ~/3800/100 start 1000 end 3000
+request-series interval u/400/600 size ~/500000/60000 byterate ~/3800/100 start 1000 end 3000
 request tick 3400 byterate 3600 data 480000
 
 
